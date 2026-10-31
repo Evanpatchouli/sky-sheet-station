@@ -1,0 +1,245 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Evanpatchouli/sky-sheet-station/blob/main/docs/schemas/sky-score-v1.schema.json",
+  "title": "SkySheet Score v1",
+  "description": "Instrument-adapted SkySheet score format, version 1.0.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format_version",
+    "metadata",
+    "instrument",
+    "timeline",
+    "tracks"
+  ],
+  "properties": {
+    "format_version": {
+      "const": "1.0"
+    },
+    "metadata": {
+      "$ref": "#/$defs/metadata"
+    },
+    "instrument": {
+      "$ref": "#/$defs/instrument"
+    },
+    "timeline": {
+      "$ref": "#/$defs/timeline"
+    },
+    "tracks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/track"
+      }
+    },
+    "text": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Optional user-authored free text. It is not assumed to be lyrics."
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1
+    },
+    "pitch": {
+      "type": "string",
+      "pattern": "^[A-G](?:#)?-?[0-9]+$",
+      "description": "Scientific pitch notation. SkySheet defines C4 as MIDI note 60 and uses sharps as canonical chromatic spelling."
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "instrument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "playback_mode",
+        "keys"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "playback_mode": {
+          "enum": [
+            "trigger",
+            "sustain"
+          ]
+        },
+        "keys": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/pitch"
+          },
+          "description": "Ordered playable pitches. Array index plus one is the game key number."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "sky-15"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "then": {
+            "properties": {
+              "keys": {
+                "const": [
+                  "C4",
+                  "D4",
+                  "E4",
+                  "F4",
+                  "G4",
+                  "A4",
+                  "B4",
+                  "C5",
+                  "D5",
+                  "E5",
+                  "F5",
+                  "G5",
+                  "A5",
+                  "B5",
+                  "C6"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "timeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ppq",
+        "tempo",
+        "time_signature"
+      ],
+      "properties": {
+        "ppq": {
+          "const": 960
+        },
+        "tempo": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "time_signature": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "numerator",
+            "denominator"
+          ],
+          "properties": {
+            "numerator": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "denominator": {
+              "enum": [
+                1,
+                2,
+                4,
+                8,
+                16,
+                32,
+                64
+              ]
+            }
+          }
+        }
+      }
+    },
+    "note": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "pitch",
+        "start_tick",
+        "duration_ticks"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "pitch": {
+          "$ref": "#/$defs/pitch"
+        },
+        "start_tick": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "duration_ticks": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "track": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "role",
+        "notes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "enum": [
+            "melody",
+            "harmony",
+            "bass",
+            "accompaniment",
+            "percussion",
+            "unknown"
+          ]
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/note"
+          }
+        }
+      }
+    }
+  }
+}
