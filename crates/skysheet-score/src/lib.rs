@@ -127,7 +127,7 @@ impl Pitch {
         let octave: i16 = value[octave_start..]
             .parse()
             .map_err(|_| format!("invalid octave in pitch '{value}'"))?;
-        let accidental = i16::from(octave_start == 2);
+        let accidental = if octave_start == 2 { 1_i16 } else { 0_i16 };
         let midi = (octave + 1) * 12 + natural + accidental;
 
         if !(0..=127).contains(&midi) {
