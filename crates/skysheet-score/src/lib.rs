@@ -217,6 +217,12 @@ impl Score {
                 self.format_version, SCORE_FORMAT_VERSION
             ));
         }
+        if self.metadata.id.is_empty() {
+            issues.push("metadata.id must not be empty".into());
+        }
+        if self.metadata.name.is_empty() {
+            issues.push("metadata.name must not be empty".into());
+        }
         if self.timeline.ppq != PPQ {
             issues.push(format!("timeline.ppq must be {PPQ}"));
         }
@@ -265,6 +271,9 @@ impl Score {
         for track in &self.tracks {
             if track.id.is_empty() {
                 issues.push("track.id must not be empty".into());
+            }
+            if track.name.is_empty() {
+                issues.push(format!("track '{}' name must not be empty", track.id));
             }
             if !track_ids.insert(&track.id) {
                 issues.push(format!("duplicate track id '{}'", track.id));
