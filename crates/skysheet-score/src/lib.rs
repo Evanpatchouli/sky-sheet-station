@@ -157,7 +157,7 @@ impl Pitch {
         let octave: i16 = self.0[octave_start..]
             .parse()
             .expect("Pitch is validated at construction");
-        let accidental = i16::from(octave_start == 2);
+        let accidental = if octave_start == 2 { 1_i16 } else { 0_i16 };
         ((octave + 1) * 12 + natural + accidental) as u8
     }
 }
