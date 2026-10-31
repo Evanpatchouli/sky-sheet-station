@@ -55,7 +55,7 @@ MIDI import should preserve, where supported:
 
 The exported Sky arrangement omits velocity because the target game instruments do not expose MIDI-style per-note dynamics.
 
-MIDI files can contain tempo changes. The v1 score proposal has one global tempo and no tempo map. Before implementing MIDI import, define a deterministic policy for files with tempo changes: either normalize note positions to a chosen constant-tempo score timeline while preserving real-time offsets, or defer such files with a clear diagnostic. Do not silently discard tempo changes.
+MIDI files can contain tempo changes. The v1 score stores one reference tempo and no tempo map. The importer must convert MIDI note-on/note-off positions to absolute elapsed time using the source tempo map, then encode those positions on the v1 score timeline at one selected reference tempo. This preserves event timing to the nearest tick but flattens the original tempo-map metadata. The importer must report that flattening occurred.
 
 ## Music analysis
 
@@ -140,5 +140,5 @@ Evaluate:
 - Is source separation worth its additional cost for the first release?
 - Which melody extraction method works best for mixed recordings?
 - How should the algorithm rank melody notes against chord tones and bass notes?
-- What is the best policy for MIDI files containing tempo changes when the v1 score format stores one global tempo?
+- Validate the v1 policy for flattening MIDI tempo maps against real files and document the chosen reference-tempo selection rule.
 - What octave convention matches the in-game 15-key instrument?
