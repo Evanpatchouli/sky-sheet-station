@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "rust_checked": false,
+  "scope": "original input, Schema and numeric rules; not full independent score semantics",
+  "fixed_cases": 267,
+  "samples": 0,
+  "seed": 5458777,
+  "python": "3.13.14 (tags/v3.13.14:fd17997, Jun 10 2026, 13:03:48) [MSC v.1944 64 bit (AMD64)]",
+  "packages": {
+    "jsonschema": "4.26.0",
+    "attrs": "26.1.0",
+    "jsonschema-specifications": "2025.9.1",
+    "referencing": "0.37.0",
+    "rpds-py": "2026.9.1"
+  },
+  "failures": []
+}

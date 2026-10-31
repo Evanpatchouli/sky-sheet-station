@@ -1,0 +1,212 @@
+{
+  "status": "differences",
+  "rust_checked": true,
+  "scope": "original input, Schema and numeric rules; not full independent score semantics",
+  "fixed_cases": 267,
+  "samples": 0,
+  "seed": 5458777,
+  "python": "3.13.14 (tags/v3.13.14:fd17997, Jun 10 2026, 13:03:48) [MSC v.1944 64 bit (AMD64)]",
+  "packages": {
+    "jsonschema": "4.26.0",
+    "attrs": "26.1.0",
+    "jsonschema-specifications": "2025.9.1",
+    "referencing": "0.37.0",
+    "rpds-py": "2026.9.1"
+  },
+  "failures": [
+    {
+      "id": "tempo 1.7976931348623158e308",
+      "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":1.7976931348623158e308,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+      "token": "1.7976931348623158e308",
+      "differences": [
+        {
+          "check": "from_str/acceptance",
+          "expected": true,
+          "actual": {
+            "error": "number out of range at line 1 column 298",
+            "stage": "parse",
+            "status": "invalid"
+          }
+        },
+        {
+          "check": "from_reader/acceptance",
+          "expected": true,
+          "actual": {
+            "error": "number out of range at line 1 column 299",
+            "stage": "parse",
+            "status": "invalid"
+          }
+        }
+      ]
+    },
+    {
+      "id": "midpoint/0000000000000002/tie",
+      "raw": "{\n  \"format_version\": \"1.0\",\n  \"metadata\": {\n    \"id\": \"score-001\",\n    \"name\": \"Example song\"\n  },\n  \"instrument\": {\n    \"id\": \"sky-15\",\n    \"name\": \"Sky 15-key instrument\",\n    \"playback_mode\": \"trigger\",\n    \"keys\": [\n      \"C4\",\n      \"D4\",\n      \"E4\",\n      \"F4\",\n      \"G4\",\n      \"A4\",\n      \"B4\",\n      \"C5\",\n      \"D5\",\n      \"E5\",\n      \"F5\",\n      \"G5\",\n      \"A5\",\n      \"B5\",\n      \"C6\"\n    ]\n  },\n  \"timeline\": {\n    \"ppq\": 960,\n    \"tempo\": 0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000123516411460311636044142198217055343091264950653581191106396420625168876817552187966324959090408998094949141173861429432731664177588984949099693699002695469531575178297577851131961454291962245525922179659014249682680762501596852288391246096828118349318292403785007928846349518531559641397792756664639171692046759890077656232986317897873113832326364136100281870032427499885482997352270104140831131189286967253681695039838809652887533700881623368004844756702677687292583305671118833393020810798402309572336459201502650287654245243826958556932958231197624563118269409398181196866402119455093361742488341175449316942939628141513779978287622277536275946568454181273895934743339974841620248529105142565927256981069188614130727188467062660492956638336181640625,\n    \"time_signature\": {\n      \"numerator\": 4,\n      \"denominator\": 4\n    }\n  },\n  \"tracks\": [\n    {\n      \"id\": \"track-001\",\n      \"name\": \"Melody\",\n      \"role\": \"melody\",\n      \"notes\": [\n        {\n          \"id\": \"note-001\",\n          \"pitch\": \"C4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 480\n        },\n        {\n          \"id\": \"note-002\",\n          \"pitch\": \"E4\",\n          \"start_tick\": 480,\n          \"duration_ticks\": 480\n        },\n        {\n          \"id\": \"note-003\",\n          \"pitch\": \"G4\",\n          \"start_tick\": 960,\n          \"duration_ticks\": 960\n        }\n      ]\n    },\n    {\n      \"id\": \"track-002\",\n      \"name\": \"Harmony\",\n      \"role\": \"harmony\",\n      \"notes\": [\n        {\n          \"id\": \"note-004\",\n          \"pitch\": \"C4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        },\n        {\n          \"id\": \"note-005\",\n          \"pitch\": \"E4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        },\n        {\n          \"id\": \"note-006\",\n          \"pitch\": \"G4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        }\n      ]\n    }\n  ],\n  \"text\": \"Optional user note, lyric, or reminder\"\n}\n",
+      "token": "0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000123516411460311636044142198217055343091264950653581191106396420625168876817552187966324959090408998094949141173861429432731664177588984949099693699002695469531575178297577851131961454291962245525922179659014249682680762501596852288391246096828118349318292403785007928846349518531559641397792756664639171692046759890077656232986317897873113832326364136100281870032427499885482997352270104140831131189286967253681695039838809652887533700881623368004844756702677687292583305671118833393020810798402309572336459201502650287654245243826958556932958231197624563118269409398181196866402119455093361742488341175449316942939628141513779978287622277536275946568454181273895934743339974841620248529105142565927256981069188614130727188467062660492956638336181640625",
+      "differences": [
+        {
+          "check": "from_str/decode_bits",
+          "expected": "0000000000000002",
+          "actual": "0000000000000003"
+        },
+        {
+          "check": "from_reader/decode_bits",
+          "expected": "0000000000000002",
+          "actual": "0000000000000003"
+        }
+      ]
+    },
+    {
+      "id": "midpoint/000fffffffffffff/tie",
+      "raw": "{\n  \"format_version\": \"1.0\",\n  \"metadata\": {\n    \"id\": \"score-001\",\n    \"name\": \"Example song\"\n  },\n  \"instrument\": {\n    \"id\": \"sky-15\",\n    \"name\": \"Sky 15-key instrument\",\n    \"playback_mode\": \"trigger\",\n    \"keys\": [\n      \"C4\",\n      \"D4\",\n      \"E4\",\n      \"F4\",\n      \"G4\",\n      \"A4\",\n      \"B4\",\n      \"C5\",\n      \"D5\",\n      \"E5\",\n      \"F5\",\n      \"G5\",\n      \"A5\",\n      \"B5\",\n      \"C6\"\n    ]\n  },\n  \"timeline\": {\n    \"ppq\": 960,\n    \"tempo\": 0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000222507385850720113605740979670913197593481954635164564802342610972482222202107694551652952390813508791414915891303962110687008643869459464552765720740782062174337998814106326732925355228688137214901298112245145188984905722230728525513315575501591439747639798341180199932396254828901710708185069063066665599493827577257201576306269066333264756530000924588831643303777979186961204949739037782970490505108060994073026293712895895000358379996720725430436028407889577179615094551674824347103070260914462157228988025818254518032570701886087211312807951223342628836862232150377566662250398253433597456888442390026549819838548794829220689472168983109969836584681402285424333066033985088644580400103493397042756718644338377048603786162277173854562306587467901408672332763671875,\n    \"time_signature\": {\n      \"numerator\": 4,\n      \"denominator\": 4\n    }\n  },\n  \"tracks\": [\n    {\n      \"id\": \"track-001\",\n      \"name\": \"Melody\",\n      \"role\": \"melody\",\n      \"notes\": [\n        {\n          \"id\": \"note-001\",\n          \"pitch\": \"C4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 480\n        },\n        {\n          \"id\": \"note-002\",\n          \"pitch\": \"E4\",\n          \"start_tick\": 480,\n          \"duration_ticks\": 480\n        },\n        {\n          \"id\": \"note-003\",\n          \"pitch\": \"G4\",\n          \"start_tick\": 960,\n          \"duration_ticks\": 960\n        }\n      ]\n    },\n    {\n      \"id\": \"track-002\",\n      \"name\": \"Harmony\",\n      \"role\": \"harmony\",\n      \"notes\": [\n        {\n          \"id\": \"note-004\",\n          \"pitch\": \"C4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        },\n        {\n          \"id\": \"note-005\",\n          \"pitch\": \"E4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        },\n        {\n          \"id\": \"note-006\",\n          \"pitch\": \"G4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        }\n      ]\n    }\n  ],\n  \"text\": \"Optional user note, lyric, or reminder\"\n}\n",
+      "token": "0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000222507385850720113605740979670913197593481954635164564802342610972482222202107694551652952390813508791414915891303962110687008643869459464552765720740782062174337998814106326732925355228688137214901298112245145188984905722230728525513315575501591439747639798341180199932396254828901710708185069063066665599493827577257201576306269066333264756530000924588831643303777979186961204949739037782970490505108060994073026293712895895000358379996720725430436028407889577179615094551674824347103070260914462157228988025818254518032570701886087211312807951223342628836862232150377566662250398253433597456888442390026549819838548794829220689472168983109969836584681402285424333066033985088644580400103493397042756718644338377048603786162277173854562306587467901408672332763671875",
+      "differences": [
+        {
+          "check": "from_str/decode_bits",
+          "expected": "0010000000000000",
+          "actual": "000fffffffffffff"
+        },
+        {
+          "check": "from_reader/decode_bits",
+          "expected": "0010000000000000",
+          "actual": "000fffffffffffff"
+        }
+      ]
+    },
+    {
+      "id": "midpoint/3fefffffffffffff/below",
+      "raw": "{\n  \"format_version\": \"1.0\",\n  \"metadata\": {\n    \"id\": \"score-001\",\n    \"name\": \"Example song\"\n  },\n  \"instrument\": {\n    \"id\": \"sky-15\",\n    \"name\": \"Sky 15-key instrument\",\n    \"playback_mode\": \"trigger\",\n    \"keys\": [\n      \"C4\",\n      \"D4\",\n      \"E4\",\n      \"F4\",\n      \"G4\",\n      \"A4\",\n      \"B4\",\n      \"C5\",\n      \"D5\",\n      \"E5\",\n      \"F5\",\n      \"G5\",\n      \"A5\",\n      \"B5\",\n      \"C6\"\n    ]\n  },\n  \"timeline\": {\n    \"ppq\": 960,\n    \"tempo\": 0.9999999999999999167332731531132594682276248931884765625,\n    \"time_signature\": {\n      \"numerator\": 4,\n      \"denominator\": 4\n    }\n  },\n  \"tracks\": [\n    {\n      \"id\": \"track-001\",\n      \"name\": \"Melody\",\n      \"role\": \"melody\",\n      \"notes\": [\n        {\n          \"id\": \"note-001\",\n          \"pitch\": \"C4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 480\n        },\n        {\n          \"id\": \"note-002\",\n          \"pitch\": \"E4\",\n          \"start_tick\": 480,\n          \"duration_ticks\": 480\n        },\n        {\n          \"id\": \"note-003\",\n          \"pitch\": \"G4\",\n          \"start_tick\": 960,\n          \"duration_ticks\": 960\n        }\n      ]\n    },\n    {\n      \"id\": \"track-002\",\n      \"name\": \"Harmony\",\n      \"role\": \"harmony\",\n      \"notes\": [\n        {\n          \"id\": \"note-004\",\n          \"pitch\": \"C4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        },\n        {\n          \"id\": \"note-005\",\n          \"pitch\": \"E4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        },\n        {\n          \"id\": \"note-006\",\n          \"pitch\": \"G4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        }\n      ]\n    }\n  ],\n  \"text\": \"Optional user note, lyric, or reminder\"\n}\n",
+      "token": "0.9999999999999999167332731531132594682276248931884765625",
+      "differences": [
+        {
+          "check": "from_str/decode_bits",
+          "expected": "3fefffffffffffff",
+          "actual": "3ff0000000000000"
+        },
+        {
+          "check": "from_reader/decode_bits",
+          "expected": "3fefffffffffffff",
+          "actual": "3ff0000000000000"
+        }
+      ]
+    },
+    {
+      "id": "midpoint/3ff0000000000000/tie",
+      "raw": "{\n  \"format_version\": \"1.0\",\n  \"metadata\": {\n    \"id\": \"score-001\",\n    \"name\": \"Example song\"\n  },\n  \"instrument\": {\n    \"id\": \"sky-15\",\n    \"name\": \"Sky 15-key instrument\",\n    \"playback_mode\": \"trigger\",\n    \"keys\": [\n      \"C4\",\n      \"D4\",\n      \"E4\",\n      \"F4\",\n      \"G4\",\n      \"A4\",\n      \"B4\",\n      \"C5\",\n      \"D5\",\n      \"E5\",\n      \"F5\",\n      \"G5\",\n      \"A5\",\n      \"B5\",\n      \"C6\"\n    ]\n  },\n  \"timeline\": {\n    \"ppq\": 960,\n    \"tempo\": 1.00000000000000011102230246251565404236316680908203125,\n    \"time_signature\": {\n      \"numerator\": 4,\n      \"denominator\": 4\n    }\n  },\n  \"tracks\": [\n    {\n      \"id\": \"track-001\",\n      \"name\": \"Melody\",\n      \"role\": \"melody\",\n      \"notes\": [\n        {\n          \"id\": \"note-001\",\n          \"pitch\": \"C4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 480\n        },\n        {\n          \"id\": \"note-002\",\n          \"pitch\": \"E4\",\n          \"start_tick\": 480,\n          \"duration_ticks\": 480\n        },\n        {\n          \"id\": \"note-003\",\n          \"pitch\": \"G4\",\n          \"start_tick\": 960,\n          \"duration_ticks\": 960\n        }\n      ]\n    },\n    {\n      \"id\": \"track-002\",\n      \"name\": \"Harmony\",\n      \"role\": \"harmony\",\n      \"notes\": [\n        {\n          \"id\": \"note-004\",\n          \"pitch\": \"C4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        },\n        {\n          \"id\": \"note-005\",\n          \"pitch\": \"E4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        },\n        {\n          \"id\": \"note-006\",\n          \"pitch\": \"G4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        }\n      ]\n    }\n  ],\n  \"text\": \"Optional user note, lyric, or reminder\"\n}\n",
+      "token": "1.00000000000000011102230246251565404236316680908203125",
+      "differences": [
+        {
+          "check": "from_str/decode_bits",
+          "expected": "3ff0000000000000",
+          "actual": "3ff0000000000001"
+        },
+        {
+          "check": "from_reader/decode_bits",
+          "expected": "3ff0000000000000",
+          "actual": "3ff0000000000001"
+        }
+      ]
+    },
+    {
+      "id": "midpoint/3fb999999999999a/tie",
+      "raw": "{\n  \"format_version\": \"1.0\",\n  \"metadata\": {\n    \"id\": \"score-001\",\n    \"name\": \"Example song\"\n  },\n  \"instrument\": {\n    \"id\": \"sky-15\",\n    \"name\": \"Sky 15-key instrument\",\n    \"playback_mode\": \"trigger\",\n    \"keys\": [\n      \"C4\",\n      \"D4\",\n      \"E4\",\n      \"F4\",\n      \"G4\",\n      \"A4\",\n      \"B4\",\n      \"C5\",\n      \"D5\",\n      \"E5\",\n      \"F5\",\n      \"G5\",\n      \"A5\",\n      \"B5\",\n      \"C6\"\n    ]\n  },\n  \"timeline\": {\n    \"ppq\": 960,\n    \"tempo\": 0.100000000000000012490009027033011079765856266021728515625,\n    \"time_signature\": {\n      \"numerator\": 4,\n      \"denominator\": 4\n    }\n  },\n  \"tracks\": [\n    {\n      \"id\": \"track-001\",\n      \"name\": \"Melody\",\n      \"role\": \"melody\",\n      \"notes\": [\n        {\n          \"id\": \"note-001\",\n          \"pitch\": \"C4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 480\n        },\n        {\n          \"id\": \"note-002\",\n          \"pitch\": \"E4\",\n          \"start_tick\": 480,\n          \"duration_ticks\": 480\n        },\n        {\n          \"id\": \"note-003\",\n          \"pitch\": \"G4\",\n          \"start_tick\": 960,\n          \"duration_ticks\": 960\n        }\n      ]\n    },\n    {\n      \"id\": \"track-002\",\n      \"name\": \"Harmony\",\n      \"role\": \"harmony\",\n      \"notes\": [\n        {\n          \"id\": \"note-004\",\n          \"pitch\": \"C4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        },\n        {\n          \"id\": \"note-005\",\n          \"pitch\": \"E4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        },\n        {\n          \"id\": \"note-006\",\n          \"pitch\": \"G4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        }\n      ]\n    }\n  ],\n  \"text\": \"Optional user note, lyric, or reminder\"\n}\n",
+      "token": "0.100000000000000012490009027033011079765856266021728515625",
+      "differences": [
+        {
+          "check": "from_str/decode_bits",
+          "expected": "3fb999999999999a",
+          "actual": "3fb999999999999b"
+        },
+        {
+          "check": "from_reader/decode_bits",
+          "expected": "3fb999999999999a",
+          "actual": "3fb999999999999b"
+        }
+      ]
+    },
+    {
+      "id": "midpoint/7feffffffffffffe/below",
+      "raw": "{\n  \"format_version\": \"1.0\",\n  \"metadata\": {\n    \"id\": \"score-001\",\n    \"name\": \"Example song\"\n  },\n  \"instrument\": {\n    \"id\": \"sky-15\",\n    \"name\": \"Sky 15-key instrument\",\n    \"playback_mode\": \"trigger\",\n    \"keys\": [\n      \"C4\",\n      \"D4\",\n      \"E4\",\n      \"F4\",\n      \"G4\",\n      \"A4\",\n      \"B4\",\n      \"C5\",\n      \"D5\",\n      \"E5\",\n      \"F5\",\n      \"G5\",\n      \"A5\",\n      \"B5\",\n      \"C6\"\n    ]\n  },\n  \"timeline\": {\n    \"ppq\": 960,\n    \"tempo\": 179769313486231555845725102221305769375275219749555751093033023537225699510924220481500369615536384784355717758746624294165969995445749852975182633751585061442261423440315629676202942957246755062542957675732730072404407652823792998184730145925595431608383312843813541865331375612748987563561689798604050399232,\n    \"time_signature\": {\n      \"numerator\": 4,\n      \"denominator\": 4\n    }\n  },\n  \"tracks\": [\n    {\n      \"id\": \"track-001\",\n      \"name\": \"Melody\",\n      \"role\": \"melody\",\n      \"notes\": [\n        {\n          \"id\": \"note-001\",\n          \"pitch\": \"C4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 480\n        },\n        {\n          \"id\": \"note-002\",\n          \"pitch\": \"E4\",\n          \"start_tick\": 480,\n          \"duration_ticks\": 480\n        },\n        {\n          \"id\": \"note-003\",\n          \"pitch\": \"G4\",\n          \"start_tick\": 960,\n          \"duration_ticks\": 960\n        }\n      ]\n    },\n    {\n      \"id\": \"track-002\",\n      \"name\": \"Harmony\",\n      \"role\": \"harmony\",\n      \"notes\": [\n        {\n          \"id\": \"note-004\",\n          \"pitch\": \"C4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        },\n        {\n          \"id\": \"note-005\",\n          \"pitch\": \"E4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        },\n        {\n          \"id\": \"note-006\",\n          \"pitch\": \"G4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        }\n      ]\n    }\n  ],\n  \"text\": \"Optional user note, lyric, or reminder\"\n}\n",
+      "token": "179769313486231555845725102221305769375275219749555751093033023537225699510924220481500369615536384784355717758746624294165969995445749852975182633751585061442261423440315629676202942957246755062542957675732730072404407652823792998184730145925595431608383312843813541865331375612748987563561689798604050399232",
+      "differences": [
+        {
+          "check": "from_str/decode_bits",
+          "expected": "7feffffffffffffe",
+          "actual": "7fefffffffffffff"
+        },
+        {
+          "check": "from_reader/decode_bits",
+          "expected": "7feffffffffffffe",
+          "actual": "7fefffffffffffff"
+        }
+      ]
+    },
+    {
+      "id": "midpoint/7feffffffffffffe/tie",
+      "raw": "{\n  \"format_version\": \"1.0\",\n  \"metadata\": {\n    \"id\": \"score-001\",\n    \"name\": \"Example song\"\n  },\n  \"instrument\": {\n    \"id\": \"sky-15\",\n    \"name\": \"Sky 15-key instrument\",\n    \"playback_mode\": \"trigger\",\n    \"keys\": [\n      \"C4\",\n      \"D4\",\n      \"E4\",\n      \"F4\",\n      \"G4\",\n      \"A4\",\n      \"B4\",\n      \"C5\",\n      \"D5\",\n      \"E5\",\n      \"F5\",\n      \"G5\",\n      \"A5\",\n      \"B5\",\n      \"C6\"\n    ]\n  },\n  \"timeline\": {\n    \"ppq\": 960,\n    \"tempo\": 179769313486231560835325876058105298516207002341652166261661174625869553267292326574530099287946549246750631490335877017522087105926987962906277604735569213290190919152394180476217125334960946356387261286640198029037799514183602981511756283727771403830521483963923935633133642802139091669457927874464075218944,\n    \"time_signature\": {\n      \"numerator\": 4,\n      \"denominator\": 4\n    }\n  },\n  \"tracks\": [\n    {\n      \"id\": \"track-001\",\n      \"name\": \"Melody\",\n      \"role\": \"melody\",\n      \"notes\": [\n        {\n          \"id\": \"note-001\",\n          \"pitch\": \"C4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 480\n        },\n        {\n          \"id\": \"note-002\",\n          \"pitch\": \"E4\",\n          \"start_tick\": 480,\n          \"duration_ticks\": 480\n        },\n        {\n          \"id\": \"note-003\",\n          \"pitch\": \"G4\",\n          \"start_tick\": 960,\n          \"duration_ticks\": 960\n        }\n      ]\n    },\n    {\n      \"id\": \"track-002\",\n      \"name\": \"Harmony\",\n      \"role\": \"harmony\",\n      \"notes\": [\n        {\n          \"id\": \"note-004\",\n          \"pitch\": \"C4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        },\n        {\n          \"id\": \"note-005\",\n          \"pitch\": \"E4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        },\n        {\n          \"id\": \"note-006\",\n          \"pitch\": \"G4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        }\n      ]\n    }\n  ],\n  \"text\": \"Optional user note, lyric, or reminder\"\n}\n",
+      "token": "179769313486231560835325876058105298516207002341652166261661174625869553267292326574530099287946549246750631490335877017522087105926987962906277604735569213290190919152394180476217125334960946356387261286640198029037799514183602981511756283727771403830521483963923935633133642802139091669457927874464075218944",
+      "differences": [
+        {
+          "check": "from_str/decode_bits",
+          "expected": "7feffffffffffffe",
+          "actual": "7fefffffffffffff"
+        },
+        {
+          "check": "from_reader/decode_bits",
+          "expected": "7feffffffffffffe",
+          "actual": "7fefffffffffffff"
+        }
+      ]
+    },
+    {
+      "id": "midpoint/7feffffffffffffe/above",
+      "raw": "{\n  \"format_version\": \"1.0\",\n  \"metadata\": {\n    \"id\": \"score-001\",\n    \"name\": \"Example song\"\n  },\n  \"instrument\": {\n    \"id\": \"sky-15\",\n    \"name\": \"Sky 15-key instrument\",\n    \"playback_mode\": \"trigger\",\n    \"keys\": [\n      \"C4\",\n      \"D4\",\n      \"E4\",\n      \"F4\",\n      \"G4\",\n      \"A4\",\n      \"B4\",\n      \"C5\",\n      \"D5\",\n      \"E5\",\n      \"F5\",\n      \"G5\",\n      \"A5\",\n      \"B5\",\n      \"C6\"\n    ]\n  },\n  \"timeline\": {\n    \"ppq\": 960,\n    \"tempo\": 179769313486231565824926649894904827657138784933748581430289325714513407023660432667559828960356713709145545221925129740878204216408226072837372575719553365138120414864472731276231307712675137650231564897547665985671191375543412964838782421529947376052659655084034329400935909991529195775354165950324100038656,\n    \"time_signature\": {\n      \"numerator\": 4,\n      \"denominator\": 4\n    }\n  },\n  \"tracks\": [\n    {\n      \"id\": \"track-001\",\n      \"name\": \"Melody\",\n      \"role\": \"melody\",\n      \"notes\": [\n        {\n          \"id\": \"note-001\",\n          \"pitch\": \"C4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 480\n        },\n        {\n          \"id\": \"note-002\",\n          \"pitch\": \"E4\",\n          \"start_tick\": 480,\n          \"duration_ticks\": 480\n        },\n        {\n          \"id\": \"note-003\",\n          \"pitch\": \"G4\",\n          \"start_tick\": 960,\n          \"duration_ticks\": 960\n        }\n      ]\n    },\n    {\n      \"id\": \"track-002\",\n      \"name\": \"Harmony\",\n      \"role\": \"harmony\",\n      \"notes\": [\n        {\n          \"id\": \"note-004\",\n          \"pitch\": \"C4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        },\n        {\n          \"id\": \"note-005\",\n          \"pitch\": \"E4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        },\n        {\n          \"id\": \"note-006\",\n          \"pitch\": \"G4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        }\n      ]\n    }\n  ],\n  \"text\": \"Optional user note, lyric, or reminder\"\n}\n",
+      "token": "179769313486231565824926649894904827657138784933748581430289325714513407023660432667559828960356713709145545221925129740878204216408226072837372575719553365138120414864472731276231307712675137650231564897547665985671191375543412964838782421529947376052659655084034329400935909991529195775354165950324100038656",
+      "differences": [
+        {
+          "check": "from_str/acceptance",
+          "expected": true,
+          "actual": {
+            "error": "number out of range at line 31 column 322",
+            "stage": "parse",
+            "status": "invalid"
+          }
+        },
+        {
+          "check": "from_reader/acceptance",
+          "expected": true,
+          "actual": {
+            "error": "number out of range at line 31 column 323",
+            "stage": "parse",
+            "status": "invalid"
+          }
+        }
+      ]
+    },
+    {
+      "id": "midpoint/7fefffffffffffff/below",
+      "raw": "{\n  \"format_version\": \"1.0\",\n  \"metadata\": {\n    \"id\": \"score-001\",\n    \"name\": \"Example song\"\n  },\n  \"instrument\": {\n    \"id\": \"sky-15\",\n    \"name\": \"Sky 15-key instrument\",\n    \"playback_mode\": \"trigger\",\n    \"keys\": [\n      \"C4\",\n      \"D4\",\n      \"E4\",\n      \"F4\",\n      \"G4\",\n      \"A4\",\n      \"B4\",\n      \"C5\",\n      \"D5\",\n      \"E5\",\n      \"F5\",\n      \"G5\",\n      \"A5\",\n      \"B5\",\n      \"C6\"\n    ]\n  },\n  \"timeline\": {\n    \"ppq\": 960,\n    \"tempo\": 179769313486231575804128197568503885939002350117941411767545627891801114536396644853619288305177042633935372685103635187590438437370702292699562517687521668833979406288629832876259672468103520237920172119362601898937975098263032931492834697134299320496935997324255116936540444370309403987146642102044149678080,\n    \"time_signature\": {\n      \"numerator\": 4,\n      \"denominator\": 4\n    }\n  },\n  \"tracks\": [\n    {\n      \"id\": \"track-001\",\n      \"name\": \"Melody\",\n      \"role\": \"melody\",\n      \"notes\": [\n        {\n          \"id\": \"note-001\",\n          \"pitch\": \"C4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 480\n        },\n        {\n          \"id\": \"note-002\",\n          \"pitch\": \"E4\",\n          \"start_tick\": 480,\n          \"duration_ticks\": 480\n        },\n        {\n          \"id\": \"note-003\",\n          \"pitch\": \"G4\",\n          \"start_tick\": 960,\n          \"duration_ticks\": 960\n        }\n      ]\n    },\n    {\n      \"id\": \"track-002\",\n      \"name\": \"Harmony\",\n      \"role\": \"harmony\",\n      \"notes\": [\n        {\n          \"id\": \"note-004\",\n          \"pitch\": \"C4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        },\n        {\n          \"id\": \"note-005\",\n          \"pitch\": \"E4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        },\n        {\n          \"id\": \"note-006\",\n          \"pitch\": \"G4\",\n          \"start_tick\": 0,\n          \"duration_ticks\": 960\n        }\n      ]\n    }\n  ],\n  \"text\": \"Optional user note, lyric, or reminder\"\n}\n",
+      "token": "179769313486231575804128197568503885939002350117941411767545627891801114536396644853619288305177042633935372685103635187590438437370702292699562517687521668833979406288629832876259672468103520237920172119362601898937975098263032931492834697134299320496935997324255116936540444370309403987146642102044149678080",
+      "differences": [
+        {
+          "check": "from_str/acceptance",
+          "expected": true,
+          "actual": {
+            "error": "number out of range at line 31 column 322",
+            "stage": "parse",
+            "status": "invalid"
+          }
+        },
+        {
+          "check": "from_reader/acceptance",
+          "expected": true,
+          "actual": {
+            "error": "number out of range at line 31 column 323",
+            "stage": "parse",
+            "status": "invalid"
+          }
+        }
+      ]
+    }
+  ]
+}

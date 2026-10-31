@@ -1,171 +1,188 @@
-# Independent score numeric verification
+# Independent numeric verification (Rust only)
 
-**N1-N4 approved, 2026-11-01. Tooling implemented; conformance is failing.**
-The existing Rust reader has observed acceptance, rounding and round-trip
-differences under the approved N2 rules. No parser feature or expected result has
-been changed to hide them. Phase 1 is not complete; MIDI work remains unauthorized.
+**Migration implemented; N2 conformance still fails.** The project technology
+stack prohibits Python in production, development, testing, CI, validation, builds
+and automation. This supersedes N1's former implementation choice, not its
+independent-verification goal. N2-N4 expectations are unchanged. No MIDI work or
+production-reader fix is included.
 
-## Approved decisions and scope
+## Rules and independent paths
 
-| Decision | Rule |
+| Decision | Current implementation |
 |---|---|
-| N1 | Independent Python standard-library numeric checks plus jsonschema 4.26.0, with version/hash-locked development and CI dependencies only. |
-| N2 | Decode JSON decimals to the nearest binary64 value, ties to even; require finite positive tempo and bit-preserving serialization/readback of accepted tempos. This is not original decimal-text preservation. |
-| N3 | The independent path is the required numeric CI gate. PowerShell Test-Json is auxiliary structural/diagnostic tooling, not a numeric authority. |
-| N4 | Preserve strict expectations and report minimal reproductions and compatibility consequences of Rust differences before considering parser changes. |
+| N1 | Isolated Rust validation workspace, locked Rust dependencies and exact-number Oracle; no additional runtime. |
+| N2 | Nearest binary64, ties to even, finite positive tempo, and bit-preserving save/read. |
+| N3 | Strict numeric CI gate, with no tolerance, ignore list or continue-on-error. |
+| N4 | Report differences before changing the observed parser's features or behavior. |
 
-N2 is separate from D6-C: decimal-to-binary64 ties are even; future musical tick
-quantization ties go upward. Neither a MIDI quantizer nor an importer is built here.
-The score still uses f64 tempo, existing integer fields/ranges, format 1.0 and the
-same logical instrument mapping. The new precision requirement is documented as
-an approved pre-freeze refinement; current implementation conformance is not claimed.
+Four paths remain separate:
 
-## Independent checks
+1. `raw_json.rs` scans original JSON grammar, preserves numeric token slices and
+   positions, and detects repeated decoded names per object before building a
+   map. It distinguishes `1`, `1.0`, `1e0`, `-0`, booleans and strings. Names are
+   case-sensitive without extra Unicode normalization. Tool-side string unescaping
+   handles escaped names; numeric tokens never pass through f64.
+2. `validation.rs` applies the existing Draft 2020-12 Schema through Rust
+   `jsonschema` with exact-number support. D2/D3 are not attributed to Schema.
+   External references are rejected before compilation and resolver defaults are
+   disabled. Original number tokens are retained in the Schema-only representation.
+3. The root `numeric_probe` observes unchanged `Score` parsing/semantic validation,
+   serialization and readback through both string and reader paths. It contains
+   no expected outcomes or Oracle.
+4. `oracle.rs` computes expectations from original decimals using integer ratios
+   and binary64 rounding intervals. It never calls a floating-point text parser,
+   Schema validator or production reader to obtain an expected value.
 
-`scripts/score_numerics.py` has three explicit layers:
+The independent `valid` result covers raw input, Schema and numeric rules, not
+all score semantics such as pitch membership or cross-track ID uniqueness.
+Structural and full Rust expectations remain separate for the 120 shared cases.
+Syntax/duplicate-member failures have no Schema result (`null`). Derived note ends
+are checked independently of individual field bounds.
 
-1. Parse original JSON with number-token hooks and object-member pairs. Reject
-   non-JSON constants and repeated decoded names before constructing dictionaries.
-   D2 checks original tokens at the five integer-field locations, without numeric
-   coercion, case folding or additional Unicode normalization.
-2. Apply the existing Draft 2020-12 Schema to exact Decimal values. An integer
-   type adapter recognizes integral Decimals and excludes booleans. Construction
-   and comparisons do not use Decimal arithmetic rounding. External reference
-   retrieval is disabled; the current Schema uses local references only.
-3. Use Python integers for derived note ends, and exact rational/integer arithmetic
-   for binary64 rounding. The oracle derives the exponent/significand and rounds
-   the exact ratio to nearest/even, including subnormals and carry into infinity.
-   The host Python float decoder is cross-checked against the oracle, not treated
-   as the mathematical authority. Decimal context precision does not determine
-   oracle results.
+## Build and dependency isolation
 
-The returned `valid` status covers these layers only. It does not independently
-check pitch parsing/membership, ID uniqueness or every Rust semantic constraint.
-For the 120 existing structural cases, `schema_valid` and the existing full Rust
-expectation are compared separately. Intentional Schema/semantic differences are
-not treated as bugs in either tool. Original-input cases retain their JSON text
-in `numeric-inputs.json`; malformed/duplicate-member inputs have no structural
-Schema result (`null`), rather than a fabricated Schema failure.
+`tools/numeric-validation/` is a separate Cargo workspace, with its own Cargo.lock.
+Direct dependencies are jsonschema 0.60.2, num-bigint 0.4.8, num-traits 0.2.19,
+serde 1.0.229, serde_json 1.0.154 and sha2 0.11.1. These are verification dependencies,
+not additions to the score crate. No interpreter, native numeric library or shell
+validation script is required. Language bindings and remote resolvers are disabled.
 
-`crates/skysheet-score/examples/numeric_probe.rs` is a development observation
-bridge using the unchanged Score deserializer and current serde_json dev dependency.
-It reads JSONL requests, checks both `from_str` and `from_reader`, calls semantic
-validation, and reports parsed bits, serialized JSON and readback bits. It has no
-oracle or expected outcomes and adds no production CLI/parser API. A bits request
-also tests serialization starting from an in-memory f64. The Python comparison
-gate, rather than the bridge's exit status, decides conformance.
+Isolation is essential: the Schema crate enables serde_json `float_roundtrip`;
+exact numbers also require `arbitrary_precision`. Those features must not unify
+with the root workspace's existing default-feature reader. The tool does not link
+`skysheet-score`: it builds the root example in a separate Cargo process/target
+and exchanges JSONL. It checks the root feature tree and errors if either feature
+is enabled there without a later N4 change. Tool-side parsing serves Schema and
+protocols, never the Oracle. Root manifests/lock, production sources, public JSON,
+Schema assertions and logical instrument mappings are unchanged.
 
-## Reproducible environment and commands
+## Oracle design and correctness argument
 
-The lock is scoped to CPython 3.13 on Windows x64 and Linux x86_64 for validation,
-not a product-platform or Rust MSRV promise. It pins jsonschema 4.26.0, attrs
-26.1.0, jsonschema-specifications 2025.9.1, referencing 0.37.0 and rpds-py 2026.9.1.
-All required packages on Python 3.13 are locked with SHA-256 wheel digests; no
-optional format extras or new production Rust dependency are used. Other Python
-versions/environments need their own reviewed lock. Wheel installation can require
-network access; validation uses local data and no remote Schema fetches.
+The new Oracle uses exact interval search, not the former exponent-normalization
+and quotient-rounding implementation:
 
-From the repository root on Windows (Cargo must be on PATH):
+- Convert the decimal coefficient and scale into an exact ratio `n/d`.
+- Positive finite binary64 bit patterns are monotone in their real values. Decode
+  candidates into exact dyadics using integer significands and powers of two.
+- Binary search maintains the invariant that the greatest finite value at or below
+  `n/d` lies within the inclusive candidate interval. Exact cross-products shrink
+  that interval until the two surrounding representable values are identified.
+- Compare with their exact midpoint. Select the closer neighbor; equality selects
+  the even significand (low bit zero).
+- At `2^-1075`, the tie rounds to zero and fails positivity. At
+  `2^1024 - 2^970`, rounding exceeds the finite range. Values below the latter
+  threshold may round to the maximum finite value even if the decimal exceeds it.
+  The normal/subnormal transition uses the same midpoint rule.
+- A separate certificate checks membership in the proposed result's rounding
+  interval. It performs no search and uses neither a host float decoder nor the
+  DUT. Interval endpoints are included only when the significand is even. Wrong
+  neighbors must fail certification.
 
-```powershell
-python -m venv target/numeric-venv
-target/numeric-venv/Scripts/python.exe -m pip install --require-hashes --only-binary=:all: -r requirements/validation.lock
-target/numeric-venv/Scripts/python.exe -B -m unittest discover -s scripts -p test_score_numerics.py
-target/numeric-venv/Scripts/python.exe -B scripts/verify_score_numerics.py
+Tests substantiate these invariants without claiming exhaustive proof: known bit
+patterns, exact powers of two, normal/subnormal/overflow endpoints, even/odd ties,
+all frozen midpoints, deliberate incorrect observations, 10,000 exact representable
+values and 1,000 sampled adjacent midpoint cells (tie and both sides). Expected
+values come from selected bits and parity, not parsed floating-point text. The
+mathematical interval argument, not mere agreement with another implementation,
+is the basis of the Oracle. D6's musical half-up quantizer is not implemented.
+
+## Corpus and evidence preservation
+
+All 267 fixed cases remain: 120 unchanged structural cases, 114 unchanged original
+JSON cases, and 33 exact midpoint-neighbor cases frozen in `fixtures/midpoints.json`
+under the tool directory. The 10,000 original samples are frozen, in order, as
+hexadecimal bit patterns in `fixtures/samples.json`; default verification reads
+this file, not a replacement RNG. The manifest records seed 5458777 (`0x534B59`),
+counts and SHA-256 digests. Sample-file SHA-256:
+
+`dd0bb76c6767194942a8810e062160443624525536d0c45b3fd451fd89c1b794`
+
+The former system had no complete sample-list artifact. Rust recovery matches its
+integer-seed MT19937 init-by-array, low-word-first bit assembly, rejection sampling
+and insertion-order deduplication. Recovery is checked with published seed/word
+and long-stream vectors, full regeneration equality, uniqueness, exponent coverage
+and every historical failing sample ID/order. This is algorithm-based recovery,
+not comparison with an unavailable old full-list hash. No historical interpreter
+is executed. Ordinary runs need only the frozen manifest.
+
+Seven original reports are byte-preserved in
+`harness/verification/numeric-before-rust/`, with source commit, byte sizes and a
+SHA-256 manifest. These include the complete 2,981-failure report and three minimal
+reproductions. `.gitattributes` prevents checkout newline conversion from changing
+hashed evidence/corpora. Old runtime metadata is historical evidence, not a setup
+instruction or dependency.
+
+The full Rust report includes a migration audit of ordered failure IDs, check
+names, expected/actual bits and acceptance states. Incidental error wording/column
+offsets are excluded. This audit is informational: approved expectations alone
+determine conformance. Historical actual results never replace expected results.
+
+## Commands and CI
+
+From the repository root, using Rust and the target's native linker:
+
+```text
+cargo fmt --all -- --check
+cargo test --workspace
+cargo clippy --workspace --all-targets -- -D warnings
+cargo fmt --manifest-path tools/numeric-validation/Cargo.toml --all -- --check
+cargo test --manifest-path tools/numeric-validation/Cargo.toml --workspace --locked
+cargo clippy --manifest-path tools/numeric-validation/Cargo.toml --workspace --all-targets --locked -- -D warnings
+cargo run --manifest-path tools/numeric-validation/Cargo.toml --locked --
 ```
 
-On Linux use `python3 -m venv target/numeric-venv` and
-`target/numeric-venv/bin/python` for the same commands. CI installs the lock in its
-Python 3.13 environment, runs self-tests and the default gate, and retains the
-generated report even on failure. Nothing uses `continue-on-error` or filters out
-known differences. The gate checks installed versions against the lock.
+Root checks do not cover the isolated tool. CI checks both workspaces and retains
+the JSON report even when conformance fails. Initial Cargo downloads may need the
+registry; validation uses local files. No additional language runtime is installed.
 
-Exit codes: **0** requested checks passed; **1** conformance/expectation differences;
-**2** tool/environment failure. Missing dependencies are a tool error, not invalid
-score data. `--independent-only` checks the independent fixed corpus without Rust;
-its success does not mean the complete gate passed. `--case` isolates a named
-case; `--samples 0` omits sampling for boundary iteration. Neither reduced run
-replaces the default acceptance gate.
+Exit codes remain 0 (requested checks pass), 1 (conformance differences), and 2
+(tool/environment failure). `--independent-only` checks fixed independent
+expectations without Rust observations; `--samples 0` omits sampling; `--case`
+selects an exact ID, including `sample/<hex bits>`. Reduced runs do not replace
+the full gate. `--report` overrides `target/numeric-conformance-report.json`.
+Reports retain failing original JSON, tokens, locations, bit differences, root
+feature tree, tool lock digest and migration audit. Scanner/Oracle resource limits
+are tool errors, never new public JSON validity limits. No unbounded-input resource
+guarantee is made.
 
-The default report is `target/numeric-conformance-report.json`; it contains the
-seed, counts, runtime/package versions, original failing JSON, field/token context
-and bit differences. It is generated output, not a checked-in acceptance baseline.
-Parser syntax errors retain the parser's location; raw/numeric errors include a
-JSON pointer. Resource/capability exceptions are tool errors, never implicit new
-score-size/precision restrictions. The tool is a finite test harness, not a claim
-to process arbitrary-size inputs within bounded resources.
+## Minimal reproductions and current status
 
-## Acceptance corpus
+```text
+cargo run --manifest-path tools/numeric-validation/Cargo.toml --locked -- --case "tempo 1.7976931348623158e308" --report target/repro-overflow.json
+cargo run --manifest-path tools/numeric-validation/Cargo.toml --locked -- --case "midpoint/3ff0000000000000/tie" --report target/repro-tie.json
+cargo run --manifest-path tools/numeric-validation/Cargo.toml --locked -- --case "sample/00167d447773ebd6" --report target/repro-roundtrip.json
+```
 
-- 120 unchanged shared structural cases with their separate Rust expectations.
-- 114 original-text cases covering all five integer fields and seven object
-  levels, duplicates including escaped names/nulls, malformed JSON numeric syntax,
-  booleans/strings, integer/end bounds, extreme tempo and known expected bits.
-- 33 exact midpoint-neighbor cases: zero/subnormal boundary, subnormal/normal
-  boundary, ordinary exponents, ties with even/odd significands and overflow.
-- 10,000 deterministic, distinct finite positive in-memory binary64 samples with
-  seed `0x534B59` (5458777), covering every finite exponent field and selected edge
-  significands. This is sampling, not exhaustive proof over all bit patterns.
-- 15 checker self-tests, including known bit patterns, exact thresholds, Decimal
-  context independence, adapter semantics, duplicate decoding, disabled remote
-  references and deliberately wrong Rust observations that must be detected.
-
-The full gate must have zero unexplained discrepancies and zero tool errors.
-Source fields and original token forms are not narrowed to accommodate a validator.
-Required Cargo tests, formatting, lint and documentation/Schema consistency must
-also pass. Current discrepancies are not waived: resolving them requires the
-separate N4 decision below. Passing this gate would not implement D6 or authorize
-Phase 2; the remaining Phase 1 consistency review is still required.
-
-## Observed differences and minimal reproductions
-
-Observed locally with CPython 3.13.14, serde_json 1.0.154 default features and the
-existing Cargo.lock. `float_roundtrip` is not enabled. Both string and reader paths
-show the differences. Production source and Cargo dependency/features are unchanged.
-
-| Case | N2 expectation | Observed Rust result |
+| Case | Unchanged N2 expectation | Existing root reader |
 |---|---|---|
-| tempo `1.7976931348623158e308` | Accept, bits `7fefffffffffffff` (maximum finite). | Parse error: number out of range. |
-| tempo `1.00000000000000011102230246251565404236316680908203125` | Exact midpoint; ties-even gives `3ff0000000000000` (1). | `3ff0000000000001`, the next value above 1. |
-| In-memory bits `00167d447773ebd6` | Serialize and read back the same bits. | Serializes as `3.127525706621981e-308`, reads as `00167d447773ebd7`; another save/read changes back to `00167d447773ebd6`. |
+| `1.7976931348623158e308` | Accept, bits `7fefffffffffffff`. | Rejects as out of range. |
+| `1.00000000000000011102230246251565404236316680908203125` | Tie rounds to `3ff0000000000000`. | Produces `3ff0000000000001`. |
+| In-memory `00167d447773ebd6` | Preserve bits through save/read. | Text `3.127525706621981e-308` reads as `00167d447773ebd7`; another save/read returns `00167d447773ebd6`. |
 
-Minimal gate commands after environment setup (each currently exits 1):
+The migrated run still fails on 2,981 cases (10 fixed, 2,971 sampled). Counting one
+input path, there are 3 acceptance, 2,978 decode-bit and 988 readback differences;
+categories overlap. Both input paths match archived observations. This is not a
+failure-rate estimate for user scores. No tolerance, ignored case or allow-list
+was added. Phase 1 remains incomplete.
 
-```powershell
-target/numeric-venv/Scripts/python.exe -B scripts/verify_score_numerics.py --case "tempo 1.7976931348623158e308" --report target/repro-overflow.json
-target/numeric-venv/Scripts/python.exe -B scripts/verify_score_numerics.py --case "midpoint/3ff0000000000000/tie" --report target/repro-tie.json
-target/numeric-venv/Scripts/python.exe -B scripts/verify_score_numerics.py --case "sample/00167d447773ebd6" --report target/repro-roundtrip.json
-```
+A parser correction could broaden accepted boundary literals, change adjacent
+decoded values and stabilize round trips, affecting equality, saved output and
+later timing calculations. Migration changes none of these behaviors. Parser
+feature evaluation remains a separately authorized N4 task.
 
-The 267 fixed cases pass independent expectations; Rust disagrees on 10. The full
-267-case plus 10,000-sample run reports 2,981 failing case records: 10 fixed and
-2,971 sampled. Counting the `from_str` path once, there are 3 acceptance differences,
-2,978 decode-bit differences and 988 readback differences; categories overlap.
-`from_reader` has the same counts. Do not double-count paths as independent cases
-or use this sample frequency as an estimate for ordinary user scores.
+Local execution results are recorded in the migration audit. Hosted GitHub Actions
+cannot run the new workflow until its changes are uploaded under separate
+commit/push authorization. Local checks are not reported as hosted CI success.
+No MIDI implementation or Phase 2 entry is authorized.
 
-## Compatibility analysis and next decision (N4)
+Cleanup limitation: automatic approval review rejected removal of the ignored
+project-local `target/numeric-venv/` and `target/numeric-linux-wheels/` directories
+with only "blocked by policy" as its reason. They remain unused on this machine;
+no source, Cargo command or CI step invokes them. Tracked scripts, runtime lock
+and installer configuration have been removed. Their deletion remains pending;
+the restriction was not bypassed through another filesystem API.
 
-The current reader is not conformant to the newly approved precision rules, even
-though the existing 47 Rust tests pass. A precision fix could make some previously
-rejected boundary literals readable, change the decoded value of accepted literals
-by an adjacent binary64 value, and stabilize saving/reloading. Consequently byte
-output, equality comparisons and later time calculations could change. The file
-shape, f64 field type, integer bounds and logical pitch mapping need not change.
+## References
 
-The upstream `float_roundtrip` feature is a candidate for a separately authorized
-evaluation, not an applied fix and not proof of full N2 conformance. serde_json is
-currently a dev dependency in this workspace; enabling the feature would change
-the tested input path, and a future production CLI would need explicit matching
-configuration. Cargo feature unification must not accidentally make a different
-test decoder appear to be the unchanged production path.
-
-**Next approval needed:** evaluate an explicit parser-configuration change against
-this same strict corpus and report the acceptance/bit-output impact before adopting
-it. No feature, dependency version, production parser or expectation is changed
-in this task. Do not permit a one-ULP tolerance, ignore these cases, or replace the
-oracle with observed Rust results to make CI green.
-
-References: [Python JSON hooks](https://docs.python.org/3.13/library/json.html),
-[jsonschema type checking](https://python-jsonschema.readthedocs.io/en/stable/validate/),
-[serde_json 1.0.154 feature definitions](https://github.com/serde-rs/json/blob/v1.0.154/Cargo.toml).
+- [Rust jsonschema exact-number support](https://docs.rs/jsonschema/0.60.2/jsonschema/): the structural engine, not the Oracle.
+- Historical sample provenance: [integer seed and word generation](https://github.com/python/cpython/blob/v3.13.14/Modules/_randommodule.c) and [published repeatability vectors](https://github.com/python/cpython/blob/v3.13.14/Lib/test/test_random.py). These are references, not executable project dependencies.

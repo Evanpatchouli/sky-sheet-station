@@ -491,7 +491,7 @@ information. No new public parser API or production dependency is introduced.
 The existing example remains valid and unchanged. Shared positive and negative
 boundary cases are in [contract-boundaries.json](../crates/skysheet-score/tests/fixtures/contract-boundaries.json).
 They are applied to that example by both Rust integration tests and
-[the Schema test script](../scripts/test-score-schema.ps1). Cases explicitly record
+[the isolated Rust verification tool](../tools/numeric-validation/Cargo.toml). Cases explicitly record
 where structural validation succeeds but semantic validation must fail.
 
 Approved D2-D4 raw-input regressions run as normal Cargo tests in `input_rules.rs`
@@ -503,16 +503,15 @@ shared `contract-conformance.json` cases. They cover spelling/key preservation,
 exact version checks, model round trips, and rejection of unintroduced fields.
 They do not implement or validate MIDI conversion, migration, or future versions.
 
-**Validator limitation:** the recorded PowerShell 7.6.1 `Test-Json` rejects tempo
-values `1e-300` and `1e300` that Rust accepts under D4. It is used for the documented
-structural fixture checks, not as a full-range score-validity authority. Its
-`-AuditRaw` output remains observational. Do not narrow the contract to match the
-tool or call its failures a new tempo rule. Approved N1-N4 now supply an independent
-Python Schema/raw/numeric gate with locked development dependencies. It reuses
-the Schema, preserves original tokens/members, and uses an exact integer/rational
-oracle for N2. It is not a complete independent score-semantic validator. Its
-current Rust discrepancies remain blocking; see [numeric verification](numeric-verification.md).
-PowerShell is auxiliary tooling and is no longer the required CI numeric gate.
+**Independent verification:** the retired Schema tool's numeric limitations remain
+historical findings, not exclusions from the format. N1-N4 now use an isolated
+Rust Schema/raw/numeric gate with a separate Cargo.lock. It reuses the unchanged
+Schema and original tokens/members, and uses exact rational interval search as the
+independent N2 Oracle. Schema engine features cannot unify with the root reader.
+It is not a complete independent score-semantic validator. All former cases and
+10,000 samples are preserved, and the observed reader differences remain blocking;
+see [numeric verification](numeric-verification.md). No interpreter or auxiliary
+shell validation script is required.
 
 ## 13. Open questions before freezing v1
 

@@ -48,7 +48,7 @@ From the repository root:
 Keep `Cargo.lock` in version control to reproduce the dependency resolution.
 The first build needs registry access unless dependencies are already cached.
 Build output under `target/` is ignored. CI runs the same three checks on stable
-Rust plus the independent Python numeric/Schema gate below; it does not freeze
+Rust plus the isolated Rust numeric/Schema gate below; it does not freeze
 the compiler version. The numeric gate currently fails on documented Rust/N2
 differences. Passing the existing Cargo suite alone does not complete Phase 1.
 
@@ -57,38 +57,25 @@ the terminal after installation or add its existing bin directory for that sessi
 
     $env:PATH = (Join-Path $env:USERPROFILE '.cargo\bin') + ';' + $env:PATH
 
-For the required independent numeric gate, use a separate CPython 3.13 environment
-and the hash-locked development dependencies. On Windows, from the repository root:
+For the independent gate, also check the isolated Rust tool workspace:
 
-    python -m venv target/numeric-venv
-    target/numeric-venv/Scripts/python.exe -m pip install --require-hashes --only-binary=:all: -r requirements/validation.lock
-    target/numeric-venv/Scripts/python.exe -B -m unittest discover -s scripts -p test_score_numerics.py
-    target/numeric-venv/Scripts/python.exe -B scripts/verify_score_numerics.py
+    cargo fmt --manifest-path tools/numeric-validation/Cargo.toml --all -- --check
+    cargo test --manifest-path tools/numeric-validation/Cargo.toml --workspace --locked
+    cargo clippy --manifest-path tools/numeric-validation/Cargo.toml --workspace --all-targets --locked -- -D warnings
+    cargo run --manifest-path tools/numeric-validation/Cargo.toml --locked --
 
-See [numeric verification](docs/numeric-verification.md) for Linux commands, scope,
-exit codes and minimal reproductions. The default gate tests 267 fixed cases and
-10,000 deterministic samples, returning failure on current parser differences.
-It does not implement MIDI or change parser features to obtain a passing result.
+No additional runtime is needed. This workspace and its Cargo.lock are isolated
+because Schema dependencies enable precision features that must not alter the
+observed root reader. Root workspace tests alone do not cover the tool.
+The default gate preserves 267 fixed cases and all 10,000 historical samples,
+returning failure on the same 2,981 observed case differences. This is not a parser
+fix. See [numeric verification](docs/numeric-verification.md) for the exact Oracle,
+corpus/evidence preservation, report, exit codes and single-case reproductions.
 
-For an auxiliary structural check in PowerShell 7 with `Test-Json`:
-
-    Get-Content -Raw docs/examples/sky-15-example.json | Test-Json -SchemaFile docs/schemas/sky-score-v1.schema.json
-
-For the auxiliary shared contract boundary and conformance cases, run:
-
-    pwsh -NoProfile -File scripts/test-score-schema.ps1
-
-This script requires PowerShell 7.4 or later. Cargo integration tests apply Rust
-validation to the same cases. Schema validation covers structure; Rust additionally
-checks MIDI pitch range, note end limits, pitch membership, and ID uniqueness.
-The approved limits and compatibility impact are recorded in the
-[contract revision record](harness/build/phase-01-contract-boundaries.md).
-
-The [Phase 1 audit](harness/build/phase-01-conformance-audit.md) records remaining
-validator differences. Approved D2-D4 rules are tested against original JSON
-text during normal Cargo tests; the optional Schema `-AuditRaw` output is diagnostic.
-`Test-Json` is a structural fixture checker, not a full-range validity authority:
-it rejects some extreme tempo values permitted by the binary64 contract.
+The project stack is defined in [AGENTS.md](AGENTS.md). Rust is preferred and
+required for core logic; Go/C++ need owner approval, Node.js/Bun are permitted
+when necessary for auxiliary/frontend work, and Python is prohibited in every
+project context. The retired validation scripts and runtime setup are not needed.
 
 ## Contributing with coding agents
 

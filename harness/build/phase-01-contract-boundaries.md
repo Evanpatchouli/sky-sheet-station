@@ -1,5 +1,8 @@
 # Phase 1 preparation: three contract boundaries
 
+This is a historical milestone. Its old Schema-script references are not current
+runtime requirements; use the [Rust-only gate](../../docs/numeric-verification.md).
+
 **Status:** Approved scope complete, 2026-11-01. This is a partial Phase 1
 milestone, not completion of Phase 1 or a freeze of the full v1 format.
 

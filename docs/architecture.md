@@ -8,6 +8,12 @@ The project is not an auto-playing bot. It does not press keys, schedule operati
 
 ## Architectural principles
 
+All implementation and tooling must follow the technology-stack rules in
+[AGENTS.md](../AGENTS.md): Rust first; Go/C++ only with owner approval;
+Node.js/Bun only where necessary for auxiliary/frontend work; Python prohibited
+in every project context. The independent numeric tool uses a separate Rust
+workspace to prevent Schema dependencies from changing the tested parser features.
+
 - **Rust first:** core processing and the CLI are implemented in Rust.
 - **CLI first:** every core capability must be accessible without a GUI.
 - **Reusable core:** business logic belongs in Rust libraries, not in CLI command handlers.

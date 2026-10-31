@@ -20,4 +20,9 @@ description: Use when changing SkySheet score JSON, its schema, Rust score types
 7. Validate JSON syntax and run relevant Rust tests.
 8. Report compatibility implications and any unresolved assumptions.
 
+Use the Rust-only independent gate documented in docs/numeric-verification.md.
+Keep original-input checks, Schema, production semantic validation and the exact
+Oracle distinct. Python is prohibited even for independent verification. A known
+parser mismatch must remain a failure, not be waived or copied into expectations.
+
 Do not add playback scheduling, game input automation, lyric recognition, or automatic phrase segmentation to the score contract.

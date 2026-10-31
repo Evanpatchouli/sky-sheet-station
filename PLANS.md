@@ -36,6 +36,14 @@ boundaries; neither milestone means that the full v1 contract is frozen.
 - [x] Approve and document D6-A through D6-F, PPQ-based SMF Format 0/1 scope and analytical boundary examples, without implementing conversion algorithms.
 - [x] Define sky-15's unchanged C4-C6 mapping as logical score pitches; remove game-recording and acoustic-calibration requirements by owner decision.
 - [x] Establish N1-N4 independent raw/Schema/numeric verification, locked development/CI dependencies, exact boundary expectations and deterministic sampling; report current failures without changing parser features.
+- [x] Migrate all validation to isolated Rust tooling under the owner-approved stack; preserve 267 fixed cases, all 10,000 historical samples, original reports and strict N1-N4 outcomes. No parser precision fix is included.
+
+The migration's local root/tool checks pass, while full numeric conformance still
+reports the same 2,981 failures. Hosted Actions has not run on the uncommitted
+workflow. Two ignored legacy environment/cache directories remain unused because
+automatic approval review blocked their deletion; tracked runtime dependencies
+and invocation paths are removed. See the
+[migration record](harness/build/phase-01-conformance-audit.md#rust-only-verification-migration).
 
 The revision keeps format_version 1.0 and existing JSON field/Rust storage types.
 Pitch values map to MIDI 0..=127; meter numerators are 1..=65535; denominators are

@@ -1,0 +1,51 @@
+{
+  "status": "differences",
+  "rust_checked": true,
+  "scope": "original input, Schema and numeric rules; not full independent score semantics",
+  "fixed_cases": 0,
+  "samples": 1,
+  "seed": 5458777,
+  "python": "3.13.14 (tags/v3.13.14:fd17997, Jun 10 2026, 13:03:48) [MSC v.1944 64 bit (AMD64)]",
+  "packages": {
+    "jsonschema": "4.26.0",
+    "attrs": "26.1.0",
+    "jsonschema-specifications": "2025.9.1",
+    "referencing": "0.37.0",
+    "rpds-py": "2026.9.1"
+  },
+  "failures": [
+    {
+      "id": "sample/00167d447773ebd6",
+      "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":3.127525706621981e-308,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":480},{\"id\":\"note-002\",\"pitch\":\"E4\",\"start_tick\":480,\"duration_ticks\":480},{\"id\":\"note-003\",\"pitch\":\"G4\",\"start_tick\":960,\"duration_ticks\":960}]},{\"id\":\"track-002\",\"name\":\"Harmony\",\"role\":\"harmony\",\"notes\":[{\"id\":\"note-004\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":960},{\"id\":\"note-005\",\"pitch\":\"E4\",\"start_tick\":0,\"duration_ticks\":960},{\"id\":\"note-006\",\"pitch\":\"G4\",\"start_tick\":0,\"duration_ticks\":960}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+      "token": "3.127525706621981e-308",
+      "differences": [
+        {
+          "check": "from_str/decode_bits",
+          "expected": "00167d447773ebd6",
+          "actual": "00167d447773ebd7"
+        },
+        {
+          "check": "from_str/roundtrip",
+          "expected": "00167d447773ebd7",
+          "actual": {
+            "bits": "00167d447773ebd6",
+            "status": "valid"
+          }
+        },
+        {
+          "check": "from_reader/decode_bits",
+          "expected": "00167d447773ebd6",
+          "actual": "00167d447773ebd7"
+        },
+        {
+          "check": "from_reader/roundtrip",
+          "expected": "00167d447773ebd7",
+          "actual": {
+            "bits": "00167d447773ebd6",
+            "status": "valid"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -66,8 +66,8 @@ its default C4-C6 logical pitch mapping, distinct from the game's actual sound.
 Game recordings and actual-pitch verification are not Phase 1 completion criteria.
 See the [design decision](phase-1-decisions.md#logical-sky-pitches-and-actual-game-sound).
 
-N1-N4 now provide independent numeric verification using locked Python development
-dependencies. N2 specifies nearest binary64 decoding with ties to even and
+N1-N4 now provide independent numeric verification using an isolated Rust workspace
+and locked Rust dependencies. N2 specifies nearest binary64 decoding with ties to even and
 bit-preserving save/read cycles. The checker self-tests and independent fixed
 expectations pass, but the Rust comparison fails on acceptance/rounding/readback
 differences. These remain explicit Phase 1 blockers; no parser feature was changed,

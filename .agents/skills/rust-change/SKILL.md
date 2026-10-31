@@ -18,3 +18,8 @@ description: Use when implementing or reviewing Rust code, crates, workspace con
    - cargo clippy --workspace --all-targets -- -D warnings when practical
 8. Inspect the final diff and update docs if behavior or public contracts changed.
 9. Report commands actually run and their observed outcomes. Never imply a check passed if it was not run.
+
+Follow AGENTS.md's technology-stack restrictions for all auxiliary work; Python
+is prohibited, including tests and verification. The numeric validation tool is
+an isolated Rust workspace. Check it separately when affected, and never allow
+its Schema dependencies to unify features with the root observation reader.

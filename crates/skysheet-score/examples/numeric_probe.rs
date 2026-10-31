@@ -1,5 +1,5 @@
 //! Development-only JSONL observation bridge. No expected results or parser
-//! feature overrides live here; Python independently evaluates the original text.
+//! feature overrides live here; the isolated Rust tool evaluates original text.
 use serde::Deserialize;
 use serde_json::{Value, json};
 use skysheet_score::Score;

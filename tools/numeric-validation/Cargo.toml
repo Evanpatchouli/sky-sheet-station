@@ -1,0 +1,19 @@
+[package]
+name = "skysheet-numeric-validation"
+version = "0.1.0"
+edition = "2024"
+publish = false
+license = "MIT"
+
+# Deliberately isolated: Schema's serde_json features must never unify with the
+# production-reader observation example built in the repository-root workspace.
+[workspace]
+resolver = "2"
+
+[dependencies]
+jsonschema = { version = "=0.60.2", default-features = false, features = ["arbitrary-precision"] }
+num-bigint = "=0.4.8"
+num-traits = "=0.2.19"
+serde = { version = "=1.0.229", features = ["derive"] }
+serde_json = { version = "=1.0.154", features = ["arbitrary_precision", "preserve_order"] }
+sha2 = "=0.11.1"

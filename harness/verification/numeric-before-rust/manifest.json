@@ -1,0 +1,41 @@
+{
+  "source_commit": "b2c6915c1d58fb63eef0ff28387ad9e3b14f8d7d",
+  "purpose": "Historical observations only; never a replacement for approved numeric expectations",
+  "files": [
+    {
+      "file": "numeric-boundaries.json",
+      "sha256": "7994f53ae3b277ff6f906d8a1aba30322ff34c5f03b4ebeff139dae21b9bfb5a",
+      "bytes": 30420
+    },
+    {
+      "file": "numeric-conformance-report.json",
+      "sha256": "3f11b0997712506a0c33a4db4b48ea64128086b5e39acce151f53859a9767bd9",
+      "bytes": 5113432
+    },
+    {
+      "file": "numeric-independent.json",
+      "sha256": "eea2f16f38b27242e41481b4b45fe22e8f436adff4c424e00daa1f58b5fb64f7",
+      "bytes": 505
+    },
+    {
+      "file": "numeric-tool-error-smoke.json",
+      "sha256": "abb5333f9ab8b580d7372bf74ebc95a4968487fef2b8b7bf6901eaf4ebfc30a5",
+      "bytes": 73
+    },
+    {
+      "file": "repro-overflow.json",
+      "sha256": "f4f35c1bc851e7c176ab4e3aec76ac2d1d792e1d7c781785b4976ea10bf043f9",
+      "bytes": 1825
+    },
+    {
+      "file": "repro-roundtrip.json",
+      "sha256": "5556c79764ddc829ba0ed4a20bc7dac103366b8167a17fa8ab60c876e1862118",
+      "bytes": 2511
+    },
+    {
+      "file": "repro-tie.json",
+      "sha256": "5fa20bef2613ca1d1b31d5f894479f5721d464643995adcd31668eba13f78b8c",
+      "bytes": 2955
+    }
+  ]
+}

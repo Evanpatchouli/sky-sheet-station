@@ -5,6 +5,13 @@ SkySheet Station is a Rust-first, CLI-first music analysis and arrangement tool.
 
 Read GOALS.md, PLANS.md, and docs/README.md for product context. The score contract is in docs/music-data-format.md.
 
+## Required technology stack
+- Rust is the preferred language and the core implementation language.
+- Go / C++ may be used only with explicit project-owner approval.
+- Node.js / Bun may be used when necessary for auxiliary tools and the frontend ecosystem.
+- Python is prohibited in production, development helpers, tests, CI/CD, data validation, builds and automation.
+- Independent verification, test convenience and development efficiency are not exceptions. Do not introduce other languages or expand the stack without authorization; every new runtime, language and toolchain must comply with these rules.
+
 ## Source of truth and decision discipline
 - Treat checked-in documentation and current code as the source of truth. If they conflict, report the conflict before making a broad change.
 - Distinguish confirmed decisions from proposals and open questions. Never silently turn assumptions into requirements.
@@ -82,6 +89,7 @@ Run from the repository root unless noted:
 - Format check: cargo fmt --all -- --check
 - Workspace tests: cargo test --workspace
 - Lint: cargo clippy --workspace --all-targets -- -D warnings
+- The independent numeric tool has an isolated workspace to avoid parser-feature unification. Also run its fmt/test/clippy checks and full gate as documented in docs/numeric-verification.md; root workspace checks do not cover it.
 
 Run the narrowest relevant test during iteration, then workspace tests when a shared contract or cross-crate behavior changes. If tooling or network access is unavailable, report that plainly.
 

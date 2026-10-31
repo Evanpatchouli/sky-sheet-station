@@ -211,11 +211,12 @@ does not supply that evidence.
 
 ## N1-N4: independent numeric validation
 
-Approved on 2026-11-01: use Python standard-library arithmetic plus jsonschema
-4.26.0 with locked development/CI dependencies (N1); require nearest binary64,
-ties to even, and accepted-tempo bit preservation through save/read (N2); make the
-independent path the numeric CI gate and PowerShell auxiliary (N3); report observed
-parser differences before any feature change or expectation adjustment (N4).
+The owner-approved stack migration supersedes N1's former language/library choice:
+use an isolated Rust workspace, locked Rust dependencies and an exact independent
+Oracle (N1). Nearest binary64/ties-even decoding and bit-preserving save/read (N2),
+the strict independent CI gate (N3), and reporting differences before any parser
+feature or expectation adjustment (N4) remain unchanged. All validation now runs
+on Rust; no auxiliary interpreter or shell validation script is required.
 
 The implemented gate checks 120 existing structural cases, 114 original-text cases,
 33 exact midpoint-neighbor cases and 10,000 deterministic in-memory samples.

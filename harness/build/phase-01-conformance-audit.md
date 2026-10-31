@@ -1,5 +1,11 @@
 # Phase 1: conformance audit and decision preparation
 
+**Historical tooling notice:** pre-migration interpreter and PowerShell commands
+below record earlier verification only; they are retired, not current setup or
+runtime requirements. The current Rust-only workflow is in
+[numeric-verification.md](../../docs/numeric-verification.md). The latest migration
+record below preserves outcomes without approving old runtimes for future work.
+
 **Initial audit scope:** existing-contract tests and CI, raw-input observations, and preparation
 of a decision draft. The owner approved these tasks after the three-boundary
 revision. No new input policy, public field, instrument mapping, or production
@@ -62,7 +68,7 @@ preserving number spelling and duplicate members; their direct path has no initi
 generic JSON parse. Three additional object-shape probes substitute arrays for
 objects structurally. Rust reports a separate `Value`-first path for comparison.
 
-Run from the repository root:
+Historical commands from the original audit (the Schema script is now retired):
 
 ```text
 cargo test -p skysheet-score --test raw_input_audit --locked -- --nocapture
@@ -116,7 +122,7 @@ proposals are in the [decision record](../../docs/phase-1-decisions.md).
 
 ## CI and verification
 
-The existing workflow now invokes `scripts/test-score-schema.ps1` using `shell:
+At the original audit, the workflow invoked `scripts/test-score-schema.ps1` using `shell:
 pwsh`. The script requires PowerShell 7.4+ and tests the example plus the shared
 fixture files. After D2-D4 approval, direct Rust raw-input tests run in normal
 Cargo CI; the Schema tool's raw observations are still not a full-validity gate.
@@ -400,3 +406,61 @@ No `float_roundtrip`/`arbitrary_precision` feature, production parser fix, one-U
 tolerance or skip list was added. Existing non-fatal Cargo cache notes remain.
 The numeric tool exists but conformance is unresolved; Phase 1 is not complete.
 No Phase 2 work, commit or push was performed.
+
+## Rust-only verification migration
+
+The owner approved the migration plan after requiring an explicit project stack:
+Rust preferred/core; Go/C++ only after owner approval; Node.js/Bun when necessary
+for auxiliary/frontend work; Python prohibited in all project contexts. AGENTS.md
+was updated before implementation. N1's implementation choice is superseded, while
+the independence goal, N2 precision/round-trip requirements and N3/N4 discipline
+are unchanged.
+
+The new tool is a separately locked Rust workspace, not linked to the score crate.
+It uses an exact interval-search Oracle with independently checked rounding-cell
+certificates, a raw JSON scanner, an exact-number Rust Schema engine, and the
+unchanged root observation reader in a separate process/target. This separation
+prevents the Schema engine's serde_json features from unifying into the DUT.
+Root feature inspection confirms the original default-feature path.
+
+All 120 shared and 114 raw-input fixtures are unchanged. The 33 exact midpoint
+cases and 10,000 historical bit samples are now frozen with checksums. Rust sample
+recovery follows the historical seed/word/rejection stream, verified by published
+vectors, complete regeneration equality and all historical failure IDs/order.
+Seven original reports are byte-preserved with SHA-256 in
+`harness/verification/numeric-before-rust/`; historical actual results never
+replace approved expected values. No old runtime was executed for migration.
+
+Actual local results (Windows, Rust 1.99.1):
+
+| Command/check | Result |
+|---|---|
+| `cargo fmt --all -- --check` | Passed. |
+| `cargo test --workspace` | 47 passed, none ignored. |
+| `cargo clippy --workspace --all-targets -- -D warnings` | Passed. |
+| Tool workspace fmt check | Passed. |
+| `cargo test --manifest-path tools/numeric-validation/Cargo.toml --workspace --locked` | 19 passed, including 10,000 exact-value and 1,000 midpoint-cell checks. |
+| Tool workspace Clippy, all targets, warnings denied | Passed. |
+| Rust independent-only gate | All 267 fixed expectations passed. |
+| Full Rust numeric gate | Exit 1: 2,981 failing cases across 267 fixed + 10,000 samples; strict expectations retained. |
+| Migration comparison | Ordered failure IDs/checks/expected and actual bits/acceptance states all match the archive; error wording/offsets excluded. |
+| Three minimal reproductions | Each still exits 1 with its original acceptance, midpoint or round-trip difference. |
+| Evidence/corpus checksums and root source/Schema comparison | Passed; production code, root Cargo manifests/lock, original fixtures, Schema, example and mapping unchanged. |
+| Hosted GitHub Actions | Not executed: new workflow is uncommitted/unpushed. Local commands do not count as a hosted run or Linux execution. |
+
+Tracked interpreter scripts, dependency lock and installer/CI steps were removed.
+The obsolete auxiliary Schema script was also removed; all current validation
+commands use Cargo. Remaining textual references are prohibition rules, algorithm
+provenance or explicitly historical evidence. New Cargo dependencies do not enable
+interpreter bindings or remote resolver defaults. Existing incremental-cache
+access-denied notes were non-fatal.
+
+Cleanup limitation: automatic approval review rejected the command to remove
+the ignored local `target/numeric-venv` and `target/numeric-linux-wheels` directories,
+returning only `blocked by policy`. They remain unused, with no current tool or CI
+reference invoking them. Their deletion is pending; no alternate filesystem API
+was used to bypass the rejection. System-wide installations were untouched.
+
+The migration has not corrected the existing parser discrepancies or made Phase 1
+complete. No parser feature, public format, tolerance or expectation was changed.
+No MIDI implementation, Phase 2 work, commit or push occurred.

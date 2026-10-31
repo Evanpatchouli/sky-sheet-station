@@ -1,0 +1,16 @@
+{
+  "seed": 5458777,
+  "sample_count": 10000,
+  "midpoint_count": 33,
+  "generator": "Rust recovery of legacy MT19937 integer seed/getrandbits/rejection stream; no interpreter",
+  "files": [
+    {
+      "file": "samples.json",
+      "sha256": "dd0bb76c6767194942a8810e062160443624525536d0c45b3fd451fd89c1b794"
+    },
+    {
+      "file": "midpoints.json",
+      "sha256": "a9d7e5980426772d7ae39a14303b595ea5a62cb9c7e28547032c2b4619359205"
+    }
+  ]
+}

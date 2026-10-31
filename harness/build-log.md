@@ -6,6 +6,10 @@ Historical calibration prerequisites in earlier entries are superseded by the
 owner's [logical-pitch design update](../docs/phase-1-decisions.md#logical-sky-pitches-and-actual-game-sound).
 They do not request game recordings or remain current completion conditions.
 
+Earlier interpreter/Schema-script verification entries are also historical. The
+current technology stack and [Rust-only validation](../docs/numeric-verification.md)
+supersede their setup requirements without changing recorded numerical outcomes.
+
 ## Entry template
 
 ### YYYY-MM-DD — Phase NN: title
@@ -165,3 +169,21 @@ They do not request game recordings or remain current completion conditions.
 - Follow-up: separate parser-configuration evaluation/approval is needed; do not
   weaken expected bits or enable a parser feature automatically. Phase 1 remains
   incomplete. No MIDI implementation, Phase 2 entry, commit or push.
+
+### 2026-11-01 — Rust-only numeric verification migration
+
+- Outcome: established the required stack rules first; replaced all tracked
+  interpreter validation/CI code with an isolated Rust workspace and Cargo.lock.
+  The exact interval-search Oracle is independent of the unchanged root reader.
+- Preservation: 267 fixed cases, the complete 10,000-sample legacy sequence,
+  original expectations and seven byte-preserved reports. Checksum-protected
+  manifests and published RNG vectors audit preservation without an interpreter.
+- Actual checks: root fmt/test/Clippy passed (47 tests); tool fmt/test/Clippy passed
+  (19 tests); independent fixed cases passed. Full conformance still exits 1 on
+  the same 2,981 failures, with ordered findings matching the archive. All three
+  minimal reproductions still fail; no expectation was relaxed.
+- Limits: hosted GitHub Actions was not run because no commit/push is authorized.
+  Automatic approval review blocked removal of two ignored old local environment/
+  wheel-cache directories with reason `blocked by policy`; they remain unused.
+- Scope: no production parser/features, score fields, mappings or root Cargo
+  dependencies changed. Phase 1 remains incomplete; no MIDI work, commit or push.
