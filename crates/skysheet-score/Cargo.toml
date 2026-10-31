@@ -1,0 +1,12 @@
+[package]
+name = "skysheet-score"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+description = "SkySheet score data model, JSON serialization, and semantic validation"
+
+[dependencies]
+serde.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true
