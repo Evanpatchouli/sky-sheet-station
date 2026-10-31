@@ -1,0 +1,25 @@
+# SkySheet Station Documentation
+
+SkySheet Station is a Rust-first, CLI-first music analysis and arrangement tool. Its first target is converting audio or MIDI into arrangements adapted to Sky: Children of the Light's 15-key instruments.
+
+## Documents
+
+- [Architecture](./architecture.md): product boundaries, components, and repository direction.
+- [Music data format](./music-data-format.md): proposed JSON score format and timing/pitch conventions.
+- [Conversion and arrangement](./conversion-and-arrangement.md): proposed audio/MIDI analysis and 15-key adaptation pipeline.
+- [CLI specification](./cli.md): initial command-line interface proposal.
+
+## Status
+
+These documents capture decisions from early product design. They are proposals, not an implemented or frozen public API. Unresolved behavior is identified rather than silently assumed.
+
+Current priorities:
+
+1. Rust for the core implementation.
+2. CLI as the primary product interface.
+3. JSON as the default score format, with MIDI import and export.
+4. No playback automation in the core.
+5. Tauri GUI as a client of the CLI.
+6. MCP is explicitly deferred.
+
+Changes to the score format should be versioned and documented here.
