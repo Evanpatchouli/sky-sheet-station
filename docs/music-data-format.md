@@ -124,11 +124,21 @@ numeric overflow, underflow that decodes to zero, zero (including negative zero)
 and negative values. Numeric strings are not converted. NaN and infinity are not
 JSON number literals, and in-memory nonfinite tempo values fail validation.
 
-No additional musical BPM minimum/maximum is imposed. Ordinary binary64 rounding
-is allowed; arbitrary decimal precision and original numeric-text preservation
-are not promised. Examples: `120`, `120.5`, `1.2e2`, `1e-300`, and `1e300` are valid;
+No additional musical BPM minimum/maximum is imposed. Under approved N2, decimal
+JSON numbers decode to the nearest binary64 value, with exact midpoints rounded
+to the even significand. Accepted tempo values must preserve their binary64 bits
+through serialization and reading back. This does not promise arbitrary decimal
+precision or original numeric-text preservation. It is distinct from D6's half-up
+tick quantization. Examples: `120`, `120.5`, `1.2e2`, `1e-300`, and `1e300` are valid;
 `1e400` and `1e-400` fail the current decoder/validation path. Do not clamp invalid
 values to an endpoint or replace them with a fallback.
+
+**Known implementation gap:** the current default serde_json test/read path does
+not satisfy all N2 acceptance, midpoint and bit-round-trip cases. For example,
+`1.7976931348623158e308` should round to the maximum finite value, but the current
+reader rejects it. See [independent numeric verification](numeric-verification.md)
+for strict failing checks and minimal reproductions. N4 requires review before
+changing parser features; this document does not claim those discrepancies fixed.
 
 The reference tempo is used to convert ticks to playback time. At constant tempo:
 
@@ -201,7 +211,7 @@ Do not store both a game key index and a MIDI pitch number. The instrument's ord
 
 ### 4.2 Sky 15-key pitch set
 
-The current working profile is:
+The default logical profile is:
 
     [
       "C4", "D4", "E4", "F4", "G4", "A4", "B4",
@@ -209,11 +219,23 @@ The current working profile is:
       "C6"
     ]
 
-This corresponds to two complete natural-note octaves plus the upper C. **The exact octave labels and acoustic pitches must be verified against the actual in-game instrument before the profile is declared stable.** The ordering and 15-key count follow the product requirement; the C4/C5/C6 labels remain a calibration assumption.
+This is the default **logical score-pitch mapping**: two complete natural-note
+octaves plus the upper C, retaining exactly the existing 15 strings and order.
+SkySheet uses the standard logical convention C4 = MIDI 60. Key 1 is logically
+C4, key 8 C5 and key 15 C6; these labels do not assert the physical pitch sounded
+by the game. Actual sounding pitches may vary with the game environment, as
+clarified by the product owner; SkySheet does not measure or verify that behavior.
+
+**Game recordings and acoustic pitch calibration are not required**, either to
+define this mapping or to complete Phase 1. This supersedes the previous
+calibration-assumption wording. Musical analysis, score validation and MIDI pitch
+interpretation use the logical pitches; acoustic variation does not rewrite the
+profile, note strings or derived key numbers. No JSON fields, pitch values, key
+ordering or Rust data structures change under this decision.
 
 ### 4.3 Playability invariant
 
-For every note in a validated instrument-specific score, note.pitch must exactly equal one item in instrument.keys.
+For every note in a validated instrument-specific score, note.pitch must exactly equal one item in instrument.keys. This is logical key membership, not verification that the game sounds a fixed physical pitch.
 
 A chromatic or out-of-range pitch may exist in the unrestricted internal music/transcription model. It must be adapted before it is written into a validated Sky 15-key arrangement.
 
@@ -229,8 +251,9 @@ mapping is stable, it must not be silently redefined; prefer a new profile ID fo
 a changed mapping and assess client support and migration separately. A new ID
 may be structurally valid without being supported by a particular client.
 Custom-profile publishers are responsible for cross-file ID consistency; no
-registry mechanism is introduced. The current `sky-15` mapping is not yet stable:
-its acoustic calibration remains open. Both `trigger` and `sustain` remain accepted
+registry mechanism is introduced. The `sky-15` C4-C6 mapping is defined logically,
+independently of actual in-game sound; it has no acoustic-calibration prerequisite.
+The overall v1 contract still awaits its remaining verification. Both `trigger` and `sustain` remain accepted
 for this ID; D7 does not impose a new per-ID playback-mode restriction.
 
 | Field | Meaning |
@@ -484,15 +507,21 @@ They do not implement or validate MIDI conversion, migration, or future versions
 values `1e-300` and `1e300` that Rust accepts under D4. It is used for the documented
 structural fixture checks, not as a full-range score-validity authority. Its
 `-AuditRaw` output remains observational. Do not narrow the contract to match the
-tool or call its failures a new tempo rule. A fully independent Schema strategy
-covering the agreed numeric model still needs evaluation before full freeze;
-that work and any new dependency require separate scope/approval.
+tool or call its failures a new tempo rule. Approved N1-N4 now supply an independent
+Python Schema/raw/numeric gate with locked development dependencies. It reuses
+the Schema, preserves original tokens/members, and uses an exact integer/rational
+oracle for N2. It is not a complete independent score-semantic validator. Its
+current Rust discrepancies remain blocking; see [numeric verification](numeric-verification.md).
+PowerShell is auxiliary tooling and is no longer the required CI numeric gate.
 
 ## 13. Open questions before freezing v1
 
-- Confirm the exact octave labels and acoustic pitches of the 15 in-game keys with a reference recording or measurement.
+The owner removed acoustic calibration and game-recording collection from the
+freeze requirements; section 4.2 defines the unchanged logical mapping. Remaining
+verification is not replaced by this scope decision:
+
 - Verify the approved D6 mathematical boundaries and diagnostic requirements against a future implementation; no MIDI/quantizer implementation has been validated. Format 2 and SMPTE support remain outside this policy and require separate decisions.
-- Complete an independent numeric-verification strategy for the agreed binary64 contract.
+- Resolve the observed Rust/N2 differences through a separately approved parser decision; the independent strategy and strict failing gate are now implemented.
 - Complete remaining contract verification. Real MIDI implementation and file-based acceptance cases in section 16.7 require separately authorized Phase 2 work; they are not completed Phase 1 tests.
 
 The [audit record](../harness/build/phase-01-conformance-audit.md) records the
@@ -568,6 +597,9 @@ especially instrument keys, whose positions define game key numbers. D1 pitch
 strings are retained. Omitted `text` and `null` both mean no text; the current
 serializer emits `null` for either. Empty text is a distinct present string.
 Successful deserialization must be followed by semantic validation.
+N2 additionally requires preservation of accepted tempo's binary64 bits through
+save/read cycles. This is an approved requirement with known current implementation
+failures, not a claim that the existing reader already satisfies it for every value.
 
 Each published format version freezes its observable contract: field structure
 and meanings, accepted values and raw-input rules, pitch/key identity and order,
@@ -590,7 +622,7 @@ Future changes require representative old-reader/new-writer compatibility tests.
 
 Before freeze, an owner-approved revision may retain 1.0 with documented impacts.
 The absence of external consumers, confirmed on 2026-11-01, does not authorize
-unreviewed changes. Calibration and remaining verification still
+unreviewed changes. Remaining contract verification still
 prevent declaring the full contract frozen.
 
 ### 15.1 Provenance boundary (approved D8)
@@ -793,7 +825,8 @@ D6-A through D6-F rules:
   not a lossless round-trip claim or an export implementation specification.
 - Decide Format 2/SMPTE support separately if requested. Do not treat these
   excluded cases as unresolved choices inside the approved PPQ Format 0/1 policy.
-- Calibration evidence and independent validation of the existing score numeric
-  contract remain outstanding Phase 1 freeze requirements. Passing document
+- Resolution of the independent numeric gate's observed Rust/N2 differences and
+  remaining contract checks are outstanding Phase 1 freeze requirements; acoustic calibration
+  is not required under the owner's logical-pitch decision. Passing document
   arithmetic or existing score tests does not satisfy those requirements or enter
   Phase 2.

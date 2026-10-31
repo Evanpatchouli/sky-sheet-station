@@ -80,6 +80,7 @@ Avoid creating a crate for every small type prematurely. Split crates when depen
 ## Design constraints
 
 - Keep unrestricted source music separate from instrument-specific arrangements.
+- The sky-15 C4-C6 pitch set is a logical score/key mapping (C4 = MIDI 60), independent of actual game sound. Game-recording collection and acoustic calibration are not required.
 - Never claim a note is playable if its pitch is not in the target instrument's allowed pitch set.
 - Preserve provenance or diagnostics where practical so users can understand lossy transformations.
 - Treat JSON format changes as compatibility concerns and use an explicit format version.

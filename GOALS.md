@@ -43,6 +43,7 @@ The central product value is not merely detecting notes. It is producing a music
 - Automatic lyric transcription.
 - Mandatory automatic phrase or bar segmentation.
 - A universal DAW or full notation editor.
+- Recording or measuring in-game sounding pitches to calibrate the Sky key mapping; the default C4-C6 mapping defines logical score pitches.
 
 ## Quality attributes
 - Correctness and deterministic validation of score files.

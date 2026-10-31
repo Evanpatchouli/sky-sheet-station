@@ -11,8 +11,9 @@ The descriptions below are the owner's classifications, not measured analysis re
 The original files are retained unchanged. No transcription, note/timing ground
 truth, quality evaluation or automated audio test has been produced for them yet.
 They are candidate material for later authorized audio work, not evidence that
-audio conversion is implemented or accurate. They are not recordings of labeled
-Sky instrument keys and do not resolve the in-game pitch-calibration requirement.
+audio conversion is implemented or accurate. They are ordinary source-audio samples;
+game-instrument recording and acoustic calibration are not required under the
+[logical-pitch design decision](../docs/phase-1-decisions.md#logical-sky-pitches-and-actual-game-sound).
 
 Adding these samples does not start Phase 2 or the later audio-research phase.
 Current score-contract tests and CI do not process these audio files.

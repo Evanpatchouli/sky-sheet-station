@@ -113,7 +113,12 @@ Track role labels such as melody, harmony, and bass are inferred metadata. They 
 
 ## Arrangement for Sky 15-key
 
-The target pitch set is the 15 pitches declared by the Sky 15-key instrument profile. The exact octave labels must be verified before release.
+The target pitch set is the 15 logical pitches declared by the Sky 15-key profile:
+the existing natural-note mapping C4 through C6, using C4 = MIDI 60. These labels
+define score/key relationships, not the actual sound in the game, which may vary
+with its environment. Game recordings and acoustic octave/pitch verification are
+not required before release or Phase 1 completion. No mapping or input/output
+data structure changes follow from this distinction.
 
 The arrangement algorithm should optimize musical preservation subject to instrument constraints. It should not simply delete every unsupported note.
 
@@ -180,4 +185,3 @@ Evaluate:
 - Which melody extraction method works best for mixed recordings?
 - How should the algorithm rank melody notes against chord tones and bass notes?
 - Verify approved D6-A through D6-F against a future numeric implementation and real files only in separately authorized Phase 2 work. Format 2/SMPTE support, other MIDI constructs and export behavior require their own decisions.
-- What octave convention matches the in-game 15-key instrument?

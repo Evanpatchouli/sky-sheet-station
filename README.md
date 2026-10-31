@@ -26,6 +26,7 @@ remains Phase 2.
 - [Goals](./GOALS.md)
 - [Development plan](./PLANS.md)
 - [Documentation index](./docs/README.md)
+- [Independent numeric verification and current parser differences](./docs/numeric-verification.md)
 - [Audio development samples](./audios/README.md)
 - [Agent workflow harness](./harness/README.md)
 
@@ -47,18 +48,33 @@ From the repository root:
 Keep `Cargo.lock` in version control to reproduce the dependency resolution.
 The first build needs registry access unless dependencies are already cached.
 Build output under `target/` is ignored. CI runs the same three checks on stable
-Rust plus the shared Schema checks below; it does not freeze the compiler version.
+Rust plus the independent Python numeric/Schema gate below; it does not freeze
+the compiler version. The numeric gate currently fails on documented Rust/N2
+differences. Passing the existing Cargo suite alone does not complete Phase 1.
 
 If Rust is installed but `cargo` is unavailable in a PowerShell session, reopen
 the terminal after installation or add its existing bin directory for that session:
 
     $env:PATH = (Join-Path $env:USERPROFILE '.cargo\bin') + ';' + $env:PATH
 
-To check the example against the JSON Schema in PowerShell 7 with `Test-Json`:
+For the required independent numeric gate, use a separate CPython 3.13 environment
+and the hash-locked development dependencies. On Windows, from the repository root:
+
+    python -m venv target/numeric-venv
+    target/numeric-venv/Scripts/python.exe -m pip install --require-hashes --only-binary=:all: -r requirements/validation.lock
+    target/numeric-venv/Scripts/python.exe -B -m unittest discover -s scripts -p test_score_numerics.py
+    target/numeric-venv/Scripts/python.exe -B scripts/verify_score_numerics.py
+
+See [numeric verification](docs/numeric-verification.md) for Linux commands, scope,
+exit codes and minimal reproductions. The default gate tests 267 fixed cases and
+10,000 deterministic samples, returning failure on current parser differences.
+It does not implement MIDI or change parser features to obtain a passing result.
+
+For an auxiliary structural check in PowerShell 7 with `Test-Json`:
 
     Get-Content -Raw docs/examples/sky-15-example.json | Test-Json -SchemaFile docs/schemas/sky-score-v1.schema.json
 
-For the shared contract boundary and conformance cases, run:
+For the auxiliary shared contract boundary and conformance cases, run:
 
     pwsh -NoProfile -File scripts/test-score-schema.ps1
 

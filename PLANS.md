@@ -25,7 +25,7 @@ were recorded as open questions. The follow-up below resolves only those three
 boundaries; neither milestone means that the full v1 contract is frozen.
 
 ## Phase 1: Freeze the score contract
-**Status:** In progress. D1-D8 are approved, including D6-A through D6-F (2026-11-01). Calibration and remaining verification still prevent full freeze. D6 policy approval is not importer/quantizer implementation or real-file verification; no Phase 2 work is authorized.
+**Status:** In progress. D1-D8 and N1-N4 are approved (2026-11-01). Independent numeric tooling is implemented, but observed Rust/N2 precision and round-trip differences prevent full freeze. Acoustic calibration is outside scope; sky-15 retains its C4-C6 logical mapping. D6 approval is not MIDI implementation/verification; no Phase 2 work is authorized.
 
 - [x] Resolve pitch range, integer bounds including note ends, and meter denominators as an approved v1 pre-freeze revision.
 - [x] Expand existing-rule fixtures, configure Schema CI, audit raw inputs, and prepare non-normative decision/calibration/tempo-policy drafts.
@@ -34,6 +34,8 @@ boundaries; neither milestone means that the full v1 contract is frozen.
 - [x] Adopt D1/D5/D7/D8 and partial D6 in documentation, with regression coverage for existing serialization and validation behavior.
 - [x] Document serialization compatibility and format-version policy; record the owner's confirmation that no external consumers currently depend on draft 1.0.
 - [x] Approve and document D6-A through D6-F, PPQ-based SMF Format 0/1 scope and analytical boundary examples, without implementing conversion algorithms.
+- [x] Define sky-15's unchanged C4-C6 mapping as logical score pitches; remove game-recording and acoustic-calibration requirements by owner decision.
+- [x] Establish N1-N4 independent raw/Schema/numeric verification, locked development/CI dependencies, exact boundary expectations and deterministic sampling; report current failures without changing parser features.
 
 The revision keeps format_version 1.0 and existing JSON field/Rust storage types.
 Pitch values map to MIDI 0..=127; meter numerators are 1..=65535; denominators are
@@ -50,7 +52,9 @@ validator limitations for extreme tempo, and a confirmed Rust array/object
 deserialization mismatch. Production code, Schema, mapping, and accepted ranges
 were not changed in that task. See the [audit](harness/build/phase-01-conformance-audit.md)
 and [pending decision draft](docs/phase-1-decisions.md). Draft preparation does not
-approve its proposals; calibration and real MIDI validation have not been performed.
+approve its proposals; calibration and real MIDI validation had not been performed
+at that milestone. The former calibration prerequisite is now superseded by the
+logical-pitch decision below, not marked as a completed measurement.
 Verification passed: 19 unit tests + 10 integration tests, release integration
 tests, fmt, Clippy, and all 96 shared Schema cases. The 15 observational probes
 document known differences; they are not evidence that those differences are resolved.
@@ -102,14 +106,24 @@ for boundary examples and future verification, and the
 No importer/quantizer, dependency or test algorithm was added. Format 2/SMPTE
 support remains outside this approval. Phase 2 remains planned and unauthorized.
 
+The owner subsequently clarified that actual Sky sounding pitches may vary with
+the game environment. The existing ordered C4-C6 profile is the standard logical
+score mapping, not an acoustic measurement or a promise of a fixed game tuning.
+Game recordings and physical pitch validation are no longer required. This removes
+the calibration prerequisite without changing keys, JSON fields, Rust structures
+or the remaining verification requirements. See the
+[logical-pitch decision](docs/phase-1-decisions.md#logical-sky-pitches-and-actual-game-sound).
+
 The following broader Phase 1 items remain incomplete:
 
-- [ ] Resolve the in-game octave/pitch calibration.
 - [ ] Finalize v1 JSON schema and semantic validation.
 - [ ] Complete positive/negative fixture coverage for the finalized contract (existing rules expanded; unresolved findings/policies still require follow-up).
-- [ ] Complete the independent numeric-verification strategy and remaining Phase 1 contract checks. Actual D6 conversion/file acceptance tests require separately authorized Phase 2 implementation; they are not reported as completed here.
+- [ ] Resolve observed Rust/N2 acceptance, rounding and save/read differences under a separately approved parser decision, then pass the strict numeric gate and remaining contract checks. See [numeric verification](docs/numeric-verification.md). Actual D6 implementation/file tests remain separately authorized Phase 2 work.
 
-Exit criteria: score specification, schema, example fixtures, Rust types, and tests agree.
+Exit criteria: score specification, schema, example fixtures, Rust types, and tests
+agree, including a passing independent numeric gate with no unresolved N2 differences. Acoustic
+calibration and game recordings are not Phase 1 completion conditions. Removing
+that requirement does not itself complete Phase 1 or start MIDI implementation.
 
 ## Phase 2: MIDI interoperability
 **Status:** Planned

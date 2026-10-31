@@ -13,8 +13,9 @@ Repository-wide instructions live in [AGENTS.md](../AGENTS.md). Product goals an
 - [Rust score crate](../crates/skysheet-score/): initial Rust types, Serde support, and semantic validation.
 - [JSON Schema](./schemas/sky-score-v1.schema.json): machine-readable structural validation for score v1.
 - [Example score](./examples/sky-15-example.json): valid JSON example for a Sky 15-key arrangement.
-- [Phase 1 decisions](./phase-1-decisions.md): approved D1-D8 policies including D6-A through D6-F, calibration evidence checklist, and remaining verification/scope boundaries.
+- [Phase 1 decisions](./phase-1-decisions.md): approved D1-D8 policies including D6-A through D6-F, logical Sky pitch mapping without acoustic calibration, and remaining verification/scope boundaries.
 - [Conformance audit](../harness/build/phase-01-conformance-audit.md): rule coverage, raw-input observations, and verification results.
+- [Independent numeric verification](./numeric-verification.md): N1-N4 decisions, locked tooling, acceptance corpus, current Rust precision differences and minimal reproductions.
 - [Conversion and arrangement](./conversion-and-arrangement.md): proposed audio/MIDI analysis and 15-key adaptation pipeline.
 - [CLI specification](./cli.md): initial command-line interface proposal.
 
@@ -35,7 +36,7 @@ Current priorities:
 
 Changes to the score format follow the approved [version policy](music-data-format.md#15-serialization-and-format-compatibility-approved-d5).
 Approval of individual policies does not complete the full freeze gate or authorize
-MIDI implementation. Calibration and remaining verification are open; D6's approved
+MIDI implementation. Remaining contract verification is open; D6's approved
 scope does not include Format 2/SMPTE support decisions.
 
 On 2026-11-01, an approved pre-freeze revision resolved pitch range, integer
@@ -57,5 +58,17 @@ D6 was initially partially approved, then the owner approved A through F on
 nominal meter and PPQ-based Format 0/1 scope. The
 [normative policy and boundary examples](music-data-format.md#16-approved-midi-timing-conversion-policy-d6)
 distinguish mathematical expectations from future MIDI acceptance tests. No
-importer/quantizer implementation, real-file verification, profile calibration
-or full freeze is claimed; Phase 2 has not started.
+importer/quantizer implementation, real-file verification or full freeze is claimed;
+Phase 2 has not started.
+
+The owner subsequently removed acoustic calibration from scope. `sky-15` retains
+its default C4-C6 logical pitch mapping, distinct from the game's actual sound.
+Game recordings and actual-pitch verification are not Phase 1 completion criteria.
+See the [design decision](phase-1-decisions.md#logical-sky-pitches-and-actual-game-sound).
+
+N1-N4 now provide independent numeric verification using locked Python development
+dependencies. N2 specifies nearest binary64 decoding with ties to even and
+bit-preserving save/read cycles. The checker self-tests and independent fixed
+expectations pass, but the Rust comparison fails on acceptance/rounding/readback
+differences. These remain explicit Phase 1 blockers; no parser feature was changed,
+no expected outcome relaxed, and no Phase 2 work started.

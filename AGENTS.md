@@ -66,10 +66,11 @@ Current v1 proposal:
 - PPQ is 960; note positions and durations are integer ticks.
 - start_tick is absolute from score start; duration_ticks is positive.
 - Pitch strings use SkySheet's explicit convention: C4 = MIDI note 60; sharps are canonical.
+- Tempo decoding uses nearest binary64 with ties to even and preserves accepted bits through save/read (N2). Known reader differences and the independent gate are documented in docs/numeric-verification.md; do not weaken expectations or change parser features without approval.
 - Instrument keys are ordered; array index + 1 derives the game key number.
 - A playable note pitch must exist in the selected instrument's keys.
 - trigger and sustain describe instrument behavior; they are not playback commands.
-- The Sky 15-key octave labels are still a calibration assumption and must not be presented as verified until measured.
+- sky-15 uses the default C4-C6 logical pitch mapping (C4 = MIDI 60); this does not assert actual in-game sounding pitches. Game-audio recording or acoustic calibration is not required, including for Phase 1 completion.
 - The exported score has no velocity field.
 - Notes are independent events; simultaneous notes form chords by sharing a start tick.
 - No automatic phrase or lyric segmentation is required. Root-level text is optional user-authored text.

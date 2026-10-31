@@ -70,7 +70,7 @@
     },
     "instrument": {
       "type": "object",
-      "description": "D7: embedded profile snapshot; no profile_version field. Preserve ordered keys rather than overwrite them from a registry. Stable ID mappings must not be silently redefined. The sky-15 acoustic calibration remains unresolved.",
+      "description": "D7: embedded profile snapshot; no profile_version field. Preserve ordered keys rather than overwrite them from a registry. Stable ID mappings must not be silently redefined. The default sky-15 C4-C6 mapping defines logical score pitches, not actual in-game sound; acoustic calibration is not required.",
       "additionalProperties": false,
       "required": [
         "id",
@@ -156,7 +156,7 @@
         "tempo": {
           "type": "number",
           "exclusiveMinimum": 0,
-          "description": "BPM decoded as finite positive binary64 (f64), including positive subnormals. Decimal and exponent notation are allowed. Reject overflow and underflow-to-zero; no extra musical BPM bound is imposed. This Schema does not by itself enforce the decoder's representation limits."
+          "description": "Quarter notes per minute decoded as finite positive binary64 (f64), including subnormals. Approved N2 requires nearest-value decoding with ties to even and bit-preserving save/read cycles. Decimal/exponent notation is allowed. Reject decoded overflow and underflow-to-zero; no extra musical BPM bound. Schema alone cannot enforce decoding/round-trip rules; current Rust discrepancies are recorded in docs/numeric-verification.md."
         },
         "time_signature": {
           "type": "object",

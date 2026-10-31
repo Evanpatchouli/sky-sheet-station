@@ -17,8 +17,21 @@ jobs:
         run: cargo fmt --all -- --check
       - name: Run workspace tests
         run: cargo test --workspace --locked
-      - name: Validate score Schema and shared fixtures
-        shell: pwsh
-        run: ./scripts/test-score-schema.ps1
       - name: Run Clippy
         run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install locked validation dependencies
+        run: python -m pip install --require-hashes --only-binary=:all: -r requirements/validation.lock
+      - name: Check independent numeric validator
+        run: python -B -m unittest discover -s scripts -p test_score_numerics.py
+      - name: Verify independent Schema and numeric conformance
+        run: python -B scripts/verify_score_numerics.py
+      - name: Preserve numeric verification report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: numeric-conformance-report
+          path: target/numeric-conformance-report.json
+          if-no-files-found: warn

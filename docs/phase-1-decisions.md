@@ -1,6 +1,6 @@
 # Phase 1 decisions and remaining proposals
 
-**Status: D1-D8 approved on 2026-11-01, including D6-A through D6-F.**
+**Status: D1-D8 and N1-N4 approved on 2026-11-01. Independent numeric tooling is implemented; observed Rust/N2 conformance differences remain unresolved.**
 After approving D2-D4, the owner approved preservation of pitch spellings and key
 identity, the version policy, embedded profiles without a profile-version field,
 and keeping provenance outside v1. The owner confirmed that no external consumers
@@ -8,6 +8,8 @@ currently depend on draft 1.0. D6's diagnostic flattening principle and default
 short-note quantization error were approved first; the owner subsequently approved
 A through F below. The latest follow-up authorizes documentation, boundary examples
 and consistency checks only, not importer/quantizer implementation or Phase 2 work.
+The subsequent N1-N4 approval authorizes independent numeric tooling and tests,
+with parser differences reported before any parser-feature or behavior change.
 
 The approved pitch range, integer limits, note end limit, and meter denominators
 remain in force. See the [audit and verification record](../harness/build/phase-01-conformance-audit.md)
@@ -28,7 +30,7 @@ including sections 4, 5 and 15 for the newly approved compatibility policies.
 | D4 | What numeric precision/range is promised for tempo? | Retain `f64` and require a finite positive decoded result, with ordinary binary64 precision. Reject overflow and underflow-to-zero; do not invent a musical BPM minimum/maximum to accommodate a test tool. | Rust already accepts 1e-300 and 1e300 but rejects 1e400 and rejects decoded zero from 1e-400. This makes the representation limit explicit. Tool limitations must not silently narrow the contract. |
 | D5 | How is format compatibility versioned? | Approved: format and crate versions are independent; exact supported versions only. Freeze the observable contract. Additive extensions use a new minor version; tightened acceptance or changed meanings use a new major version after freeze. | A minor version does not promise old-reader support. No external consumers depend on draft 1.0, per the owner; the current version remains 1.0 and is not yet frozen. |
 | D6 | Can v1 flatten a MIDI tempo map? | Approved: diagnostic flattening and default short-note errors, plus D6-A through D6-F: reference/source tempo, absolute rounding, reliable arithmetic/failure, nominal meter and PPQ Format 0/1 scope. | The policy is approved, not implemented or verified against MIDI files. Tempo/meter maps and some beat/bar relationships are lost. No lossless round trip or Format 2/SMPTE support is promised. |
-| D7 | Add a profile-version field now? | Approved: do not add one; retain the embedded snapshot. Do not silently redefine a stable ID's ordered pitch mapping; prefer a new ID when that mapping changes. | No new field. Structural compatibility does not guarantee client/instrument support for a new ID. Calibration remains required; playback-mode acceptance is unchanged. |
+| D7 | Add a profile-version field now? | Approved: do not add one; retain the embedded snapshot. Do not silently redefine a stable ID's ordered logical pitch mapping; prefer a new ID when that mapping changes. | No new field. Structural compatibility does not guarantee client/instrument support for a new ID. The owner removed acoustic calibration as a prerequisite; the default C4-C6 mapping and playback-mode acceptance are unchanged. |
 | D8 | Add source-note provenance to the playable score? | Approved: keep provenance outside v1; consider an analysis report only in a separately scoped task. | No provenance fields or report schema. Loss diagnostics remain required; the score alone cannot reconstruct source history. |
 
 These decisions were approved explicitly, not inferred from earlier test work.
@@ -70,15 +72,17 @@ bounds; decimal/exponent forms, negative zero, and numeric strings are rejected.
 D3 rejects repeated decoded names within each object, even for equal/null values;
 comparison is case-sensitive without additional Unicode normalization. D4 accepts
 finite positive decoded binary64 values, including positive subnormals, with
-ordinary rounding; overflow and underflow-to-zero are errors. No musical BPM
+rounding; N2 subsequently specifies nearest-value/ties-even decoding and bit-preserving
+save/read cycles. Overflow and underflow-to-zero are errors. No musical BPM
 bound, arbitrary precision promise, or new public parser API is introduced.
 
 The observed `Test-Json` implementation rejects 1e-300 and 1e300 tempo values
 that Rust accepts. This is a validator/representation limitation, not evidence
 that JSON Schema itself specifies those exclusions. Keep this limitation visible;
-before freezing v1, evaluate a validator capable of checking the agreed numeric
-model, or document a precise supported verification strategy. Any new validation
-dependency must be proposed separately; none was added in this task.
+N1-N4 now provide the independently checked numeric strategy and approved locked
+development dependencies. Current Rust/N2 discrepancies must be resolved before
+freeze; no parser fix was authorized as part of that tooling task. See the
+[numeric verification record](numeric-verification.md).
 
 Accepting integer-valued decimals/exponents was not selected for D2. Any future
 proposal to broaden input would require a new compatibility decision and precise
@@ -132,7 +136,9 @@ Consumers must not overwrite its ordered keys with a newer local registry entry.
 Once an ID's mapping is stable, a changed mapping should use a new ID, with client
 support and any migration assessed separately. Custom-profile publishers are
 responsible for cross-file ID consistency; no registry enforcement is introduced.
-The `sky-15` mapping is still an uncalibrated working assumption. Both currently
+The `sky-15` mapping is the default logical C4-C6 key mapping, not an acoustic
+measurement or a claim about fixed game tuning. Actual sounding-pitch changes do
+not redefine this logical profile or require a new profile ID. Both currently
 accepted playback modes remain accepted; this decision does not fix one per ID.
 
 Source-note IDs, original pitches and transformation history stay outside the v1
@@ -141,33 +147,30 @@ authorized now. Do not repurpose user-authored `text` for structured provenance.
 Loss diagnostics are still required, but a score alone does not preserve enough
 information to reconstruct its source. The absence of exported velocity remains.
 
-## Calibration information needed from the owner
+## Logical Sky pitches and actual game sound
 
-The physical Sky mapping remains unverified. Identify the first target instrument
-and provide an accessible recording or measurement dataset with key labels.
-If none exists yet, use this proposed acquisition procedure:
+**Owner-approved design update, 2026-11-01.** Actual instrument sound may vary with
+the game environment. SkySheet therefore uses standard logical score pitches
+without requiring measurement of the game's acoustic output. This records the
+owner's product boundary, not a new empirical claim about particular environments.
 
-1. Record instrument identity, game version/platform, date, scene/context, and
-   any relevant settings. Treat possible context dependence as something to
-   investigate, not an established property of the game.
-2. Record keys 1 through 15 separately in a known order, leaving enough silence
-   to distinguish attacks and decays; avoid simultaneous notes/background music.
-   Repeated strikes are recommended to assess repeatability.
-3. Preserve the original audio and key-to-segment mapping. If supplying measured
-   frequencies, also retain method, tuning reference, and uncertainty.
-4. Compare all 15 measured fundamental-pitch candidates with the current mapping.
-   A dominant spectral peak alone is insufficient evidence if it may be an overtone.
-5. Record ambiguous results as unresolved. Only propose a mapping correction after
-   reviewing the evidence with the owner; do not alter keys or labels automatically.
+Keep the exact existing `sky-15` natural-note array C4 through C6, with C4 = MIDI
+60 and array position plus one defining the game key number. These are logical
+labels for score analysis, arrangement, validation and MIDI interpretation; they
+are not a guarantee of the pitch actually sounded in a particular game context.
+Neither acoustic variation nor removal of calibration changes the array or keys.
 
-Suggested evidence columns:
+The previous recording procedure and calibration evidence checklist are withdrawn.
+No game recording, measured frequency or physical octave-label verification is
+required to define the default profile or finish Phase 1. Historical audit/build
+references to calibration describe the former requirement and are superseded by
+this decision; no measurement is claimed to have been completed.
 
-| Key | Recording segment | Frequency estimate | Method / uncertainty | Candidate pitch / MIDI | Repeats consistent? | Owner-reviewed result |
-|---|---|---|---|---|---|---|
-| 1..15 | To be supplied | Not measured | Not measured | Current labels remain assumptions | Unknown | Pending |
-
-This is a data-collection plan, not game-input automation or an audio-transcription
-implementation. Until evidence exists, calibration and the full freeze gate remain open.
+Compatibility: JSON fields, format version, pitch strings/order, D1 identity and
+D7 mapping policy, Rust data structures and score-reader behavior remain unchanged.
+The full contract still requires its remaining verification, including independent
+numeric validation. This update does not declare a full freeze, start MIDI
+implementation or authorize Phase 2.
 
 ## D6: tempo-flattening decision and acceptance preparation
 
@@ -202,14 +205,34 @@ exercise actual files, event merging, track-order independence, simultaneity,
 diagnostics and whole-conversion errors in separately authorized Phase 2 work.
 Library selection, other MIDI constructs, note pairing, export precision and
 round-trip behavior are outside this timing-policy approval. Format 2/SMPTE
-support stays undecided outside the approved scope. Calibration and independent
-score-numeric verification still prevent the full freeze; the approval itself
+support stays undecided outside the approved scope. Independent score-numeric
+verification and remaining contract checks still prevent the full freeze; the approval itself
 does not supply that evidence.
+
+## N1-N4: independent numeric validation
+
+Approved on 2026-11-01: use Python standard-library arithmetic plus jsonschema
+4.26.0 with locked development/CI dependencies (N1); require nearest binary64,
+ties to even, and accepted-tempo bit preservation through save/read (N2); make the
+independent path the numeric CI gate and PowerShell auxiliary (N3); report observed
+parser differences before any feature change or expectation adjustment (N4).
+
+The implemented gate checks 120 existing structural cases, 114 original-text cases,
+33 exact midpoint-neighbor cases and 10,000 deterministic in-memory samples.
+Independent expectations and self-tests pass, but the Rust comparison currently
+fails. Acceptance, midpoint and save/read differences have minimal reproductions
+and compatibility analysis in [numeric-verification.md](numeric-verification.md).
+No Rust production source, Cargo manifest/lock/feature, JSON field or Schema
+assertion changed. N2 is an approved pre-freeze precision refinement, not a claim
+of current implementation conformance or a change to D6 tick rounding.
 
 ## Freeze gate
 
-Completion requires approved policies, calibration evidence or an explicitly
-revised product scope, and corresponding verification. Missing evidence cannot
+Completion requires approved policies and corresponding contract verification.
+The owner explicitly removed acoustic calibration and recording collection from
+scope; neither is a freeze condition. The independent strategy now exists, but
+its observed Rust/N2 differences and remaining consistency checks are unresolved.
+Missing required numeric/contract evidence cannot
 be replaced by passing software tests. D6-A through D6-F are no longer pending
 policy choices, but their implementation and file-based verification are not done.
 Documentation and mathematical examples do not authorize entry into Phase 2.

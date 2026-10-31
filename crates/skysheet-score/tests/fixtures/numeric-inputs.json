@@ -1,0 +1,695 @@
+[
+  {
+    "id": "tempo 120",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": true,
+    "schema_valid": true,
+    "bits": "405e000000000000"
+  },
+  {
+    "id": "tempo 0.1",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":0.1,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": true,
+    "schema_valid": true,
+    "bits": "3fb999999999999a"
+  },
+  {
+    "id": "tempo 1e-300",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":1e-300,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": true,
+    "schema_valid": true,
+    "bits": "01a56e1fc2f8f359"
+  },
+  {
+    "id": "tempo 1e300",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":1e300,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": true,
+    "schema_valid": true,
+    "bits": "7e37e43c8800759c"
+  },
+  {
+    "id": "tempo 3e-324",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":3e-324,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": true,
+    "schema_valid": true,
+    "bits": "0000000000000001"
+  },
+  {
+    "id": "tempo 5e-324",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":5e-324,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": true,
+    "schema_valid": true,
+    "bits": "0000000000000001"
+  },
+  {
+    "id": "tempo 1.7976931348623157e308",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":1.7976931348623157e308,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": true,
+    "schema_valid": true,
+    "bits": "7fefffffffffffff"
+  },
+  {
+    "id": "tempo 1.7976931348623158e308",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":1.7976931348623158e308,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": true,
+    "schema_valid": true,
+    "bits": "7fefffffffffffff"
+  },
+  {
+    "id": "tempo 9007199254740993",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":9007199254740993,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": true,
+    "schema_valid": true,
+    "bits": "4340000000000000"
+  },
+  {
+    "id": "tempo 1e-400",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":1e-400,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "tempo 2e-324",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":2e-324,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "tempo 1e400",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":1e400,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "tempo 1.7976931348623159e308",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":1.7976931348623159e308,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "tempo 0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":0,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "tempo -0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":-0,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "tempo -0.0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":-0.0,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "tempo -1",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":-1,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "tempo -1e-400",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":-1e-400,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "tempo \"120\"",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":\"120\",\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "tempo true",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":true,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "invalid JSON tempo NaN",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":NaN,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "invalid JSON tempo Infinity",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":Infinity,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "invalid JSON tempo +1",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":+1,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "invalid JSON tempo 01",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":01,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "invalid JSON tempo 1.",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":1.,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "invalid JSON tempo 1e",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":1e,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "ppq token 960.0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960.0,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "ppq token 960e0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960e0,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "ppq token 960E+0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960E+0,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "ppq token -0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":-0,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "ppq token \"960\"",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":\"960\",\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "ppq token true",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":true,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "ppq malformed +1",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":+1,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "ppq malformed 01",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":01,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "ppq malformed -01",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":-01,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "numerator token 4.0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4.0,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "numerator token 4e0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4e0,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "numerator token 4E+0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4E+0,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "numerator token -0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":-0,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "numerator token \"4\"",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":\"4\",\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "numerator token true",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":true,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "numerator malformed +1",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":+1,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "numerator malformed 01",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":01,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "numerator malformed -01",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":-01,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "denominator token 4.0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4.0}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "denominator token 4e0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4e0}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "denominator token 4E+0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4E+0}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "denominator token -0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":-0}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "denominator token \"4\"",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":\"4\"}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "denominator token true",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":true}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "denominator malformed +1",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":+1}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "denominator malformed 01",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":01}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "denominator malformed -01",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":-01}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "start_tick token 0.0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0.0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "start_tick token 0e0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0e0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "start_tick token 0E+0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0E+0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "start_tick token -0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":-0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "start_tick token \"0\"",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":\"0\",\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "start_tick token true",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":true,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "start_tick malformed +1",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":+1,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "start_tick malformed 01",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":01,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "start_tick malformed -01",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":-01,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duration_ticks token 1.0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1.0}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "duration_ticks token 1e0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1e0}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "duration_ticks token 1E+0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1E+0}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "duration_ticks token -0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":-0}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "duration_ticks token \"1\"",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":\"1\"}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "duration_ticks token true",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":true}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "duration_ticks malformed +1",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":+1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duration_ticks malformed 01",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":01}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duration_ticks malformed -01",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":-01}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "start_tick boundary 9007199254740990",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":9007199254740990,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": true,
+    "schema_valid": true
+  },
+  {
+    "id": "start_tick boundary 9007199254740991",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":9007199254740991,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": true
+  },
+  {
+    "id": "start_tick boundary 9007199254740992",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":9007199254740992,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "start_tick boundary 9007199254740993",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":9007199254740993,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "start_tick boundary 18446744073709551615",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":18446744073709551615,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "start_tick boundary 18446744073709551616",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":18446744073709551616,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "duration_ticks boundary 0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":0}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "duration_ticks boundary 9007199254740991",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":9007199254740991}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": true,
+    "schema_valid": true
+  },
+  {
+    "id": "duration_ticks boundary 9007199254740992",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":9007199254740992}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "duration_ticks boundary 18446744073709551615",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":18446744073709551615}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "numerator boundary 0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":0,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "numerator boundary 1",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":1,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": true,
+    "schema_valid": true
+  },
+  {
+    "id": "numerator boundary 65535",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":65535,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": true,
+    "schema_valid": true
+  },
+  {
+    "id": "numerator boundary 65536",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":65536,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "denominator boundary 1",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":1}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": true,
+    "schema_valid": true
+  },
+  {
+    "id": "denominator boundary 64",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":64}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": true,
+    "schema_valid": true
+  },
+  {
+    "id": "denominator boundary 0",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":0}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "denominator boundary 3",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":3}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "denominator boundary 128",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":128}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": false
+  },
+  {
+    "id": "duplicate root same",
+    "raw": "{\"format_version\":\"1.0\",\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate root different",
+    "raw": "{\"format_version\":\"1.0\",\"format_version\":null,\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate root escaped",
+    "raw": "{\"format_version\":\"1.0\",\"\\u0066ormat_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate metadata same",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate metadata different",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"id\":null,\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate metadata escaped",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"\\u0069d\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate instrument same",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate instrument different",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"id\":null,\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate instrument escaped",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"\\u0069d\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate timeline same",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate timeline different",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"ppq\":null,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate timeline escaped",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"\\u0070pq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate meter same",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate meter different",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"numerator\":null,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate meter escaped",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"\\u006eumerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate track same",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate track different",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"id\":null,\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate track escaped",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"\\u0069d\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate note same",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate note different",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"id\":null,\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate note escaped",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"\\u0069d\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"Optional user note, lyric, or reminder\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate optional null,\"text\":null",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":null,\"text\":null}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate optional null,\"text\":\"x\"",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":null,\"text\":\"x\"}",
+    "valid": false,
+    "schema_valid": null
+  },
+  {
+    "id": "duplicate optional \"x\",\"text\":null",
+    "raw": "{\"format_version\":\"1.0\",\"metadata\":{\"id\":\"score-001\",\"name\":\"Example song\"},\"instrument\":{\"id\":\"sky-15\",\"name\":\"Sky 15-key instrument\",\"playback_mode\":\"trigger\",\"keys\":[\"C4\",\"D4\",\"E4\",\"F4\",\"G4\",\"A4\",\"B4\",\"C5\",\"D5\",\"E5\",\"F5\",\"G5\",\"A5\",\"B5\",\"C6\"]},\"timeline\":{\"ppq\":960,\"tempo\":120,\"time_signature\":{\"numerator\":4,\"denominator\":4}},\"tracks\":[{\"id\":\"track-001\",\"name\":\"Melody\",\"role\":\"melody\",\"notes\":[{\"id\":\"note-001\",\"pitch\":\"C4\",\"start_tick\":0,\"duration_ticks\":1}]}],\"text\":\"x\",\"text\":null}",
+    "valid": false,
+    "schema_valid": null
+  }
+]

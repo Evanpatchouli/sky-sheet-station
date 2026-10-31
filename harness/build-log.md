@@ -2,6 +2,10 @@
 
 Append a short entry when an approved phase is completed or materially blocked. Do not use this file as a transcript of every agent action.
 
+Historical calibration prerequisites in earlier entries are superseded by the
+owner's [logical-pitch design update](../docs/phase-1-decisions.md#logical-sky-pitches-and-actual-game-sound).
+They do not request game recordings or remain current completion conditions.
+
 ## Entry template
 
 ### YYYY-MM-DD — Phase NN: title
@@ -124,3 +128,40 @@ Append a short entry when an approved phase is completed or materially blocked. 
 - Follow-up: numeric implementation/file acceptance work needs separate authorization;
   calibration and independent score-numeric verification still prevent full freeze.
   Local cache notes were non-fatal. No Phase 2 work, commit or push.
+
+### 2026-11-01 — Phase 01 design update: logical Sky pitches
+
+- Decision: the owner removed acoustic calibration and game-recording collection
+  from product scope and Phase 1 completion conditions. The existing C4-C6 sky-15
+  mapping remains the standard logical score/key mapping (C4 = MIDI 60), distinct
+  from actual game sound, which may vary with the environment.
+- Main changes: synchronized design/format/agent documentation, sample notes and
+  the roadmap; withdrew the recording checklist. Earlier calibration prerequisites
+  in historical records are superseded, not reported as completed measurements.
+  Updated only the Schema's descriptive instrument annotation, not its assertions.
+- Verification: 9 existing pitch-related tests and the example plus 120 shared
+  Schema cases passed. Existing incremental-cache notes were non-fatal.
+- Scope: no score fields, mapping, Rust structures, production/test code,
+  dependencies or audio files changed. Independent numeric verification and
+  remaining contract checks still prevent full freeze. No MIDI implementation,
+  Phase 2 entry, commit or push.
+
+### 2026-11-01 — Phase 01 partial: N1-N4 numeric gate and reported differences
+
+- Outcome: established the approved independent raw/Schema/numeric checker,
+  hash-locked development/CI dependencies, unchanged-reader observation bridge,
+  exact boundary corpus and deterministic sampling. N2 precision rules are
+  documented; observed Rust conformance failures remain blocking under N4.
+- Verification: 15 checker self-tests and 267 independent fixed cases passed;
+  47 existing Rust tests, fmt and Clippy passed. Locked Windows installation and
+  Linux wheel hash checks passed; Linux execution/hosted CI were not performed.
+- Findings: full gate failed on 2,981 case records across 267 fixed cases and
+  10,000 samples. Minimal acceptance, midpoint and round-trip reproductions and
+  compatibility analysis are in docs/numeric-verification.md. CI intentionally
+  retains strict failure instead of skipping known differences.
+- Scope: production sources, Cargo manifests/lock/features, old fixtures, score
+  fields/mapping and audio unchanged. Only Schema descriptive text changed.
+  New dependencies are isolated development tools, not production requirements.
+- Follow-up: separate parser-configuration evaluation/approval is needed; do not
+  weaken expected bits or enable a parser feature automatically. Phase 1 remains
+  incomplete. No MIDI implementation, Phase 2 entry, commit or push.

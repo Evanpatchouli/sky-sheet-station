@@ -8,7 +8,10 @@ dependency is authorized here. Full Phase 1 completion and Phase 2 are excluded.
 **Approved follow-ups:** the owner subsequently authorized the object-only repair,
 D2-D4 input rules, D1/D5/D7/D8 and partial D6 adoption, then the documentation-only
 D6-A through D6-F follow-up. See the records below. Historical observations are
-preserved. Calibration and independent numeric verification remain unresolved;
+preserved. The owner's later logical-pitch decision removes acoustic calibration
+and recording collection from scope; earlier calibration requirements in this
+record are historical and superseded. N1-N4 now implement the independent numeric
+gate; its observed Rust/N2 differences remain unresolved (see the latest follow-up);
 D6 policy approval is not implementation/file verification. The full contract is
 not frozen and no Phase 2 implementation is authorized.
 
@@ -206,8 +209,9 @@ checks. Hosted CI was not run; no commit or push was performed.
 ## Remaining owner input and stop boundary
 
 The owner approved D1-D8, including D6-A through D6-F, and confirmed no external
-consumers currently depend on draft 1.0. Calibration evidence and independent
-numeric verification are still needed. The approved D6 policy and analytical
+consumers currently depend on draft 1.0. Independent numeric verification and
+remaining contract checks are still needed; acoustic calibration is no longer
+required under the owner's logical-pitch decision. The approved D6 policy and analytical
 examples are not a tested MIDI implementation. Format 2/SMPTE support remains a
 separate scope decision. No full freeze or Phase 2 work is authorized.
 
@@ -344,3 +348,55 @@ CI and real MIDI checks were not run. Independent score-numeric verification and
 acoustic calibration remain open; numeric implementation and actual D6 acceptance
 tests require separately authorized work. No importer/quantizer, dependencies,
 report schema, test algorithm, Phase 2 entry, commit or push was introduced.
+
+## Approved follow-up: N1-N4 independent numeric verification
+
+The owner approved the Python/jsonschema development-only strategy, nearest/even
+binary64 decoding and bit-preserving tempo round trips, a strict independent CI
+gate, and reporting differences before changing the Rust parser. These are now
+recorded in [numeric-verification.md](../../docs/numeric-verification.md), which
+contains exact commands, scope, minimal reproductions and compatibility analysis.
+
+Implementation adds a raw-token/decoded-member checker, exact Decimal Schema
+view with an integer-type adapter, integer/rational binary64 oracle, a development
+Rust JSONL observation bridge, 114 original-input fixtures and 33 generated exact
+midpoint-neighbor cases. It reuses the 120 existing structural cases and their
+distinct Rust expectations. A fixed-seed sample covers 10,000 distinct positive
+finite bit patterns and all finite exponent fields. The independent checker is
+not a duplicate of all score semantic validation and is not a MIDI implementation.
+
+Development/CI packages are pinned with wheel hashes for CPython 3.13 on Windows
+x64 and Linux x86_64. Installation was isolated under ignored `target/`; production
+dependencies, Cargo.lock and serde_json features were not changed. The existing
+CI numeric/Schema step is replaced by the strict independent gate; PowerShell
+remains optional diagnostic tooling. CI has no known-failure bypass and will fail
+on the current differences. Hosted CI has not been run.
+
+Observed verification:
+
+| Check | Result |
+|---|---|
+| Locked Windows install and `pip check` | Passed, with all five pinned packages and no optional extras. |
+| Hash-checked CPython 3.13 Linux wheel download | Passed for the same lock; this is not execution on Linux. |
+| Independent checker self-tests | 15 passed, including deliberate false observations and exact mathematical boundary controls. |
+| Independent fixed corpus | All 267 cases passed (120 shared + 114 original text + 33 exact boundary cases). |
+| Full Rust comparison, seed 5458777 | Failed as required: 2,981 case records across 267 fixed cases and 10,000 samples; no expectations relaxed. |
+| Minimal acceptance, midpoint and round-trip reproductions | Each returns gate exit 1 with the documented difference. |
+| Tool-error smoke check | Unknown case returns exit 2, not invalid-data/pass. |
+| `cargo fmt --all -- --check` | Passed. |
+| `cargo test --workspace --locked` | Existing 47 tests passed; this does not override the new numeric gate failure. |
+| `cargo clippy --workspace --all-targets --locked -- -D warnings` | Passed, including the observation example. |
+| Scope comparison with pre-task snapshot | Production sources, Cargo manifests/lock, previous tests, example, audio and mapping unchanged. Schema differs only in the tempo description. |
+
+The observed differences include rejection of `1.7976931348623158e308`, wrong-side
+midpoint rounding and non-stable save/read bits. Per `from_str` path there are 3
+acceptance, 2,978 decode-bit and 988 round-trip differences; categories overlap.
+The reader path has the same counts. The 2,981 cases comprise 10 fixed and 2,971
+sampled cases, not a real-world file failure-rate estimate.
+
+N4 stop boundary: report the concrete findings and compatibility impact; obtain
+separate approval before evaluating/adopting parser-feature or behavior changes.
+No `float_roundtrip`/`arbitrary_precision` feature, production parser fix, one-ULP
+tolerance or skip list was added. Existing non-fatal Cargo cache notes remain.
+The numeric tool exists but conformance is unresolved; Phase 1 is not complete.
+No Phase 2 work, commit or push was performed.

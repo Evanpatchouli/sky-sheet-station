@@ -121,7 +121,10 @@ resolves their contract decisions; this table preserves the original findings.
 At Phase 0 completion these were unresolved design/compatibility questions, not newly approved requirements.
 Schema structural validation is also intentionally insufficient for cross-track note
 ID uniqueness and pitch membership; Rust semantic validation supplies those checks.
-Sky octave labels remain an unverified calibration assumption. No MIDI behavior,
+At that milestone, Sky octave labels were treated as an unverified calibration
+assumption. That requirement is superseded by the owner's later
+[logical-pitch decision](../../docs/phase-1-decisions.md#logical-sky-pitches-and-actual-game-sound):
+the unchanged C4-C6 mapping no longer requires acoustic measurement. No MIDI behavior,
 new public fields, or Phase 1 implementation was introduced.
 
 ### Review reference
