@@ -6,6 +6,7 @@ SkySheet Station is a Rust-first, CLI-first music analysis and arrangement tool.
 
 - [Architecture](./architecture.md): product boundaries, components, and repository direction.
 - [Music data format](./music-data-format.md): v1 JSON score format, timing, pitch, instrument behavior, and validation rules.
+- [Rust score crate](../crates/skysheet-score/): initial Rust types, Serde support, and semantic validation.
 - [JSON Schema](./schemas/sky-score-v1.schema.json): machine-readable structural validation for score v1.
 - [Example score](./examples/sky-15-example.json): valid JSON example for a Sky 15-key arrangement.
 - [Conversion and arrangement](./conversion-and-arrangement.md): proposed audio/MIDI analysis and 15-key adaptation pipeline.
