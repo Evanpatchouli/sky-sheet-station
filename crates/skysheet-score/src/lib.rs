@@ -7,41 +7,48 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::collections::HashSet;
 use std::fmt;
 
+mod object;
+use object::score_object;
+
 pub const SCORE_FORMAT_VERSION: &str = "1.0";
 pub const PPQ: u16 = 960;
+/// Largest exact interoperable JSON tick value, including note end positions.
+pub const MAX_TICK: u64 = (1_u64 << 53) - 1;
 pub const SKY_15_INSTRUMENT_ID: &str = "sky-15";
 
 pub const SKY_15_KEYS: [&str; 15] = [
-    "C4", "D4", "E4", "F4", "G4", "A4", "B4",
-    "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6",
+    "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6",
 ];
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct Score {
-    pub format_version: String,
-    pub metadata: Metadata,
-    pub instrument: Instrument,
-    pub timeline: Timeline,
-    pub tracks: Vec<Track>,
-    #[serde(default)]
-    pub text: Option<String>,
+score_object! {
+    #[derive(Debug, Clone, PartialEq, Serialize)]
+    pub struct Score {
+        pub format_version: String,
+        pub metadata: Metadata,
+        pub instrument: Instrument,
+        pub timeline: Timeline,
+        pub tracks: Vec<Track>,
+        #[serde(default)]
+        pub text: Option<String>,
+    }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct Metadata {
-    pub id: String,
-    pub name: String,
+score_object! {
+    #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+    pub struct Metadata {
+        pub id: String,
+        pub name: String,
+    }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct Instrument {
-    pub id: String,
-    pub name: String,
-    pub playback_mode: PlaybackMode,
-    pub keys: Vec<Pitch>,
+score_object! {
+    #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+    pub struct Instrument {
+        pub id: String,
+        pub name: String,
+        pub playback_mode: PlaybackMode,
+        pub keys: Vec<Pitch>,
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -51,28 +58,33 @@ pub enum PlaybackMode {
     Sustain,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct Timeline {
-    pub ppq: u16,
-    pub tempo: f64,
-    pub time_signature: TimeSignature,
+score_object! {
+    #[derive(Debug, Clone, PartialEq, Serialize)]
+    pub struct Timeline {
+        pub ppq: u16,
+        pub tempo: f64,
+        pub time_signature: TimeSignature,
+    }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct TimeSignature {
-    pub numerator: u16,
-    pub denominator: u16,
+score_object! {
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+    pub struct TimeSignature {
+        /// 1 through 65535; zero is rejected by `Score::validate`.
+        pub numerator: u16,
+        /// One of 1, 2, 4, 8, 16, 32, 64, checked by `Score::validate`.
+        pub denominator: u16,
+    }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct Track {
-    pub id: String,
-    pub name: String,
-    pub role: TrackRole,
-    pub notes: Vec<Note>,
+score_object! {
+    #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+    pub struct Track {
+        pub id: String,
+        pub name: String,
+        pub role: TrackRole,
+        pub notes: Vec<Note>,
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -86,17 +98,21 @@ pub enum TrackRole {
     Unknown,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct Note {
-    pub id: String,
-    pub pitch: Pitch,
-    pub start_tick: u64,
-    pub duration_ticks: u64,
+score_object! {
+    #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+    pub struct Note {
+        pub id: String,
+        pub pitch: Pitch,
+        /// Absolute position, at most `MAX_TICK`; the note end must also fit.
+        pub start_tick: u64,
+        /// 1 through `MAX_TICK`, checked together with the end by `Score::validate`.
+        pub duration_ticks: u64,
+    }
 }
 
 /// Scientific pitch notation with an explicit convention: C4 = MIDI 60.
 /// Sharps are canonical; flats are not accepted.
+/// Both instrument keys and note pitches must map to MIDI numbers 0 through 127.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Pitch(String);
 
@@ -124,11 +140,18 @@ impl Pitch {
             return Err(format!("missing octave in pitch '{value}'"));
         }
 
-        let octave: i16 = value[octave_start..]
+        let octave_text = &value[octave_start..];
+        let digits = octave_text.strip_prefix('-').unwrap_or(octave_text);
+        if digits.is_empty() || !digits.bytes().all(|byte| byte.is_ascii_digit()) {
+            return Err(format!("invalid octave in pitch '{value}'"));
+        }
+        let octave: i16 = octave_text
             .parse()
             .map_err(|_| format!("invalid octave in pitch '{value}'"))?;
         let accidental = if octave_start == 2 { 1_i16 } else { 0_i16 };
-        let midi = (octave + 1) * 12 + natural + accidental;
+        // Widen before arithmetic so even i16 boundary inputs return an error
+        // instead of panicking or wrapping into the playable range.
+        let midi = (i32::from(octave) + 1) * 12 + i32::from(natural + accidental);
 
         if !(0..=127).contains(&midi) {
             return Err(format!("pitch '{value}' is outside MIDI range 0..=127"));
@@ -287,7 +310,33 @@ impl Score {
                     issues.push(format!("duplicate note id '{}'", note.id));
                 }
                 if note.duration_ticks == 0 {
-                    issues.push(format!("note '{}' duration_ticks must be at least 1", note.id));
+                    issues.push(format!(
+                        "note '{}' duration_ticks must be at least 1",
+                        note.id
+                    ));
+                }
+                if note.start_tick > MAX_TICK {
+                    issues.push(format!(
+                        "note '{}' start_tick {} must be at most {MAX_TICK}",
+                        note.id, note.start_tick
+                    ));
+                }
+                if note.duration_ticks > MAX_TICK {
+                    issues.push(format!(
+                        "note '{}' duration_ticks {} must be at most {MAX_TICK}",
+                        note.id, note.duration_ticks
+                    ));
+                }
+                match note.start_tick.checked_add(note.duration_ticks) {
+                    Some(end_tick) if end_tick > MAX_TICK => issues.push(format!(
+                        "note '{}' end_tick {end_tick} (start_tick + duration_ticks) must be at most {MAX_TICK}",
+                        note.id
+                    )),
+                    None => issues.push(format!(
+                        "note '{}' end_tick overflows u64 (start_tick {} + duration_ticks {}); must be at most {MAX_TICK}",
+                        note.id, note.start_tick, note.duration_ticks
+                    )),
+                    _ => {}
                 }
                 if !self.instrument.keys.contains(&note.pitch) {
                     issues.push(format!(
@@ -307,7 +356,11 @@ impl Score {
 
     /// Derive the 1-based game key number from instrument key ordering.
     pub fn key_number_for(&self, pitch: &Pitch) -> Option<usize> {
-        self.instrument.keys.iter().position(|key| key == pitch).map(|i| i + 1)
+        self.instrument
+            .keys
+            .iter()
+            .position(|key| key == pitch)
+            .map(|i| i + 1)
     }
 }
 
@@ -334,6 +387,54 @@ mod tests {
     }
 
     #[test]
+    fn pitch_rejects_overflowing_octaves_without_panicking() {
+        for value in [
+            "C32767",
+            "C-32768",
+            "C5460",
+            "C5461",
+            "C32768",
+            "C99999999999999999999",
+        ] {
+            assert!(Pitch::parse(value).is_err(), "accepted {value}");
+            let json = serde_json::to_string(value).unwrap();
+            assert!(
+                serde_json::from_str::<Pitch>(&json).is_err(),
+                "accepted {json}"
+            );
+        }
+    }
+
+    #[test]
+    fn pitch_requires_schema_octave_syntax() {
+        for value in [
+            "C+4", "C#+4", "C-", "C#-", "C 4", "C4\n", "C４", "C💫", "💫4",
+        ] {
+            assert!(Pitch::parse(value).is_err(), "accepted {value:?}");
+            let json = serde_json::to_string(value).unwrap();
+            assert!(
+                serde_json::from_str::<Pitch>(&json).is_err(),
+                "accepted {json}"
+            );
+        }
+    }
+
+    #[test]
+    fn pitch_preserves_valid_spelling_and_midi_boundaries() {
+        for (value, midi) in [("C-1", 0), ("G9", 127), ("F#4", 66), ("C04", 60)] {
+            let pitch = Pitch::parse(value).unwrap();
+            assert_eq!(pitch.midi_number(), midi);
+            assert_eq!(pitch.as_str(), value);
+            let json = serde_json::to_string(&pitch).unwrap();
+            assert_eq!(json, serde_json::to_string(value).unwrap());
+            assert_eq!(serde_json::from_str::<Pitch>(&json).unwrap(), pitch);
+        }
+        for value in ["B-2", "G#9", "C10"] {
+            assert!(Pitch::parse(value).is_err());
+        }
+    }
+
+    #[test]
     fn documented_example_deserializes_validates_and_round_trips() {
         let score: Score = serde_json::from_str(EXAMPLE).unwrap();
         score.validate().unwrap();
@@ -354,20 +455,217 @@ mod tests {
     fn rejects_unplayable_pitch() {
         let mut score: Score = serde_json::from_str(EXAMPLE).unwrap();
         score.tracks[0].notes[0].pitch = Pitch::parse("C#4").unwrap();
-        assert!(score.validate().unwrap_err().to_string().contains("not playable"));
+        assert!(
+            score
+                .validate()
+                .unwrap_err()
+                .to_string()
+                .contains("not playable")
+        );
     }
 
     #[test]
     fn rejects_duplicate_note_ids() {
         let mut score: Score = serde_json::from_str(EXAMPLE).unwrap();
         score.tracks[1].notes[0].id = "note-001".into();
-        assert!(score.validate().unwrap_err().to_string().contains("duplicate note id"));
+        assert!(
+            score
+                .validate()
+                .unwrap_err()
+                .to_string()
+                .contains("duplicate note id")
+        );
     }
 
     #[test]
     fn rejects_zero_duration() {
         let mut score: Score = serde_json::from_str(EXAMPLE).unwrap();
         score.tracks[0].notes[0].duration_ticks = 0;
-        assert!(score.validate().unwrap_err().to_string().contains("duration_ticks"));
+        assert!(
+            score
+                .validate()
+                .unwrap_err()
+                .to_string()
+                .contains("duration_ticks")
+        );
+    }
+
+    fn example_score() -> Score {
+        serde_json::from_str(EXAMPLE).unwrap()
+    }
+
+    fn assert_invalid(score: &Score, expected: &str) {
+        let errors = score.validate().unwrap_err().to_string();
+        assert!(
+            errors.contains(expected),
+            "expected {expected:?} in {errors:?}"
+        );
+    }
+
+    #[test]
+    fn rejects_duplicate_track_ids() {
+        let mut score = example_score();
+        score.tracks[1].id = score.tracks[0].id.clone();
+        assert_invalid(&score, "duplicate track id");
+    }
+
+    #[test]
+    fn rejects_invalid_version_and_timing_metadata() {
+        let mut score = example_score();
+        score.format_version = "2.0".into();
+        assert_invalid(&score, "format_version");
+        score = example_score();
+        score.timeline.ppq = 480;
+        assert_invalid(&score, "timeline.ppq");
+        for tempo in [0.0, -1.0, f64::NAN, f64::INFINITY, f64::NEG_INFINITY] {
+            score = example_score();
+            score.timeline.tempo = tempo;
+            assert_invalid(&score, "timeline.tempo");
+        }
+        for (numerator, denominator) in [(0, 4), (4, 0), (4, 3)] {
+            score = example_score();
+            score.timeline.time_signature = TimeSignature {
+                numerator,
+                denominator,
+            };
+            assert_invalid(&score, "time_signature");
+        }
+    }
+
+    #[test]
+    fn rejects_empty_and_duplicate_instrument_keys() {
+        let mut score = example_score();
+        score.instrument.keys.clear();
+        assert_invalid(&score, "instrument.keys must not be empty");
+        score = example_score();
+        score.instrument.keys[1] = score.instrument.keys[0].clone();
+        assert_invalid(&score, "duplicate instrument pitch");
+    }
+
+    #[test]
+    fn rejects_wrong_sky_key_order_and_count() {
+        let mut score = example_score();
+        score.instrument.keys.swap(0, 1);
+        assert_invalid(&score, "canonical 15 pitches and order");
+        score = example_score();
+        score.instrument.keys.pop();
+        assert_invalid(&score, "canonical 15 pitches and order");
+    }
+
+    #[test]
+    fn rejects_empty_required_strings() {
+        for pointer in [
+            "/metadata/id",
+            "/metadata/name",
+            "/instrument/id",
+            "/instrument/name",
+            "/tracks/0/id",
+            "/tracks/0/name",
+            "/tracks/0/notes/0/id",
+        ] {
+            let mut value: serde_json::Value = serde_json::from_str(EXAMPLE).unwrap();
+            *value.pointer_mut(pointer).unwrap() = serde_json::json!("");
+            let score: Score = serde_json::from_value(value).unwrap();
+            assert_invalid(&score, "must not be empty");
+        }
+    }
+
+    #[test]
+    fn rejects_unknown_fields_at_every_object_level() {
+        for pointer in [
+            "",
+            "/metadata",
+            "/instrument",
+            "/timeline",
+            "/timeline/time_signature",
+            "/tracks/0",
+            "/tracks/0/notes/0",
+        ] {
+            let mut value: serde_json::Value = serde_json::from_str(EXAMPLE).unwrap();
+            value
+                .pointer_mut(pointer)
+                .unwrap()
+                .as_object_mut()
+                .unwrap()
+                .insert("unexpected".into(), serde_json::json!(true));
+            let error = serde_json::from_value::<Score>(value).unwrap_err();
+            assert!(
+                error.to_string().contains("unknown field"),
+                "{pointer}: {error}"
+            );
+        }
+        let mut value: serde_json::Value = serde_json::from_str(EXAMPLE).unwrap();
+        value["tracks"][0]["notes"][0]["velocity"] = serde_json::json!(100);
+        assert!(
+            serde_json::from_value::<Score>(value)
+                .unwrap_err()
+                .to_string()
+                .contains("velocity")
+        );
+    }
+
+    #[test]
+    fn rejects_invalid_json_timing_and_enums() {
+        for (pointer, invalid) in [
+            ("/tracks/0/notes/0/start_tick", serde_json::json!(-1)),
+            ("/tracks/0/notes/0/start_tick", serde_json::json!(0.5)),
+            ("/tracks/0/notes/0/duration_ticks", serde_json::json!(-1)),
+            ("/tracks/0/notes/0/duration_ticks", serde_json::json!(1.5)),
+            ("/instrument/playback_mode", serde_json::json!("hold")),
+            ("/tracks/0/role", serde_json::json!("lead")),
+        ] {
+            let mut value: serde_json::Value = serde_json::from_str(EXAMPLE).unwrap();
+            *value.pointer_mut(pointer).unwrap() = invalid;
+            assert!(
+                serde_json::from_value::<Score>(value).is_err(),
+                "accepted {pointer}"
+            );
+        }
+    }
+
+    #[test]
+    fn optional_text_accepts_omitted_null_and_string() {
+        for text in [
+            None,
+            Some(serde_json::Value::Null),
+            Some(serde_json::json!("user text")),
+        ] {
+            let mut value: serde_json::Value = serde_json::from_str(EXAMPLE).unwrap();
+            value.as_object_mut().unwrap().remove("text");
+            if let Some(text) = text {
+                value["text"] = text;
+            }
+            let score: Score = serde_json::from_value(value.clone()).unwrap();
+            assert_eq!(
+                score.text.as_deref(),
+                value.get("text").and_then(|text| text.as_str())
+            );
+            score.validate().unwrap();
+            let encoded = serde_json::to_string(&score).unwrap();
+            assert_eq!(serde_json::from_str::<Score>(&encoded).unwrap(), score);
+        }
+    }
+
+    #[test]
+    fn accepts_sustain_overlapping_notes_and_all_track_roles() {
+        let mut score = example_score();
+        score.instrument.playback_mode = PlaybackMode::Sustain;
+        score.tracks[0].notes[0].duration_ticks = 1920;
+        for (role, spelling) in [
+            (TrackRole::Melody, "melody"),
+            (TrackRole::Harmony, "harmony"),
+            (TrackRole::Bass, "bass"),
+            (TrackRole::Accompaniment, "accompaniment"),
+            (TrackRole::Percussion, "percussion"),
+            (TrackRole::Unknown, "unknown"),
+        ] {
+            score.tracks[0].role = role;
+            score.validate().unwrap();
+            let encoded = serde_json::to_value(&score).unwrap();
+            assert_eq!(encoded["instrument"]["playback_mode"], "sustain");
+            assert_eq!(encoded["tracks"][0]["role"], spelling);
+            assert_eq!(serde_json::from_value::<Score>(encoded).unwrap(), score);
+        }
+        assert_eq!(score.key_number_for(&Pitch::parse("C#4").unwrap()), None);
     }
 }

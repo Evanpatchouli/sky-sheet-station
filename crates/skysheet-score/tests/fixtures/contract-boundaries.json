@@ -1,0 +1,137 @@
+[
+  {
+    "name": "tick: last valid start and end",
+    "changes": { "/tracks/0/notes/0/start_tick": 9007199254740990, "/tracks/0/notes/0/duration_ticks": 1 },
+    "schema_valid": true,
+    "rust_error": null
+  },
+  {
+    "name": "tick: maximum duration from zero",
+    "changes": { "/tracks/0/notes/0/start_tick": 0, "/tracks/0/notes/0/duration_ticks": 9007199254740991 },
+    "schema_valid": true,
+    "rust_error": null
+  },
+  {
+    "name": "tick: one tick from zero",
+    "changes": { "/tracks/0/notes/0/start_tick": 0, "/tracks/0/notes/0/duration_ticks": 1 },
+    "schema_valid": true,
+    "rust_error": null
+  },
+  {
+    "name": "tick: start exceeds maximum",
+    "changes": { "/tracks/0/notes/0/start_tick": 9007199254740992, "/tracks/0/notes/0/duration_ticks": 1 },
+    "schema_valid": false,
+    "rust_error": "start_tick 9007199254740992"
+  },
+  {
+    "name": "tick: duration exceeds maximum",
+    "changes": { "/tracks/0/notes/0/duration_ticks": 9007199254740992 },
+    "schema_valid": false,
+    "rust_error": "duration_ticks 9007199254740992"
+  },
+  {
+    "name": "tick: legal fields with end one above maximum",
+    "changes": { "/tracks/0/notes/0/start_tick": 9007199254740990, "/tracks/0/notes/0/duration_ticks": 2 },
+    "schema_valid": true,
+    "rust_error": "end_tick 9007199254740992"
+  },
+  {
+    "name": "tick: maximum start cannot fit positive duration",
+    "changes": { "/tracks/0/notes/0/start_tick": 9007199254740991, "/tracks/0/notes/0/duration_ticks": 1 },
+    "schema_valid": true,
+    "rust_error": "end_tick 9007199254740992"
+  },
+  {
+    "name": "tick: both fields at maximum",
+    "changes": { "/tracks/0/notes/0/start_tick": 9007199254740991, "/tracks/0/notes/0/duration_ticks": 9007199254740991 },
+    "schema_valid": true,
+    "rust_error": "end_tick 18014398509481982"
+  },
+  {
+    "name": "tick: u64 addition overflow",
+    "changes": { "/tracks/0/notes/0/start_tick": 18446744073709551615, "/tracks/0/notes/0/duration_ticks": 1 },
+    "schema_valid": false,
+    "rust_error": "end_tick overflows u64"
+  },
+  {
+    "name": "tick: zero duration remains invalid",
+    "changes": { "/tracks/0/notes/0/duration_ticks": 0 },
+    "schema_valid": false,
+    "rust_error": "duration_ticks must be at least 1"
+  },
+  {
+    "name": "numerator: minimum",
+    "changes": { "/timeline/time_signature/numerator": 1 },
+    "schema_valid": true,
+    "rust_error": null
+  },
+  {
+    "name": "numerator: maximum",
+    "changes": { "/timeline/time_signature/numerator": 65535 },
+    "schema_valid": true,
+    "rust_error": null
+  },
+  {
+    "name": "numerator: above maximum",
+    "changes": { "/timeline/time_signature/numerator": 65536 },
+    "schema_valid": false,
+    "rust_error": "65536"
+  },
+  {
+    "name": "numerator: zero",
+    "changes": { "/timeline/time_signature/numerator": 0 },
+    "schema_valid": false,
+    "rust_error": "time_signature"
+  },
+  { "name": "denominator: 1", "changes": { "/timeline/time_signature/denominator": 1 }, "schema_valid": true, "rust_error": null },
+  { "name": "denominator: 2", "changes": { "/timeline/time_signature/denominator": 2 }, "schema_valid": true, "rust_error": null },
+  { "name": "denominator: 4", "changes": { "/timeline/time_signature/denominator": 4 }, "schema_valid": true, "rust_error": null },
+  { "name": "denominator: 8", "changes": { "/timeline/time_signature/denominator": 8 }, "schema_valid": true, "rust_error": null },
+  { "name": "denominator: 16", "changes": { "/timeline/time_signature/denominator": 16 }, "schema_valid": true, "rust_error": null },
+  { "name": "denominator: 32", "changes": { "/timeline/time_signature/denominator": 32 }, "schema_valid": true, "rust_error": null },
+  { "name": "denominator: 64", "changes": { "/timeline/time_signature/denominator": 64 }, "schema_valid": true, "rust_error": null },
+  { "name": "denominator: zero", "changes": { "/timeline/time_signature/denominator": 0 }, "schema_valid": false, "rust_error": "time_signature" },
+  { "name": "denominator: non power of two", "changes": { "/timeline/time_signature/denominator": 3 }, "schema_valid": false, "rust_error": "time_signature" },
+  { "name": "denominator: first unsupported power of two", "changes": { "/timeline/time_signature/denominator": 128 }, "schema_valid": false, "rust_error": "time_signature" },
+  {
+    "name": "pitch: custom instrument accepts both MIDI endpoints",
+    "changes": {
+      "/instrument/id": "custom",
+      "/instrument/keys": ["C-1", "C4", "E4", "G4", "G9"],
+      "/tracks/0/notes/0/pitch": "C-1",
+      "/tracks/0/notes/1/pitch": "G9"
+    },
+    "schema_valid": true,
+    "rust_error": null
+  },
+  {
+    "name": "pitch: instrument key below MIDI range",
+    "changes": { "/instrument/id": "custom", "/instrument/keys": ["B-2", "C4", "E4", "G4"] },
+    "schema_valid": true,
+    "rust_error": "outside MIDI range 0..=127"
+  },
+  {
+    "name": "pitch: instrument key above MIDI range",
+    "changes": { "/instrument/id": "custom", "/instrument/keys": ["C4", "E4", "G4", "G#9"] },
+    "schema_valid": true,
+    "rust_error": "outside MIDI range 0..=127"
+  },
+  {
+    "name": "pitch: note below MIDI range",
+    "changes": { "/tracks/0/notes/0/pitch": "B-2" },
+    "schema_valid": true,
+    "rust_error": "outside MIDI range 0..=127"
+  },
+  {
+    "name": "pitch: note above MIDI range",
+    "changes": { "/tracks/0/notes/0/pitch": "C10" },
+    "schema_valid": true,
+    "rust_error": "outside MIDI range 0..=127"
+  },
+  {
+    "name": "pitch: in MIDI range but not in Sky keys",
+    "changes": { "/tracks/0/notes/0/pitch": "C#4" },
+    "schema_valid": true,
+    "rust_error": "not playable"
+  }
+]

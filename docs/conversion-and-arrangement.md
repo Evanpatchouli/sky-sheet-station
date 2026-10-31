@@ -44,6 +44,13 @@ The first prototype should compare at least one polyphonic transcription baselin
 
 ## MIDI import
 
+The owner approved D6-A through D6-F after the initial diagnostic-flattening and
+short-note-error principles. The policy covers PPQ-based SMF Format 0/1 only;
+Format 2 and SMPTE support remain separate decisions. No importer or quantizer is
+implemented. See the [Phase 1 decision record](phase-1-decisions.md) and the
+[normative timing policy and examples](music-data-format.md#16-approved-midi-timing-conversion-policy-d6).
+Implementation and real-file validation remain Phase 2 and are not authorized here.
+
 MIDI import should preserve, where supported:
 
 - Track boundaries and track names.
@@ -55,7 +62,39 @@ MIDI import should preserve, where supported:
 
 The exported Sky arrangement omits velocity because the target game instruments do not expose MIDI-style per-note dynamics.
 
-MIDI files can contain tempo changes. The v1 score stores one reference tempo and no tempo map. The importer must convert MIDI note-on/note-off positions to absolute elapsed time using the source tempo map, then encode those positions on the v1 score timeline at one selected reference tempo. This preserves event timing to the nearest tick but flattens the original tempo-map metadata. The importer must report that flattening occurred.
+The v1 score stores one reference tempo and no tempo map. Approved flattening must
+preserve absolute note onset/end times to the target tick grid and report the lost
+tempo map and beat/bar preservation limits; it is not a lossless MIDI round trip.
+Use an explicitly selected valid reference tempo, otherwise the effective source
+tempo at zero; retain leading silence. Missing source tempo uses 500000 microseconds
+per quarter note until an explicit event, with a diagnostic. Invalid tempo errors;
+same-tick equal values merge and differing values fail, even in one track. Scan all
+tracks and diagnose tempo events outside the first track; track order must not
+choose a winner. A target tempo never substitutes for source timing.
+
+Round absolute endpoints on the common output grid to nearest ticks, exact halves
+upward, then subtract to obtain duration. Do not sum rounded intervals, separately
+round duration or shift events to distribute error. Zero duration defaults to a
+conversion error; a positive result from a sub-tick source duration is allowed.
+Use the actual written binary64 reference tempo and reliable arithmetic. Validate
+the rounded output bounds; calculation uncertainty, overflow or invalid output
+fails the whole conversion, without clamping, note removal or new BPM limits.
+
+Retain the initial nominal meter, defaulting to 4/4 with a diagnostic; report
+discarded later changes. Conflicting same-tick signatures and unrepresentable
+initial meter interpretations fail. Source-valid later signatures discarded from
+the output may exceed v1's meter range. Omit metronome-click data with diagnostics;
+nonstandard notation-unit relationships are unsupported. Meter changes never
+rescale note time, pad bars or introduce segmentation.
+
+Approved D1 requires generated notes to reference exact strings in the chosen
+profile, including noncanonical spellings. Canonical pitch spelling is recommended
+for newly generated data without conflicting existing profile identity; never
+silently normalize or merge the profile's keys.
+
+Approved D8 keeps source-note provenance outside the v1 score. Loss diagnostics
+remain required; a separate report may be designed only in a later scoped task.
+No report schema or structured provenance in user-authored score text is introduced.
 
 ## Music analysis
 
@@ -140,5 +179,5 @@ Evaluate:
 - Is source separation worth its additional cost for the first release?
 - Which melody extraction method works best for mixed recordings?
 - How should the algorithm rank melody notes against chord tones and bass notes?
-- Validate the v1 policy for flattening MIDI tempo maps against real files and document the chosen reference-tempo selection rule.
+- Verify approved D6-A through D6-F against a future numeric implementation and real files only in separately authorized Phase 2 work. Format 2/SMPTE support, other MIDI constructs and export behavior require their own decisions.
 - What octave convention matches the in-game 15-key instrument?

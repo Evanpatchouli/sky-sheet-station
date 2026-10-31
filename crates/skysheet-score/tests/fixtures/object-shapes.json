@@ -1,0 +1,44 @@
+[
+  {
+    "name": "object: Score positional array",
+    "changes": { "": ["1.0", {"id":"score-001","name":"Example song"}, {"id":"custom","name":"Custom","playback_mode":"trigger","keys":["C4"]}, {"ppq":960,"tempo":120,"time_signature":{"numerator":4,"denominator":4}}, [], null] },
+    "schema_valid": false,
+    "rust_error": "expected an object for Score"
+  },
+  {
+    "name": "object: Metadata positional array",
+    "changes": { "/metadata": ["score-001", "Example song"] },
+    "schema_valid": false,
+    "rust_error": "expected an object for Metadata"
+  },
+  {
+    "name": "object: Instrument positional array",
+    "changes": { "/instrument": ["sky-15", "Sky 15-key instrument", "trigger", ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6"]] },
+    "schema_valid": false,
+    "rust_error": "expected an object for Instrument"
+  },
+  {
+    "name": "object: Timeline positional array",
+    "changes": { "/timeline": [960, 120, {"numerator":4,"denominator":4}] },
+    "schema_valid": false,
+    "rust_error": "expected an object for Timeline"
+  },
+  {
+    "name": "object: TimeSignature positional array",
+    "changes": { "/timeline/time_signature": [4, 4] },
+    "schema_valid": false,
+    "rust_error": "expected an object for TimeSignature"
+  },
+  {
+    "name": "object: Track positional array",
+    "changes": { "/tracks/0": ["track-001", "Melody", "melody", [{"id":"note-001","pitch":"C4","start_tick":0,"duration_ticks":480}]] },
+    "schema_valid": false,
+    "rust_error": "expected an object for Track"
+  },
+  {
+    "name": "object: Note positional array",
+    "changes": { "/tracks/0/notes/0": ["note-001", "C4", 0, 480] },
+    "schema_valid": false,
+    "rust_error": "expected an object for Note"
+  }
+]

@@ -2,7 +2,8 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/Evanpatchouli/sky-sheet-station/blob/main/docs/schemas/sky-score-v1.schema.json",
   "title": "SkySheet Score v1",
-  "description": "Instrument-adapted SkySheet score format, version 1.0.",
+  "description": "Instrument-adapted SkySheet score format, version 1.0 (pre-freeze revision). Structural validation only; raw integer spelling, unique decoded object member names, binary64 tempo validity, MIDI pitch range, note end positions, pitch membership, and ID uniqueness require additional checks.",
+  "$comment": "Approved D2-D4: validate original JSON text before a generic object/number representation loses spelling or duplicate members. Integer fields use whole tokens matching ^(?:0|[1-9][0-9]*)$ (not strings); duplicate member names are rejected after JSON string decoding. Tempo must decode to finite positive binary64, including positive subnormals. Schema numeric assertions alone do not express these input rules, and validator numeric capabilities vary.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -14,7 +15,8 @@
   ],
   "properties": {
     "format_version": {
-      "const": "1.0"
+      "const": "1.0",
+      "description": "Exact supported format version, independent of crate versions (D5). Future minor versions and unknown fields are not automatically readable. The full 1.0 contract is not yet frozen."
     },
     "metadata": {
       "$ref": "#/$defs/metadata"
@@ -47,7 +49,7 @@
     "pitch": {
       "type": "string",
       "pattern": "^[A-G](?:#)?-?[0-9]+$",
-      "description": "Scientific pitch notation. SkySheet defines C4 as MIDI note 60 and uses sharps as canonical chromatic spelling."
+      "description": "D1: preserve the decoded string; C4 = MIDI 60. Leading octave zeros, negative zero and enharmonic sharps remain accepted within MIDI 0..127. Canonical spelling is recommended for newly generated data, not enforced on input. Membership and uniqueness use exact strings, not MIDI equivalence. The pattern checks syntax only; MIDI range requires semantic validation."
     },
     "metadata": {
       "type": "object",
@@ -68,6 +70,7 @@
     },
     "instrument": {
       "type": "object",
+      "description": "D7: embedded profile snapshot; no profile_version field. Preserve ordered keys rather than overwrite them from a registry. Stable ID mappings must not be silently redefined. The sky-15 acoustic calibration remains unresolved.",
       "additionalProperties": false,
       "required": [
         "id",
@@ -96,7 +99,7 @@
           "items": {
             "$ref": "#/$defs/pitch"
           },
-          "description": "Ordered playable pitches. Array index plus one is the game key number."
+          "description": "Ordered playable pitch strings. Array index plus one is the game key number. Exact string uniqueness permits separate same-sounding keys in custom profiles; do not normalize, merge or sort them."
         }
       },
       "allOf": [
@@ -147,11 +150,13 @@
       ],
       "properties": {
         "ppq": {
-          "const": 960
+          "const": 960,
+          "description": "The original JSON token must be the plain integer 960; decimal/exponent spellings are rejected by the input reader."
         },
         "tempo": {
           "type": "number",
-          "exclusiveMinimum": 0
+          "exclusiveMinimum": 0,
+          "description": "BPM decoded as finite positive binary64 (f64), including positive subnormals. Decimal and exponent notation are allowed. Reject overflow and underflow-to-zero; no extra musical BPM bound is imposed. This Schema does not by itself enforce the decoder's representation limits."
         },
         "time_signature": {
           "type": "object",
@@ -163,7 +168,9 @@
           "properties": {
             "numerator": {
               "type": "integer",
-              "minimum": 1
+              "minimum": 1,
+              "maximum": 65535,
+              "description": "Original JSON token must use plain unsigned integer spelling; no decimal point, exponent, negative zero, or numeric string."
             },
             "denominator": {
               "enum": [
@@ -174,7 +181,8 @@
                 16,
                 32,
                 64
-              ]
+              ],
+              "description": "The supported v1 meter denominators in plain unsigned integer spelling; decimal/exponent tokens and negative zero are rejected by the input reader. This limit does not change PPQ or note timing."
             }
           }
         }
@@ -182,6 +190,7 @@
     },
     "note": {
       "type": "object",
+      "description": "Semantic validation additionally requires start_tick + duration_ticks <= 9007199254740991; field bounds alone do not enforce the note end limit.",
       "additionalProperties": false,
       "required": [
         "id",
@@ -198,11 +207,15 @@
         },
         "start_tick": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Absolute start tick in plain unsigned integer token spelling; no decimal point, exponent, negative zero, or numeric string."
         },
         "duration_ticks": {
           "type": "integer",
-          "minimum": 1
+          "minimum": 1,
+          "maximum": 9007199254740991,
+          "description": "Positive duration in plain unsigned integer token spelling; no decimal point, exponent, negative zero, or numeric string."
         }
       }
     },

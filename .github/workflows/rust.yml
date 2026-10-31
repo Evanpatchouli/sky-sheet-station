@@ -11,5 +11,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - name: Check formatting
+        run: cargo fmt --all -- --check
       - name: Run workspace tests
-        run: cargo test --workspace
+        run: cargo test --workspace --locked
+      - name: Validate score Schema and shared fixtures
+        shell: pwsh
+        run: ./scripts/test-score-schema.ps1
+      - name: Run Clippy
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings

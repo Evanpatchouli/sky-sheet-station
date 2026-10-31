@@ -1,0 +1,17 @@
+[
+  { "name": "tick decimal integer", "find": "\"start_tick\": 0", "replace": "\"start_tick\": 1.0", "rust_error": "invalid type" },
+  { "name": "tick exponent integer", "find": "\"start_tick\": 0", "replace": "\"start_tick\": 1e0", "rust_error": "invalid type" },
+  { "name": "tick negative zero", "find": "\"start_tick\": 0", "replace": "\"start_tick\": -0", "rust_error": "invalid type" },
+  { "name": "ppq decimal integer", "find": "\"ppq\": 960", "replace": "\"ppq\": 960.0", "rust_error": "invalid type" },
+  { "name": "meter exponent integer", "find": "\"numerator\": 4", "replace": "\"numerator\": 4e0", "rust_error": "invalid type" },
+  { "name": "duplicate metadata name", "find": "\"name\": \"Example song\"", "replace": "\"name\": \"first\", \"name\": \"second\"", "rust_error": "duplicate field `name`" },
+  { "name": "duplicate optional text with null first", "find": "\"text\": \"Optional user note, lyric, or reminder\"", "replace": "\"text\": null, \"text\": \"second\"", "rust_error": "duplicate field `text`" },
+  { "name": "duplicate optional text with string first", "find": "\"text\": \"Optional user note, lyric, or reminder\"", "replace": "\"text\": \"first\", \"text\": null", "rust_error": "duplicate field `text`" },
+  { "name": "tempo overflow", "find": "\"tempo\": 120", "replace": "\"tempo\": 1e400", "rust_error": "number out of range" },
+  { "name": "tempo underflow", "find": "\"tempo\": 120", "replace": "\"tempo\": 1e-400", "rust_error": "timeline.tempo" },
+  { "name": "tempo small representable", "find": "\"tempo\": 120", "replace": "\"tempo\": 1e-300", "rust_error": null },
+  { "name": "tempo large representable", "find": "\"tempo\": 120", "replace": "\"tempo\": 1e300", "rust_error": null },
+  { "name": "metadata array instead of object", "changes": { "/metadata": ["score-001", "Example song"] }, "rust_error": "expected an object for Metadata" },
+  { "name": "meter array instead of object", "changes": { "/timeline/time_signature": [4, 4] }, "rust_error": "expected an object for TimeSignature" },
+  { "name": "note array instead of object", "changes": { "/tracks/0/notes/0": ["note-001", "C4", 0, 480] }, "rust_error": "expected an object for Note" }
+]
