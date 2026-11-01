@@ -14,6 +14,7 @@ Usage:
   skysheet analyze-midi <FILE> [--json]
   skysheet inspect-music <FILE.mid> [--json]
   skysheet analyze <FILE.mid> [--json]
+  skysheet arrange <FILE.mid> -o <OUTPUT.json> [--auto | --transpose <SEMITONES>] [--json]
 
 Options:
   -h, --help     Show help (also accepted with inspect/validate)
@@ -21,6 +22,9 @@ Options:
   --json         Emit one JSON result, including errors
   -o, --output   New output file (existing destinations are refused)
   --tempo        Import reference BPM (default: effective source tempo at zero)
+  --auto         Search every global semitone offset (arrange default)
+  --transpose    Fixed global offset -127..127; never replaced by auto search
+  --report       New arrangement report path (default: OUTPUT.json.arrangement.json)
   --             Treat remaining arguments as positional (for filenames starting with -)
 
 Score inputs use original JSON and Score validation; input files are never modified.
@@ -39,6 +43,7 @@ pub enum Command {
     AnalyzeMidi,
     InspectMusic,
     Analyze,
+    Arrange,
 }
 
 impl Command {
@@ -54,6 +59,7 @@ impl Command {
             Self::AnalyzeMidi => "analyze-midi",
             Self::InspectMusic => "inspect-music",
             Self::Analyze => "analyze",
+            Self::Arrange => "arrange",
         }
     }
 }
@@ -64,6 +70,8 @@ pub struct Args {
     pub file: Option<PathBuf>,
     pub output: Option<PathBuf>,
     pub tempo: Option<f64>,
+    pub transpose: Option<i16>,
+    pub report: Option<PathBuf>,
 }
 
 // Detect output mode even when argument parsing fails. After --, --json is a filename.
@@ -81,6 +89,9 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
     let mut json = false;
     let mut output = None;
     let mut tempo = None;
+    let mut transpose = None;
+    let mut report = None;
+    let mut auto = false;
     let mut iter = args.iter();
     while let Some(arg) = iter.next() {
         if !literal {
@@ -108,6 +119,27 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
                         return Err("tempo must be finite and positive".into());
                     }
                     tempo = Some(value);
+                    continue;
+                }
+                Some("--auto") if !auto => {
+                    auto = true;
+                    continue;
+                }
+                Some("--report") if report.is_none() => {
+                    report = Some(PathBuf::from(iter.next().ok_or("missing report path")?));
+                    continue;
+                }
+                Some("--transpose") if transpose.is_none() => {
+                    let value: i16 = iter
+                        .next()
+                        .and_then(|s| s.to_str())
+                        .ok_or("missing transpose semitones")?
+                        .parse()
+                        .map_err(|_| "transpose must be an integer in -127..127")?;
+                    if !(-127..=127).contains(&value) {
+                        return Err("transpose must be in -127..127".into());
+                    }
+                    transpose = Some(value);
                     continue;
                 }
                 Some("--help" | "-h") if !help => {
@@ -142,6 +174,8 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
             file: None,
             output: None,
             tempo: None,
+            transpose: None,
+            report: None,
         });
     }
     let command = match positional[0].to_str() {
@@ -153,6 +187,7 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
         Some("analyze-midi") => Command::AnalyzeMidi,
         Some("inspect-music") => Command::InspectMusic,
         Some("analyze") => Command::Analyze,
+        Some("arrange") => Command::Arrange,
         _ => {
             return Err(format!(
                 "unsupported command {:?}; use --help",
@@ -169,6 +204,8 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
             file: None,
             output: None,
             tempo: None,
+            transpose: None,
+            report: None,
         });
     }
     if positional.len() != 2 || help {
@@ -177,21 +214,32 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
             command.name()
         ));
     }
-    if matches!(command, Command::ImportMidi | Command::ExportMidi) {
+    if matches!(
+        command,
+        Command::ImportMidi | Command::ExportMidi | Command::Arrange
+    ) {
         if output.is_none() {
             return Err("conversion requires -o <OUTPUT>".into());
         }
     } else if output.is_some() {
-        return Err("--output is only valid for import-midi/export-midi".into());
+        return Err("--output is only valid for import-midi/export-midi/arrange".into());
     }
     if tempo.is_some() && command != Command::ImportMidi {
         return Err("--tempo is only valid for import-midi".into());
+    }
+    if (auto || transpose.is_some() || report.is_some()) && command != Command::Arrange {
+        return Err("--auto/--transpose are only valid for arrange".into());
+    }
+    if auto && transpose.is_some() {
+        return Err("--auto and --transpose cannot be combined".into());
     }
     Ok(Args {
         command,
         file: Some(PathBuf::from(positional[1])),
         output,
         tempo,
+        transpose,
+        report,
     })
 }
 

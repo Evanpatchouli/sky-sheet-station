@@ -6,6 +6,8 @@ import { Transport } from "./components/Transport.tsx";
 import { Modal } from "./components/Modal.tsx";
 import { ImportReport } from "./components/ImportReport.tsx";
 import { MusicAnalysis } from "./components/MusicAnalysis.tsx";
+import { ArrangementReport } from "./components/ArrangementReport.tsx";
+import type { ArrangementReport as ArrangementDiagnostic, LoadedArrangement } from "./arrangement/model.ts";
 import { analysisErrorMessage } from "./analysis/model.ts";
 import type { LoadedAnalysis } from "./analysis/model.ts";
 import { PlayerEngine } from "./player/engine.ts";
@@ -21,6 +23,7 @@ import {
   openScore,
   openMidi,
   analyzeMidi,
+  arrangeMidi,
   selectAudio,
 } from "./services/desktop.ts";
 
@@ -30,13 +33,18 @@ export default function App() {
   const [song, setSong] = useState<PreparedScore | null>(null);
   const [busy, setBusy] = useState(false),
     [error, setError] = useState<string | null>(null);
-  const [modal, setModal] = useState<"info" | "settings" | "audio" | "import" | "analysis" | null>(
+  const [modal, setModal] = useState<"info" | "settings" | "audio" | "import" | "analysis" | "arrange" | null>(
     null,
   );
   const [audio, setAudio] = useState<string | null>(null);
   const [analysis, setAnalysis] = useState<LoadedAnalysis | null>(null);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [analysisBusy, setAnalysisBusy] = useState(false);
+  const [arrangement, setArrangement] = useState<LoadedArrangement | null>(null);
+  const [arrangementReport, setArrangementReport] = useState<ArrangementDiagnostic | null>(null);
+  const [arrangementError, setArrangementError] = useState<string | null>(null);
+  const [arrangementMode, setArrangementMode] = useState("auto");
+  const [transpose, setTranspose] = useState("0");
   const [importReport, setImportReport] = useState<Report | null>(null);
   const [zoom, setZoom] = useState(1),
     [follow, setFollow] = useState(true),
@@ -83,12 +91,31 @@ export default function App() {
     setBusy(true); setAnalysisBusy(true); setAnalysisError(null); setModal("analysis");
     try {
       const loaded = await analyzeMidi();
-      if (loaded && id === request.current) setAnalysis(loaded);
+      if (loaded && id === request.current) { setAnalysis(loaded); setArrangement(null); setArrangementReport(null); setArrangementError(null); }
     } catch (error) {
       if (id === request.current) setAnalysisError(analysisErrorMessage(error));
     } finally {
       if (id === request.current) { setBusy(false); setAnalysisBusy(false); }
     }
+  }
+  async function arrange() {
+    if (!analysis) return;
+    const shift = arrangementMode === "auto" ? null : Number(transpose);
+    if (shift !== null && (transpose.trim() === "" || !Number.isInteger(shift) || shift < -127 || shift > 127)) {
+      setArrangementError("移调必须是 -127..127 的整数。"); return;
+    }
+    const id = ++request.current;
+    engine.pause(); setBusy(true); setArrangementError(null);
+    try {
+      const result = await arrangeMidi(analysis.report.source_document_id, shift);
+      if (result && id === request.current) { setArrangement(result); setArrangementReport(result.report); }
+    } catch (e) {
+      if (id === request.current) {
+        setArrangementError(analysisErrorMessage(e));
+        if (e && typeof e === "object" && "report" in e && e.report) setArrangementReport(e.report as ArrangementDiagnostic);
+        setArrangement(null);
+      }
+    } finally { if (id === request.current) setBusy(false); }
   }
   const message = error || state.error;
   return (
@@ -136,6 +163,7 @@ export default function App() {
           )}
           <button aria-label="分析 MIDI" disabled={busy} onClick={() => void analyze()}><Icon name="info" /><span>分析 MIDI</span></button>
           {analysis && <button aria-label="分析结果" onClick={() => setModal("analysis")}><Icon name="info" /><span>分析结果</span></button>}
+          <button aria-label="Sky 编曲" disabled={busy} onClick={() => setModal("arrange")}><Icon name="audio" /><span>Sky 编曲</span></button>
           <button disabled={!song} onClick={() => setModal("info")}>
             <Icon name="info" />
             <span>乐谱信息</span>
@@ -260,7 +288,25 @@ export default function App() {
       {modal === "analysis" && <Modal title="音乐分析" wide onClose={() => setModal(null)}>
         {analysisBusy && <p role="status">正在读取 MIDI 并通过 CLI 分析…</p>}
         {analysisError && <p className="notice error" role="alert">{analysisError}</p>}
+        {analysis && <button className="primary" disabled={busy} onClick={() => setModal("arrange")}>适配为 Sky 乐谱</button>}
         {analysis ? <MusicAnalysis loaded={analysis} /> : !analysisBusy && <p>选择 MIDI 文件以查看原始轨道、音域与旋律候选。</p>}
+      </Modal>}
+      {modal === "arrange" && <Modal title="Sky 15-key 编曲" wide onClose={() => setModal(null)}>
+        <p>目标乐器：sky-15 · C4–C6 · 全曲统一移调</p>
+        {!analysis ? <><p>先分析 MIDI，再选择自动适配或固定移调。</p><button className="primary" disabled={busy} onClick={() => void analyze()}>选择 MIDI 并分析</button></> : <>
+          <p className="analysis-source">来源：{analysis.source}</p>
+          <div className="arrangement-controls">
+            <label><input type="radio" name="arrangement-mode" checked={arrangementMode === "auto"} disabled={busy} onChange={() => setArrangementMode("auto")} /> 自动适配</label>
+            <label><input type="radio" name="arrangement-mode" checked={arrangementMode === "fixed"} disabled={busy} onChange={() => setArrangementMode("fixed")} /> 固定移调</label>
+            <label>半音数 <input aria-label="移调半音数" type="number" min="-127" max="127" step="1" value={transpose} disabled={busy || arrangementMode !== "fixed"} onChange={e => setTranspose(e.target.value)} /></label>
+            <button className="primary" disabled={busy} onClick={() => void arrange()}>生成并保存 Score</button>
+          </div>
+          <p className="muted">将同时保存独立编曲报告；已有文件不会覆盖。无法映射的音符会在报告中逐一列出。</p>
+        </>}
+        {busy && <p role="status">正在通过 CLI 编曲并验证…</p>}
+        {arrangementError && <p className="notice error" role="alert">{arrangementError}</p>}
+        {arrangement && <button className="primary" disabled={busy} onClick={() => { void load(async () => arrangement.loaded); setModal(null); }}>加载生成乐谱并预览试听</button>}
+        {arrangementReport && <ArrangementReport key={`${arrangementReport.source_document_id}-${arrangementReport.transpose_semitones}`} report={arrangementReport} />}
       </Modal>}
       {modal === "settings" && (
         <Modal title="试听设置" onClose={() => setModal(null)}>

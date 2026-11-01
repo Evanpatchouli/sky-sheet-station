@@ -116,11 +116,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "skysheet-arrange"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "skysheet-midi",
+ "skysheet-music",
+ "skysheet-score",
+]
+
+[[package]]
 name = "skysheet-cli"
 version = "0.1.0-alpha.1"
 dependencies = [
  "serde",
  "serde_json",
+ "skysheet-arrange",
  "skysheet-midi",
  "skysheet-music",
  "skysheet-score",

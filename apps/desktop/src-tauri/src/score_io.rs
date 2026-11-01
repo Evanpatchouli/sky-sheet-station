@@ -73,6 +73,9 @@ impl Snapshot {
 
 impl Drop for Snapshot {
     fn drop(&mut self) {
+        let mut report = self.converted_path().into_os_string();
+        report.push(".arrangement.json");
+        let _ = fs::remove_file(std::path::PathBuf::from(report));
         let _ = fs::remove_file(self.converted_path());
         let _ = fs::remove_file(&self.path);
         if let Some(dir) = self.path.parent() {

@@ -10,13 +10,13 @@ use std::{
     path::Path,
 };
 
-fn failure(error: skysheet_midi::Failure) -> Diagnostic {
+pub(crate) fn failure(error: skysheet_midi::Failure) -> Diagnostic {
     let mut diagnostic = Diagnostic::new("midi_conversion", error.to_string(), INVALID_SCORE);
     diagnostic.report = Some(error.report);
     diagnostic
 }
 
-fn read_midi(path: &Path) -> Result<Vec<u8>, Diagnostic> {
+pub(crate) fn read_midi(path: &Path) -> Result<Vec<u8>, Diagnostic> {
     let file =
         fs::File::open(path).map_err(|e| Diagnostic::new("file_read", e.to_string(), IO_ERROR))?;
     let mut bytes = Vec::new();
@@ -28,7 +28,7 @@ fn read_midi(path: &Path) -> Result<Vec<u8>, Diagnostic> {
 
 // create_new refuses existing files, symlinks and hard-link aliases of input.
 // Conversion and encoding have already succeeded before this function is called.
-fn write_new(path: &Path, bytes: &[u8]) -> Result<(), Diagnostic> {
+pub(crate) fn write_new(path: &Path, bytes: &[u8]) -> Result<(), Diagnostic> {
     let mut file = OpenOptions::new()
         .write(true)
         .create_new(true)

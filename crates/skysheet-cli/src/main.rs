@@ -1,4 +1,5 @@
 mod args;
+mod arrange;
 mod midi;
 mod music;
 
@@ -17,6 +18,13 @@ const IO_ERROR: u8 = 3;
 const INTERNAL: u8 = 4;
 
 #[derive(Debug, Serialize)]
+#[serde(untagged)]
+enum ArrangementDiagnostic {
+    Complete(Box<skysheet_arrange::ArrangementReport>),
+    Preparation(Value),
+}
+
+#[derive(Debug, Serialize)]
 struct Diagnostic {
     kind: &'static str,
     message: String,
@@ -25,6 +33,8 @@ struct Diagnostic {
     column: Option<usize>,
     #[serde(skip_serializing_if = "Option::is_none")]
     report: Option<Box<skysheet_midi::Report>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    arrangement_report: Option<Box<ArrangementDiagnostic>>,
     #[serde(skip)]
     exit_code: u8,
 }
@@ -38,6 +48,7 @@ impl Diagnostic {
             line: None,
             column: None,
             report: None,
+            arrangement_report: None,
             exit_code,
         }
     }
@@ -141,6 +152,7 @@ fn human_inspect(score: &Score, path: &Path) -> String {
 
 fn execute(args: &args::Args) -> Result<(Value, String), Diagnostic> {
     match args.command {
+        Command::Arrange => arrange::execute(args),
         Command::ImportMidi
         | Command::ExportMidi
         | Command::InspectMidi
@@ -207,6 +219,27 @@ fn emit(response: &Response, human: &str, json_mode: bool) -> u8 {
         );
         for issue in &error.issues {
             let _ = writeln!(stderr, "  - {issue}");
+        }
+        if let Some(ArrangementDiagnostic::Complete(report)) = error.arrangement_report.as_deref() {
+            let _ = writeln!(
+                stderr,
+                "  Arrangement retained {}/{}; dropped {}; report: {:?}",
+                report.kept, report.original_notes, report.dropped, report.report_file
+            );
+            for n in report.note_mappings.iter().filter(|n| !n.mapped) {
+                let _ = writeln!(
+                    stderr,
+                    "  track {} event {:?} {}: MIDI {} -> {}, tick {}, duration {}, {:?}",
+                    n.source_track,
+                    n.source_event_index,
+                    n.source_note_id,
+                    n.source_midi,
+                    n.target_midi,
+                    n.source_start_tick,
+                    n.source_duration_ticks,
+                    n.drop_reason
+                );
+            }
         }
         if let Some(report) = &error.report {
             for d in &report.diagnostics {

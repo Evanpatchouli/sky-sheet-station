@@ -18,7 +18,7 @@ pub fn analysis_args(path: &Path) -> Vec<OsString> {
 }
 // JSON sent over WebView IPC must not round original u64 tick values. This is
 // a display projection, not a second music model or alteration of CLI JSON.
-fn exact_display_integers(value: &mut Value) {
+pub(crate) fn exact_display_integers(value: &mut Value) {
     match value {
         Value::Array(values) => {
             for v in values {

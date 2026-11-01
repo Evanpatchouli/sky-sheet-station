@@ -32,6 +32,9 @@ Repository-wide instructions live in [AGENTS.md](../AGENTS.md). Product goals an
   historical gap reconciliation, subsequently addressed.
 - [Phase 3 delivery](./phase-3-delivery.md): P3-A/B/C implementation, actual CLI/native
   evidence, final verification matrix and remaining limitations.
+- [Phase 4-A arrangement](./phase-4a-arrangement.md): global pitch search,
+  deterministic scoring, approved D6 projection, complete loss reports and
+  Score/CLI/desktop integration.
 
 ## Status
 
@@ -42,7 +45,8 @@ Earlier no-Phase-2 statements below describe prior milestones.
 See the [Phase 2 preparation record](phase-2-midi.md). The owner subsequently
 authorized Phase 3, now locally implemented and verified through the required CLI
 commands and existing desktop analysis view; see the delivery record.
-Phase 4 remains outside the current task, and remaining Phase 1 checks are not
+Phase 4-A is now implemented with the owner-approved D6 projection boundary.
+Phase 4-B/C remain deferred, and remaining Phase 1 checks are not
 declared complete. Earlier scope statements below describe historical milestones.
 
 Phase 1.5 delivers the first runnable CLI Alpha for existing Score files, including

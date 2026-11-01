@@ -11,6 +11,11 @@ version 2 of the internal `result.report`, including
 source facts, statistics, uncertain candidates and diagnostics. It accepts neither
 output paths nor reference-tempo overrides. See [music analysis](music-analysis.md).
 
+Phase 4-A adds `arrange <FILE.mid> -o <SCORE.json> [--auto | --transpose <SEMITONES>]
+[--report <REPORT.json>] [--json]`. Automatic global transposition is the default;
+fixed offsets are never replaced. Every loss is reported separately from Score.
+See [arrangement rules, reports and output safety](phase-4a-arrangement.md).
+
 ## Goals
 
 - The CLI is the primary interface to SkySheet.

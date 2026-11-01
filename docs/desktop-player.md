@@ -4,14 +4,22 @@ The owner authorized Phase 6 on 2026-11-01 before audio/MIDI conversion was
 implemented. This is a Windows desktop **Score visualization and local audition
 client**, not a transcription engine or game-input player. Phase 2 subsequently
 adds MIDI import through the packaged CLI; see [MIDI usage](midi.md).
-Score format and pitch mapping remain unchanged. Audio analysis and arrangement
-are not implemented.
+Score format and pitch mapping remain unchanged. Audio transcription remains
+unimplemented; Phase 4-A adds MIDI arrangement below.
 
 Phase 3 adds **分析 MIDI** and **分析结果** in the existing toolbar. They display
 the packaged CLI's unrestricted analysis without replacing the loaded Score.
 See [music analysis](music-analysis.md#desktop) and the
 [Phase 3 delivery/GUI verification](phase-3-delivery.md). The player engine and
 Score format are unchanged; analysis does not generate a playable arrangement.
+
+Phase 4-A adds **Sky 编曲** and **适配为 Sky 乐谱** after MIDI analysis. Choose
+automatic adaptation or a fixed signed semitone offset, save to a new Score path,
+review retention/loss details, then explicitly load the generated Score for
+preview and audition. CLI also saves a separate adjacent arrangement report.
+The desktop uses the analyzed MIDI snapshot and invokes the packaged CLI;
+failed/cancelled arrangement preserves the previous Score. See
+[Phase 4-A](phase-4a-arrangement.md) for the approved D6 timing boundary and tests.
 
 ## Run on Windows
 

@@ -11,6 +11,13 @@ Phase 3 adds `skysheet analyze-midi input.mid [--json]`, using the same source
 parser without Sky pitch constraints. See [music analysis](music-analysis.md).
 The Phase 2 conversion policies and commands below remain unchanged.
 
+Phase 4-A adds `skysheet arrange input.mid -o sky.json --auto [--json]` for
+unsupported pitches. It projects all source notes with the existing D6 engine,
+then applies a single global transposition and reports every unmapped note.
+`read_music` still retains original MIDI timing; `project_music` is a separate,
+immutable Score-time projection. `import-midi` still rejects unsupported pitches.
+See [arrangement](phase-4a-arrangement.md).
+
 ```powershell
 cargo build -p skysheet-cli --release --locked
 .\target\release\skysheet.exe import-midi input.mid -o output.json

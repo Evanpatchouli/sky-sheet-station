@@ -2,8 +2,10 @@
 mod export;
 mod import;
 mod music;
+mod projection;
 mod structure;
 mod timing;
+pub use projection::{ProjectedNote, ScoreTimeProjection, project_music};
 
 pub use music::read_music;
 

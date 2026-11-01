@@ -1,9 +1,12 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod analysis_io;
+mod arrangement_io;
 mod score_io;
 
 use score_io::{LoadedScore, Snapshot};
+use std::sync::Mutex;
+use tauri::Manager;
 use tauri_plugin_dialog::DialogExt;
 use tauri_plugin_shell::ShellExt;
 
@@ -155,18 +158,102 @@ async fn analyze_midi(
         .output()
         .await
         .map_err(|e| e.to_string())?;
-    analysis_io::check_analysis(output.status.code(), &output.stdout, &output.stderr, source)
-        .map(Some)
+    let loaded =
+        analysis_io::check_analysis(output.status.code(), &output.stdout, &output.stderr, source)?;
+    let document_id = loaded.report["source_document_id"]
+        .as_str()
+        .ok_or_else(|| "分析缺少源标识".to_string())?
+        .to_string();
+    *app.state::<Mutex<Option<arrangement_io::ArrangementSource>>>()
+        .lock()
+        .map_err(|e| e.to_string())? = Some(arrangement_io::ArrangementSource {
+        snapshot,
+        document_id,
+    });
+    Ok(Some(loaded))
+}
+
+#[tauri::command]
+async fn arrange_midi(
+    app: tauri::AppHandle,
+    source_document_id: String,
+    transpose: Option<i16>,
+) -> Result<Option<arrangement_io::LoadedArrangement>, score_io::ImportError> {
+    if transpose.is_some_and(|v| !(-127..=127).contains(&v)) {
+        return Err("移调必须是 -127..127 的整数".to_string().into());
+    }
+    // Copy the analyzed snapshot, not a potentially changed original file.
+    // Release the mutex before any await or picker interaction.
+    let snapshot = {
+        let state = app.state::<Mutex<Option<arrangement_io::ArrangementSource>>>();
+        let guard = state.lock().map_err(|e| e.to_string())?;
+        let source = guard.as_ref().ok_or_else(|| "请先分析 MIDI".to_string())?;
+        if source.document_id != source_document_id {
+            return Err("分析来源已变化，请重新查看分析结果".to_string().into());
+        }
+        Snapshot::midi(
+            &score_io::read_file(&source.snapshot.path)?,
+            source
+                .snapshot
+                .path
+                .file_name()
+                .ok_or_else(|| "无效来源".to_string())?,
+        )?
+    };
+    let picker = app.clone();
+    let selected = tauri::async_runtime::spawn_blocking(move || {
+        picker
+            .dialog()
+            .file()
+            .set_title("保存 Sky 编曲（不会覆盖已有文件）")
+            .set_file_name("sky-arrangement.json")
+            .add_filter("SkySheet Score", &["json"])
+            .blocking_save_file()
+    })
+    .await
+    .map_err(|e| e.to_string())?;
+    let Some(selected) = selected else {
+        return Ok(None);
+    };
+    let output_path = selected.into_path().map_err(|e| e.to_string())?;
+    let output = app
+        .shell()
+        .sidecar("skysheet")
+        .map_err(|e| e.to_string())?
+        .args(arrangement_io::arrangement_args(
+            &snapshot.path,
+            &output_path,
+            transpose,
+        ))
+        .output()
+        .await
+        .map_err(|e| e.to_string())?;
+    let report = arrangement_io::check_arrangement(
+        output.status.code(),
+        &output.stdout,
+        &output.stderr,
+        &output_path,
+        &source_document_id,
+    )?;
+    let loaded = load_bytes(
+        &app,
+        score_io::read_file(&output_path)?,
+        output_path.to_string_lossy().into_owned(),
+    )
+    .await?;
+    Ok(Some(arrangement_io::LoadedArrangement { loaded, report }))
 }
 
 fn main() {
     tauri::Builder::default()
+        .manage(Mutex::new(None::<arrangement_io::ArrangementSource>))
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
             open_score,
             open_midi,
             analyze_midi,
+            arrange_midi,
             load_example,
             select_audio
         ])

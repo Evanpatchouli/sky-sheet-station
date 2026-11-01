@@ -298,6 +298,96 @@ fn scan(bytes: &[u8]) -> Result<(Vec<String>, Report), Failure> {
 
 pub fn import(bytes: &[u8], options: &ImportOptions) -> Result<(Score, Report), Failure> {
     let (names, mut report) = scan(bytes)?;
+    let (timing, timeline) = prepare_timing(&mut report, options.reference_tempo)?;
+    for n in report.source_notes.clone() {
+        if !SKY_15_KEYS.contains(&n.pitch.as_str()) {
+            report.push(
+                "error",
+                "unsupported_pitch",
+                format!(
+                    "MIDI {} ({}) is not in sky-15; no transposition/deletion applied",
+                    n.key, n.pitch
+                ),
+                Some((n.track, n.on_event, n.start_tick)),
+            );
+        }
+    }
+    if report.failed() {
+        return Err(report.failure());
+    }
+    let mut tracks: Vec<_> = names
+        .into_iter()
+        .enumerate()
+        .map(|(i, name)| Track {
+            id: format!("midi-track-{}", i + 1),
+            name,
+            role: TrackRole::Unknown,
+            notes: Vec::new(),
+        })
+        .collect();
+    for (i, n) in report.source_notes.clone().into_iter().enumerate() {
+        let loc = Some((n.track, n.on_event, n.start_tick));
+        match (timing.endpoint(n.start_tick), timing.endpoint(n.end_tick)) {
+            (Ok((start, a)), Ok((end, b))) => {
+                if a || b {
+                    report.push("warning", "time_quantized", format!("source endpoints {}..{} mapped to {start}..{end}; endpoints rounded independently, half up", n.start_tick, n.end_tick), loc);
+                }
+                if end <= start {
+                    report.push(
+                        "error",
+                        "quantized_zero_duration",
+                        "end minus start is not positive; note not deleted or extended",
+                        loc,
+                    );
+                    continue;
+                }
+                tracks[n.track].notes.push(Note {
+                    id: format!("midi-note-{}", i + 1),
+                    pitch: Pitch::parse(n.pitch).expect("canonical MIDI pitch"),
+                    start_tick: start,
+                    duration_ticks: end - start,
+                });
+            }
+            (Err(e), _) | (_, Err(e)) => report.push("error", "output_tick_range", e, loc),
+        }
+    }
+    if report.failed() {
+        return Err(report.failure());
+    }
+    let score = Score {
+        format_version: SCORE_FORMAT_VERSION.into(),
+        metadata: Metadata {
+            id: "midi-import".into(),
+            name: options
+                .name
+                .clone()
+                .filter(|s| !s.trim().is_empty())
+                .unwrap_or_else(|| "MIDI import".into()),
+        },
+        instrument: Instrument {
+            id: "sky-15".into(),
+            name: "Sky 15-key instrument".into(),
+            playback_mode: PlaybackMode::Trigger,
+            keys: SKY_15_KEYS
+                .iter()
+                .map(|s| Pitch::parse(*s).unwrap())
+                .collect(),
+        },
+        timeline,
+        tracks,
+        text: None,
+    };
+    if let Err(e) = score.validate() {
+        report.push("error", "score_validation", e.to_string(), None);
+        return Err(report.failure());
+    }
+    Ok((score, report))
+}
+
+pub(crate) fn prepare_timing(
+    report: &mut Report,
+    reference_tempo: Option<f64>,
+) -> Result<(Timing, Timeline), Failure> {
     let mut tempos = BTreeMap::new();
     for t in report.tempos.clone() {
         let loc = Some((t.track, t.event, t.tick));
@@ -333,9 +423,7 @@ pub fn import(bytes: &[u8], options: &ImportOptions) -> Result<(Score, Report), 
             None,
         );
     }
-    let bpm = options
-        .reference_tempo
-        .unwrap_or(60_000_000.0 / f64::from(tempos[&0].0));
+    let bpm = reference_tempo.unwrap_or(60_000_000.0 / f64::from(tempos[&0].0));
     if !bpm.is_finite() || bpm <= 0.0 {
         report.push(
             "error",
@@ -395,21 +483,8 @@ pub fn import(bytes: &[u8], options: &ImportOptions) -> Result<(Score, Report), 
             None,
         );
     }
-    for n in report.source_notes.clone() {
-        if !SKY_15_KEYS.contains(&n.pitch.as_str()) {
-            report.push(
-                "error",
-                "unsupported_pitch",
-                format!(
-                    "MIDI {} ({}) is not in sky-15; no transposition/deletion applied",
-                    n.key, n.pitch
-                ),
-                Some((n.track, n.on_event, n.start_tick)),
-            );
-        }
-    }
     if report.failed() {
-        return Err(report.failure());
+        return Err(report.clone().failure());
     }
     let map: Vec<_> = tempos
         .iter()
@@ -422,68 +497,12 @@ pub fn import(bytes: &[u8], options: &ImportOptions) -> Result<(Score, Report), 
         Ok(timing) => timing,
         Err(e) => {
             report.push("error", "timing_calculation", e, None);
-            return Err(report.failure());
+            return Err(report.clone().failure());
         }
     };
-    let mut tracks: Vec<_> = names
-        .into_iter()
-        .enumerate()
-        .map(|(i, name)| Track {
-            id: format!("midi-track-{}", i + 1),
-            name,
-            role: TrackRole::Unknown,
-            notes: Vec::new(),
-        })
-        .collect();
-    for (i, n) in report.source_notes.clone().into_iter().enumerate() {
-        let loc = Some((n.track, n.on_event, n.start_tick));
-        match (timing.endpoint(n.start_tick), timing.endpoint(n.end_tick)) {
-            (Ok((start, a)), Ok((end, b))) => {
-                if a || b {
-                    report.push("warning", "time_quantized", format!("source endpoints {}..{} mapped to {start}..{end}; endpoints rounded independently, half up", n.start_tick, n.end_tick), loc);
-                }
-                if end <= start {
-                    report.push(
-                        "error",
-                        "quantized_zero_duration",
-                        "end minus start is not positive; note not deleted or extended",
-                        loc,
-                    );
-                    continue;
-                }
-                tracks[n.track].notes.push(Note {
-                    id: format!("midi-note-{}", i + 1),
-                    pitch: Pitch::parse(n.pitch).expect("canonical MIDI pitch"),
-                    start_tick: start,
-                    duration_ticks: end - start,
-                });
-            }
-            (Err(e), _) | (_, Err(e)) => report.push("error", "output_tick_range", e, loc),
-        }
-    }
-    if report.failed() {
-        return Err(report.failure());
-    }
-    let score = Score {
-        format_version: SCORE_FORMAT_VERSION.into(),
-        metadata: Metadata {
-            id: "midi-import".into(),
-            name: options
-                .name
-                .clone()
-                .filter(|s| !s.trim().is_empty())
-                .unwrap_or_else(|| "MIDI import".into()),
-        },
-        instrument: Instrument {
-            id: "sky-15".into(),
-            name: "Sky 15-key instrument".into(),
-            playback_mode: PlaybackMode::Trigger,
-            keys: SKY_15_KEYS
-                .iter()
-                .map(|s| Pitch::parse(*s).unwrap())
-                .collect(),
-        },
-        timeline: Timeline {
+    Ok((
+        timing,
+        Timeline {
             ppq: PPQ,
             tempo: bpm,
             time_signature: TimeSignature {
@@ -491,12 +510,5 @@ pub fn import(bytes: &[u8], options: &ImportOptions) -> Result<(Score, Report), 
                 denominator: 1_u16 << nominal.1,
             },
         },
-        tracks,
-        text: None,
-    };
-    if let Err(e) = score.validate() {
-        report.push("error", "score_validation", e.to_string(), None);
-        return Err(report.failure());
-    }
-    Ok((score, report))
+    ))
 }

@@ -5,7 +5,10 @@ on Phase 2 `c5977a9`. The full-prompt audit gaps have been addressed, including
 optional MIDI provenance, track/register/overlap analysis, musical positions,
 required CLI commands and the existing desktop's analysis view. See the
 [delivery and verification record](phase-3-delivery.md). No Phase 4 arrangement,
-audio transcription, playback-engine refactor or Score v1 format change is included.
+audio transcription, playback-engine refactor or Score v1 format change is included
+in that Phase 3 milestone. Phase 4-A subsequently adds a separate arrangement
+consumer and an explicit MIDI D6 projection without changing source analysis;
+see [Phase 4-A](phase-4a-arrangement.md).
 
 ## CLI and library entry points
 
