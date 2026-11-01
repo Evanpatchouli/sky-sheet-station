@@ -4,8 +4,9 @@ The owner authorized Phase 6 on 2026-11-01 before audio/MIDI conversion was
 implemented. This is a Windows desktop **Score visualization and local audition
 client**, not a transcription engine or game-input player. Phase 2 subsequently
 adds MIDI import through the packaged CLI; see [MIDI usage](midi.md).
-Score format and pitch mapping remain unchanged. Audio transcription remains
-unimplemented; Phase 4-A adds MIDI arrangement below.
+Score format and pitch mapping remain unchanged. AT-1/2/3 now adds offline audio
+transcription through the CLI; see [Audio Transcription](audio-transcription.md).
+Phase 4-A/B/C provides the arrangement flow below.
 
 Phase 3 adds **分析 MIDI** and **分析结果** in the existing toolbar. They display
 the packaged CLI's unrestricted analysis without replacing the loaded Score.
@@ -77,9 +78,11 @@ this delivery.
 - **打开 MIDI** selects a `.mid`/`.midi` file, runs CLI import and reuses the
   validated Score loader and player. **导入报告** shows losses/source metadata
   on success or failure. Cancellation/failure preserves the previous Score.
-- **音频导入** selects MP3/WAV/FLAC and explicitly reports that conversion is not
-  connected. Only the selected path is retained in memory. There is no fake
-  conversion, audio playback, generated score or background transcription.
+- **音频导入** opens local MP3/WAV/FLAC transcription with real stage progress,
+  cancellation, paged note reports and original MIDI/report save. Continue into
+  existing Sky arrangement to preview, audition and save Score. See
+  [limits, timing and model](audio-transcription.md). Unlike arrangement's
+  cancel-wait, audio cancellation terminates its current sidecar process.
 - The Canvas roll displays note positions/durations in ticks, colors by track,
   pitch rows, a time ruler and nominal meter guides. Drag the roll or progress
   slider to seek. Zoom, horizontal scrolling and follow-playhead are supported.

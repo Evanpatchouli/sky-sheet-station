@@ -7,6 +7,8 @@ import { Modal } from "./components/Modal.tsx";
 import { ImportReport } from "./components/ImportReport.tsx";
 import { MusicAnalysis } from "./components/MusicAnalysis.tsx";
 import { ArrangementReport } from "./components/ArrangementReport.tsx";
+import { AudioTranscription } from "./components/AudioTranscription.tsx";
+import type { LoadedAudio } from "./audio/model.ts";
 import type { ArrangementReport as ArrangementDiagnostic, LoadedArrangement } from "./arrangement/model.ts";
 import { defaultArrangementOptions, optionsError } from "./arrangement/model.ts";
 import type { ArrangementOptions } from "./arrangement/model.ts";
@@ -28,7 +30,6 @@ import {
   arrangeMidi,
   saveArrangement,
   cancelArrangement,
-  selectAudio,
 } from "./services/desktop.ts";
 
 export default function App() {
@@ -40,7 +41,7 @@ export default function App() {
   const [modal, setModal] = useState<"info" | "settings" | "audio" | "import" | "analysis" | "arrange" | null>(
     null,
   );
-  const [audio, setAudio] = useState<string | null>(null);
+  const [audio, setAudio] = useState<LoadedAudio | null>(null);
   const [analysis, setAnalysis] = useState<LoadedAnalysis | null>(null);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [analysisBusy, setAnalysisBusy] = useState(false);
@@ -82,13 +83,8 @@ export default function App() {
     }
   }
   async function pickAudio() {
+    engine.pause();
     setModal("audio");
-    try {
-      const path = await selectAudio();
-      if (path) setAudio(path);
-    } catch (e) {
-      setError(String(e));
-    }
   }
   async function analyze() {
     const id = ++request.current;
@@ -256,7 +252,7 @@ export default function App() {
             : song
               ? `${song.score.timeline.tempo} BPM · ${song.score.timeline.time_signature.numerator}/${song.score.timeline.time_signature.denominator} 参考拍号 · ${song.score.timeline.ppq} PPQ`
               : desktopAvailable()
-                ? "支持 Score JSON 与 MIDI（.mid / .midi）"
+                ? "支持 Score JSON、MIDI 及音频转录（MP3 / WAV / FLAC）"
                 : "浏览器预览 · 文件工作流请使用桌面应用"}
         </span>
         <button
@@ -358,31 +354,9 @@ export default function App() {
         </Modal>
       )}
       {modal === "audio" && (
-        <Modal title="音频转换尚未接通" onClose={() => setModal(null)}>
-          <p>
-            当前支持 MIDI 导入与 Score JSON，尚不能将 MP3、WAV 或 FLAC 转为乐谱。
-          </p>
-          {audio && (
-            <div className="audio-file">
-              <span>已选择，仅保留文件路径</span>
-              <strong>{audio}</strong>
-            </div>
-          )}
-          <p className="muted">
-            请打开已有的 Score JSON
-            进行可视化与试听。此入口不会生成音符，也不会把原始音频作为乐谱播放。
-          </p>
-          <button
-            className="primary"
-            onClick={() => {
-              setModal(null);
-              void load(openScore);
-            }}
-          >
-            <Icon name="open" />
-            打开 Score JSON
-          </button>
-        </Modal>
+        <AudioTranscription result={audio} onBusy={setBusy} onClose={()=>setModal(null)}
+          onResult={result=>{setAudio(result);setAnalysis(result.analysis);setArrangement(null);setArrangementReport(null);setArrangementError(null);}}
+          onContinue={result=>{setAnalysis(result.analysis);setModal("arrange");}} />
       )}
     </main>
   );

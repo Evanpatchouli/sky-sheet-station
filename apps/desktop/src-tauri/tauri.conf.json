@@ -26,6 +26,7 @@
     }
   },
   "bundle": {
+    "resources": { "../../../third-party/audio/": "audio-notices/" },
     "active": true,
     "targets": ["nsis"],
     "icon": ["icons/icon.ico", "icons/icon.png"],

@@ -8,6 +8,98 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 const EXAMPLE: &str = include_str!("../../../docs/examples/sky-15-example.json");
 
 #[test]
+fn audio_transcription_runs_real_model_then_existing_analysis_arrangement_and_export() {
+    let sandbox = Sandbox::new();
+    let rate = 22_050u32;
+    let frames = rate * 2;
+    let size = frames * 2;
+    let mut wav = Vec::new();
+    wav.extend(b"RIFF");
+    wav.extend((36 + size).to_le_bytes());
+    wav.extend(b"WAVEfmt ");
+    wav.extend(16u32.to_le_bytes());
+    wav.extend(1u16.to_le_bytes());
+    wav.extend(1u16.to_le_bytes());
+    wav.extend(rate.to_le_bytes());
+    wav.extend((rate * 2).to_le_bytes());
+    wav.extend(2u16.to_le_bytes());
+    wav.extend(16u16.to_le_bytes());
+    wav.extend(b"data");
+    wav.extend(size.to_le_bytes());
+    for i in 0..frames {
+        let t = f64::from(i) / f64::from(rate);
+        let value = if (0.4..1.5).contains(&t) {
+            (std::f64::consts::TAU * 440.0 * t).sin() * 16000.0
+        } else {
+            0.0
+        };
+        wav.extend((value as i16).to_le_bytes());
+    }
+    let input = sandbox.file("真实音频 & sample.wav", &wav);
+    let midi = sandbox.0.join("candidate.mid");
+    let output = cli(&[
+        "transcribe".as_ref(),
+        input.as_os_str(),
+        "-o".as_ref(),
+        midi.as_os_str(),
+        "--json".as_ref(),
+        "--progress".as_ref(),
+    ]);
+    assert_eq!(output.status.code(), Some(0), "{output:?}");
+    let response: Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(response["ok"], true);
+    assert!(
+        response["result"]["report"]["notes"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|n| n["pitch"] == 69)
+    );
+    assert!(
+        std::str::from_utf8(&output.stderr)
+            .unwrap()
+            .lines()
+            .any(|line| serde_json::from_str::<Value>(line).unwrap()["stage"] == "transcribe")
+    );
+    machine(&run("analyze", &midi, true), 0);
+    let score = sandbox.0.join("sky.json");
+    machine(&convert("arrange", &midi, &score), 0);
+    machine(&run("validate", &score, true), 0);
+    machine(
+        &convert("export-midi", &score, &sandbox.0.join("arranged.mid")),
+        0,
+    );
+    let before = std::fs::read(&midi).unwrap();
+    machine(&convert("transcribe", &input, &midi), 3);
+    assert_eq!(std::fs::read(&midi).unwrap(), before);
+    assert_eq!(std::fs::read(input).unwrap(), wav);
+}
+
+#[test]
+fn invalid_audio_and_options_leave_no_partial_output() {
+    let sandbox = Sandbox::new();
+    let input = sandbox.file("broken.mp3", b"not an MP3");
+    let output = sandbox.0.join("out.mid");
+    machine(&convert("transcribe", &input, &output), 1);
+    assert!(!output.exists());
+    assert!(!sandbox.0.join("out.mid.transcription.json").exists());
+    for value in ["NaN", "-1", "0", "1"] {
+        machine(
+            &cli(&[
+                "transcribe".as_ref(),
+                input.as_os_str(),
+                "-o".as_ref(),
+                output.as_os_str(),
+                "--json".as_ref(),
+                "--frame-threshold".as_ref(),
+                value.as_ref(),
+            ]),
+            2,
+        );
+    }
+}
+
+#[test]
 fn context_modes_parameters_and_actual_outputs() {
     let sandbox = Sandbox::new();
     let input = sandbox.file("ode.mid", include_bytes!("../../../audios/ode-to-joy.mid"));

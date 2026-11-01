@@ -244,6 +244,21 @@ See [Phase 4-B/C rules, results and outstanding gates](docs/phase-4bc-arrangemen
 
 Exit criteria: generated arrangements are playable and retain recognizable musical structure on a reviewed test set.
 
+## Audio Transcription: AT-1 + AT-2 + AT-3
+
+**Status:** Implemented candidate on main `790c31e`; human acceptance pending.
+This owner-authorized scope includes decoding, real transcription and desktop
+integration. It does not start unrelated roadmap items or freeze Score v1.
+
+- [x] AT-1: bounded MP3/WAV/FLAC import, decode and 22050-Hz preprocessing.
+- [x] AT-2: embedded Basic Pitch polyphonic inference, onset/offset estimates,
+  model-derived velocity, unrestricted MIDI and independent transcription report.
+- [x] AT-3: CLI, desktop stage progress/cancellation, MIDI save and existing
+  analysis → arrangement → preview/Report/audition/Score-save integration.
+- [ ] Human acceptance of representative transcriptions and musical quality.
+
+See [implementation, verification and limitations](docs/audio-transcription.md).
+
 ## Phase 5: CLI product surface
 **Status:** Broader product surface planned; inspect/validate foundation delivered in Phase 1.5.
 

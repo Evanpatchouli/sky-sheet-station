@@ -15,7 +15,7 @@ fn report_path(args: &Args, output: &Path) -> PathBuf {
     })
 }
 
-fn check_destinations(output: &Path, report: &Path) -> Result<(), Diagnostic> {
+pub(crate) fn check_destinations(output: &Path, report: &Path) -> Result<(), Diagnostic> {
     let resolve = |path: &Path| -> Result<PathBuf, Diagnostic> {
         if fs::symlink_metadata(path).is_ok() {
             return Err(Diagnostic::new(
@@ -56,7 +56,12 @@ fn check_destinations(output: &Path, report: &Path) -> Result<(), Diagnostic> {
 
 // Both byte buffers are fully encoded/validated before reserving either path.
 // create_new rejects existing files, symlinks, hardlinks and input aliases.
-fn write_pair(output: &Path, score: &[u8], report: &Path, diagnostic: &[u8]) -> Result<(), String> {
+pub(crate) fn write_pair(
+    output: &Path,
+    score: &[u8],
+    report: &Path,
+    diagnostic: &[u8],
+) -> Result<(), String> {
     let mut a = OpenOptions::new()
         .write(true)
         .create_new(true)

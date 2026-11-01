@@ -5,6 +5,12 @@ and `--json`. Phase 2 adds `import-midi`, `export-midi`, and `inspect-midi`;
 see [MIDI commands and limits](midi.md). See [CLI Alpha](cli-alpha.md) for the
 original executable contract. Generic `convert`/`export` below remain proposals.
 
+AT-1/2/3 adds `transcribe <FILE.mp3|wav|flac> -o <OUTPUT.mid> [--report <PATH>]
+[--json] [--progress]`, plus onset/frame thresholds and minimum note length.
+It writes unrestricted MIDI and an independent transcription report. Progress is
+JSONL on stderr only when requested; stdout retains the existing JSON envelope.
+See [Audio Transcription](audio-transcription.md) for exact defaults and limits.
+
 Phase 3 adds `inspect-music <FILE.mid> [--json]` and `analyze <FILE.mid> [--json]`;
 `analyze-midi` remains an alias for analysis. JSON uses the same envelope with
 version 2 of the internal `result.report`, including
