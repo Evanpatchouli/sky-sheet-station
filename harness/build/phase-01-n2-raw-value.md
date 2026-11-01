@@ -1,7 +1,7 @@
 # Phase 1 N2: RawValue tempo correction
 
-**Status: production correction implemented; Windows acceptance passes; Linux
-acceptance pending. N2 is not marked complete.** No Phase 2 work is included.
+**Status: N2 repair acceptance complete. Windows checks and Linux CI for `5cee8ef`
+pass.** Remaining Phase 1 contract checks are separate; no Phase 2 work is included.
 
 ## Preflight and authorization
 
@@ -31,10 +31,11 @@ architecture or format decision was silently changed.
 | `tools/numeric-validation/tests/n2_regressions.rs` | Reproduce the 3,016 research cases, certify all focused expectations, compare both DUT paths using the unchanged comparator, and retain per-run reports. |
 | `.github/workflows/rust.yml` | Retain supplemental reports in the existing always-upload artifact step; ordinary tool tests already execute the added suite. |
 | `.gitattributes` | Preserve bytes of the new evidence and focused fixture across checkouts. Existing rules remain. |
-| `docs/numeric-verification.md` | Document the current decoder, allocations, compatibility, separate evidence and pending Linux verification. |
+| `docs/numeric-verification.md` | Document the current decoder, allocations, compatibility and Windows/Linux verification evidence. |
 | `docs/music-data-format.md` | Replace the current-reader gap description with actual implementation and validation status; normative fields/rules unchanged. |
-| `docs/README.md`, `PLANS.md` | Reflect Windows success and pending Linux acceptance; leave N2/Phase 1 incomplete. |
+| `docs/README.md`, `PLANS.md` | Record N2 repair acceptance after Linux CI; leave remaining Phase 1 work incomplete. |
 | `harness/verification/n2-raw-value-20261101/` | Add new reports and hashes without touching any old reports. `focused-80.json` is the intermediate run before adding four long-exponent/integer cases; `focused-84.json` is the final focused run. |
+| `harness/verification/n2-raw-value-20261101/linux-5cee8ef/` | Separately archive the successful Linux CI reports, source commit, run/artifact IDs and hashes. The parent manifest remains the original pre-push snapshot. |
 | This record | Implementation, command results, compatibility, remaining work and Git disposition. |
 
 ## Core implementation
@@ -160,19 +161,40 @@ dependencies is still a real production dependency change, explicitly approved
 by the owner; its previous presence in the lockfile did not substitute for that
 manifest change. No numeric algorithm dependency was introduced.
 
-## Linux, performance and remaining acceptance
+## Linux verification, performance and remaining scope
 
 Existing [Linux CI run 41253767247](https://github.com/Evanpatchouli/sky-sheet-station/actions/runs/41253767247)
 at the pre-repair HEAD completed with failure. Root/tool fmt, tests and Clippy
 passed there, while the numeric gate reported the original 2,981 differences.
 Its logs were inspected. This is baseline evidence, not validation of the new code.
 
-Local WSL Ubuntu 26.04 is available, but Cargo, rustc and a C compiler/linker were
-not found. Docker could not connect to its Linux engine. No Linux test execution
-is claimed, and no global toolchain installation was performed. The repair is
-uncommitted/unpushed, so hosted CI cannot validate it yet. N2 remains pending
-Linux verification; the roadmap checkbox stays unchecked. This task does not
-freeze Phase 1 or authorize MIDI work.
+At initial local delivery, WSL Ubuntu 26.04 was available, but Cargo, rustc and a
+C compiler/linker were not found; Docker could not connect to its Linux engine.
+N2 therefore remained pending at that milestone. No global toolchain was installed.
+
+The owner then authorized commit and push. Implementation commit
+[`5cee8efe67e30f3619e64e952f32202b8472f972`](https://github.com/Evanpatchouli/sky-sheet-station/commit/5cee8efe67e30f3619e64e952f32202b8472f972)
+was pushed to `main`. [Linux CI run 41256992799](https://github.com/Evanpatchouli/sky-sheet-station/actions/runs/41256992799)
+passed all steps on Ubuntu 26.04, `x86_64-unknown-linux-gnu`, Rust 1.99.1.
+Job logs and downloaded artifact contents were inspected:
+
+| Linux CI check | Observed result |
+|---|---|
+| Root tests | 51 passed, none ignored. |
+| Independent tests | 20 passed, including the additional N2 suite. |
+| Root/tool fmt and Clippy | All steps successful. |
+| Historical numeric gate | 267 fixed + 10,000 historical samples, zero differences. |
+| Research suite | 3,016 cases, zero differences; each path checks 3,016 acceptance/decode results and 3,014 valid serialization/readbacks. |
+| Focused suite | 84 cases, zero differences; each path checks 84 acceptances, 79 finite decoded values and 60 valid serialization/readbacks. |
+| Evidence upload | Artifact 13063951572 successfully uploaded and downloaded for inspection. |
+
+The [Linux evidence manifest](../verification/n2-raw-value-20261101/linux-5cee8ef/manifest.json)
+records the exact tested commit, run, artifact digest and report hashes. Original
+Windows and older failure reports remain untouched. The requested N2 repair
+acceptance is now complete. This does not freeze Phase 1 or authorize MIDI work.
+Linux release-mode tests were not run by this workflow; Windows release tests
+passed. The workflow emitted non-failing runner/action deprecation annotations;
+no unrelated Actions upgrade was introduced.
 
 Source inspection of serde_json 1.0.154 `raw.rs`/`read.rs` confirms a temporary
 owned token allocation per tempo: string input copies the slice; reader input
@@ -180,15 +202,19 @@ builds a byte buffer then transfers its string into Box<RawValue>, possibly
 reallocating while reducing capacity. Space is O(token length), released after
 conversion; the stored field stays an f64. No exact allocator-count benchmark
 or timing benchmark was run. No whole-Score speed percentage or general
-cross-platform correctness result is claimed.
+correctness result beyond the executed Windows/Linux targets is claimed.
 
-No unresolved numerical difference is observed in the requested Windows suites.
-Remaining acceptance is Linux execution of this revision. The documented
+No unresolved numerical difference is observed in the requested Windows suites
+or Linux CI. Performance benchmarking and other target coverage were not performed.
+Remaining Phase 1 contract work is outside this repair. The documented
 JSON-specific adapter and error category/location differences are compatibility
 boundaries, not changes to public JSON fields or musical semantics.
 
 ## Git disposition
 
-Branch and HEAD remain `main` / `36a507377f8c94d6941282cefb0bbc4a5dcdcf3d`.
-Only the files listed above are modified or new, all unstaged. No commit, push,
-merge, release, cleanup of historical evidence or unrelated refactor occurred.
+The initial local delivery left changes unstaged at baseline `36a5073`. Under the
+subsequent explicit owner authorization, all 22 repair files were committed as
+`5cee8ef` and pushed to `origin/main`. The new evidence manifest's line endings
+were normalized to LF before commit; its data and all recorded hashes were
+unchanged. This documentation/evidence follow-up records successful Linux
+acceptance. No merge, release, evidence cleanup or unrelated refactor occurred.

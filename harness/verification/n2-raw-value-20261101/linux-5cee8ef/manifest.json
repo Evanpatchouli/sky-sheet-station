@@ -1,0 +1,29 @@
+{
+  "commit": "5cee8efe67e30f3619e64e952f32202b8472f972",
+  "run_url": "https://github.com/Evanpatchouli/sky-sheet-station/actions/runs/41256992799",
+  "job_id": 124702164514,
+  "artifact_id": 13063951572,
+  "artifact_digest": "sha256:b63eb1a0c33ea1144c83f9fee72bdaae4eaf26e9b47571f7653a1e4508873de2",
+  "platform": "x86_64-unknown-linux-gnu",
+  "runner": "Ubuntu 26.04",
+  "rustc": "1.99.1",
+  "result": "success",
+  "files": [
+    {
+      "file": "focused-84.json",
+      "sha256": "261cd5545bdb0b1701972ec21652ed3ece3380fc3ea9c08c95a94dadd912d7c1"
+    },
+    {
+      "file": "historical-max-repro.json",
+      "sha256": "16394c2237bdeed7ee8ec47c2b0973a5d1d632f79772e6635c0dbbde6fecfdd0"
+    },
+    {
+      "file": "numeric-conformance-report.json",
+      "sha256": "b21c489ff06841a59db91bca7157b93b7b1a8bf3dc667d7409267f74279065fd"
+    },
+    {
+      "file": "research-3016.json",
+      "sha256": "8757f3fea41080ffdd6a1863a19b95d62eafa752ab6537ac1f03a581193376e1"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "status": "passed",
+  "group": "research-3016",
+  "cases": 3016,
+  "valid": 3014,
+  "tokens_sha256": "015273ae1ef01adcb2ef4578b635e9d13d5b014a4f9e9d264d76323b85a87f60",
+  "checks": {
+    "from_str": {
+      "acceptance": 3016,
+      "decode_bits": 3016,
+      "serialization_oracle": 3014,
+      "readback_bits": 3014
+    },
+    "from_reader": {
+      "acceptance": 3016,
+      "decode_bits": 3016,
+      "serialization_oracle": 3014,
+      "readback_bits": 3014
+    }
+  },
+  "failures": []
+}

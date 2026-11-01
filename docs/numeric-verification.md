@@ -1,11 +1,11 @@
 # Independent numeric verification (Rust only)
 
-**RawValue correction implemented; Windows checks pass; Linux acceptance pending.** The project technology
+**N2 RawValue repair acceptance complete: Windows checks and Linux CI pass.** The project technology
 stack prohibits Python in production, development, testing, CI, validation, builds
 and automation. This supersedes N1's former implementation choice, not its
 independent-verification goal. N2-N4 expectations are unchanged. The owner-approved
-production-reader fix is described below; no MIDI work is included. N2 is not
-marked complete until Linux verification of this revision also passes.
+production-reader fix is described below; no MIDI work is included. Linux CI for
+`5cee8ef` completes this repair's acceptance, not the remaining Phase 1 freeze checks.
 
 ## Rules and independent paths
 
@@ -246,12 +246,15 @@ it is informational, not a weakened acceptance check.
 
 The [repair record](../harness/build/phase-01-n2-raw-value.md) records commands,
 counts and archived new reports. Root debug/release tests, isolated tests, fmt and
-Clippy pass locally. Existing Linux CI for HEAD `36a5073` failed on the old 2,981
-differences; this uncommitted repair has not run in hosted CI. WSL Ubuntu 26.04
-is present but has no available Rust compiler/Cargo or C linker; the Docker Linux
-engine is unavailable. No Linux execution or cross-platform acceptance is claimed.
-N2 completion remains pending Linux verification; Phase 1 is not frozen and no
-MIDI implementation or Phase 2 entry is authorized.
+Clippy pass locally. Baseline Linux CI for `36a5073` failed on the old 2,981
+differences. Following the owner-authorized commit/push, [Linux CI for `5cee8ef`](https://github.com/Evanpatchouli/sky-sheet-station/actions/runs/41256992799)
+passed all steps on Ubuntu 26.04 with Rust 1.99.1. Downloaded artifacts confirm
+267 fixed + 10,000 sampled cases, 3,016 research cases and 84 focused cases with
+zero differences. The artifacts and hashes are separately archived under
+`harness/verification/n2-raw-value-20261101/linux-5cee8ef/`; prior reports are intact.
+N2 repair acceptance is complete. Local WSL was not used, performance benchmarks
+remain unrun, and Linux release-mode tests are not a step in this workflow (release
+tests passed on Windows). Phase 1 is not frozen; no Phase 2 entry is authorized.
 
 Cleanup limitation: automatic approval review rejected removal of the ignored
 project-local `target/numeric-venv/` and `target/numeric-linux-wheels/` directories

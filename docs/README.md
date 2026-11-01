@@ -70,7 +70,7 @@ N1-N4 now provide independent numeric verification using an isolated Rust worksp
 and locked Rust dependencies. N2 specifies nearest binary64 decoding with ties to even and
 bit-preserving save/read cycles. The approved tempo RawValue adapter now passes
 Windows numeric and engineering checks, including the unchanged historical corpus
-and separate long-midpoint regressions. Linux verification of this repair is
-pending; N2 and Phase 1 are not marked complete. The Oracle, comparison rules and
-historical expectations are unchanged. No Phase 2 work started. See the
+and separate long-midpoint regressions. Linux CI for `5cee8ef` also passes; N2
+repair acceptance is complete, while remaining Phase 1 checks are separate. The
+Oracle, comparison rules and historical expectations are unchanged. No Phase 2 work started. See the
 [N2 repair record](../harness/build/phase-01-n2-raw-value.md).

@@ -2,4 +2,5 @@
 /harness/verification/numeric-before-rust/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /tools/numeric-validation/fixtures/*.json -text
 /harness/verification/n2-raw-value-20261101/*.json -text
+/harness/verification/n2-raw-value-20261101/linux-5cee8ef/*.json -text
 /crates/skysheet-score/tests/fixtures/n2-tempo.json -text

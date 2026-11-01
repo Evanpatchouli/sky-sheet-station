@@ -146,8 +146,8 @@ numeric or duplicate-member information.
 `float_roundtrip` is not the fix: it still misrounds certain long integer/exponent
 spellings of exact midpoints, including the zero boundary. Windows verification
 passes the unchanged 267 fixed cases, 10,000 historical samples, 3,016 research
-cases and 84 focused regressions. Linux validation of this revision remains
-pending, so full N2 acceptance is not marked complete. See
+cases and 84 focused regressions. Linux CI for `5cee8ef` also passes these gates,
+completing N2 repair acceptance without freezing the remaining v1 contract. See
 [independent numeric verification](numeric-verification.md) for preserved old
 failures, current evidence and compatibility details.
 
@@ -521,7 +521,7 @@ Schema and original tokens/members, and uses exact rational interval search as t
 independent N2 Oracle. Schema engine features cannot unify with the root reader.
 It is not a complete independent score-semantic validator. All former cases and
 10,000 samples are preserved. The RawValue reader passes local Windows gates;
-Linux acceptance remains pending. See [numeric verification](numeric-verification.md). No interpreter or auxiliary
+Linux CI for `5cee8ef` also passes. See [numeric verification](numeric-verification.md). No interpreter or auxiliary
 shell validation script is required.
 
 ## 13. Open questions before freezing v1
@@ -531,7 +531,7 @@ freeze requirements; section 4.2 defines the unchanged logical mapping. Remainin
 verification is not replaced by this scope decision:
 
 - Verify the approved D6 mathematical boundaries and diagnostic requirements against a future implementation; no MIDI/quantizer implementation has been validated. Format 2 and SMPTE support remain outside this policy and require separate decisions.
-- Complete Linux acceptance of the approved N2 RawValue correction; Windows strict gates pass without changing the independent Oracle or historical expectations.
+- N2 RawValue repair acceptance is complete on Windows and Linux CI for `5cee8ef`; preserve the independent gate and historical expectations during remaining contract work.
 - Complete remaining contract verification. Real MIDI implementation and file-based acceptance cases in section 16.7 require separately authorized Phase 2 work; they are not completed Phase 1 tests.
 
 The [audit record](../harness/build/phase-01-conformance-audit.md) records the
@@ -835,8 +835,8 @@ D6-A through D6-F rules:
   not a lossless round-trip claim or an export implementation specification.
 - Decide Format 2/SMPTE support separately if requested. Do not treat these
   excluded cases as unresolved choices inside the approved PPQ Format 0/1 policy.
-- Complete N2 cross-platform acceptance and remaining contract checks before
-  the Phase 1 freeze; acoustic calibration
+- N2 repair acceptance now passes Windows and Linux CI; complete remaining
+  contract checks before the Phase 1 freeze. Acoustic calibration
   is not required under the owner's logical-pitch decision. Passing document
   arithmetic or existing score tests does not satisfy those requirements or enter
   Phase 2.

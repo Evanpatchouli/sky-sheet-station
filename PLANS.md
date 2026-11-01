@@ -25,7 +25,7 @@ were recorded as open questions. The follow-up below resolves only those three
 boundaries; neither milestone means that the full v1 contract is frozen.
 
 ## Phase 1: Freeze the score contract
-**Status:** In progress. D1-D8 and N1-N4 are approved (2026-11-01). The approved N2 RawValue correction passes Windows numeric and engineering checks; Linux acceptance of this revision remains pending, so N2 is not marked complete. Acoustic calibration is outside scope; sky-15 retains its C4-C6 logical mapping. D6 approval is not MIDI implementation/verification; no Phase 2 work is authorized.
+**Status:** In progress. D1-D8 and N1-N4 are approved (2026-11-01). N2 RawValue repair acceptance is complete: Windows checks and Linux CI for `5cee8ef` pass. Remaining Phase 1 contract checks are separate; the full contract is not frozen. Acoustic calibration is outside scope; sky-15 retains its C4-C6 logical mapping. D6 approval is not MIDI implementation/verification; no Phase 2 work is authorized.
 
 - [x] Resolve pitch range, integer bounds including note ends, and meter denominators as an approved v1 pre-freeze revision.
 - [x] Expand existing-rule fixtures, configure Schema CI, audit raw inputs, and prepare non-normative decision/calibration/tempo-policy drafts.
@@ -51,10 +51,11 @@ format and validation rules. Windows checks pass: 267 fixed cases, all 10,000
 historical samples, the separate 3,016 research cases, 84 focused regressions,
 51 Score tests (debug/release), 20 independent tests, fmt and Clippy. Oracle,
 comparison rules, historical evidence and both lockfiles are unchanged.
-The existing Linux CI at HEAD `36a5073` failed on the old 2,981 differences;
-this uncommitted repair has not run there. Local WSL lacks Rust and a C linker,
-and the Docker Linux engine is unavailable. Full N2 acceptance remains pending
-Linux verification. See the [repair record](harness/build/phase-01-n2-raw-value.md).
+Linux CI at baseline `36a5073` failed on the old 2,981 differences. After the
+owner-authorized commit/push, [Linux CI for `5cee8ef`](https://github.com/Evanpatchouli/sky-sheet-station/actions/runs/41256992799)
+passed all steps. Downloaded artifacts confirm zero differences for the historical
+corpus, 3,016 research cases and 84 focused cases. N2 repair acceptance is complete;
+see the [repair record](harness/build/phase-01-n2-raw-value.md).
 
 The revision keeps format_version 1.0 and existing JSON field/Rust storage types.
 Pitch values map to MIDI 0..=127; meter numerators are 1..=65535; denominators are
@@ -137,7 +138,7 @@ The following broader Phase 1 items remain incomplete:
 
 - [ ] Finalize v1 JSON schema and semantic validation.
 - [ ] Complete positive/negative fixture coverage for the finalized contract (existing rules expanded; unresolved findings/policies still require follow-up).
-- [ ] Complete N2 acceptance: the approved RawValue correction passes Windows strict numeric and engineering checks; Linux verification remains pending. See [numeric verification](docs/numeric-verification.md). Actual D6 implementation/file tests remain separately authorized Phase 2 work.
+- [x] Complete N2 repair acceptance: Windows numeric/engineering checks and Linux CI for `5cee8ef` pass, with original expectations and evidence preserved. See [numeric verification](docs/numeric-verification.md). This does not complete the remaining Phase 1 checks or authorize Phase 2.
 
 Exit criteria: score specification, schema, example fixtures, Rust types, and tests
 agree, including a passing independent numeric gate with no unresolved N2 differences. Acoustic
