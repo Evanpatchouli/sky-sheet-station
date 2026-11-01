@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
-    "test": "node --experimental-strip-types --test src/player/*.test.ts",
+    "test": "node --experimental-strip-types --test src/player/*.test.ts src/arrangement/*.test.ts",
     "sidecar": "node scripts/prepare-sidecar.mjs",
     "desktop": "tauri dev",
     "desktop:build": "tauri build --no-bundle"

@@ -17,3 +17,17 @@ game-instrument recording and acoustic calibration are not required under the
 
 Adding these samples does not start Phase 2 or the later audio-research phase.
 Current score-contract tests and CI do not process these audio files.
+
+## Owner-supplied MIDI development input
+
+`ode-to-joy.mid` (575 bytes) was committed by the owner in `c5977a9` on 2026-11-01,
+after Phase 2 implementation. SHA-256:
+`6e70886112270d2b68a826d8cee5283768766c97f95b54881cc29244f679dc2a`.
+External author, download source and redistribution license are unrecorded;
+owner submission is not a license determination. The original file is retained
+and used directly, not copied into newly licensed evaluation material.
+
+It contains three tracks, PPQ 480 and 52 paired notes, including 22 unsupported
+by sky-15. Phase 3 analyzes all notes and checks exact preservation against a
+byte-derived reference. Musical reference labels still require human review.
+See [analysis evaluation](../docs/phase-3-evaluation.md).

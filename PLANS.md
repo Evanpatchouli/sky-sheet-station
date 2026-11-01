@@ -177,36 +177,70 @@ was deferred at Alpha delivery; the owner subsequently authorized the Score-firs
 Phase 6 below. Phase 1 is not marked complete.
 
 ## Phase 2: MIDI interoperability
-**Status:** Planned
+**Status:** Implemented and locally verified on Windows (2026-11-01), from main
+`6a91bef` on `codex/phase-2-midi`, after explicit dependency approval. This
+supersedes earlier milestone statements that Phase 2 was unauthorized, without
+completing Phase 1 or starting Phases 3/4. See [MIDI usage and verification](docs/midi.md)
+and the [approved dependency/design record](docs/phase-2-midi.md).
 
-- [ ] Select and document the Rust MIDI library.
-- [ ] Import tracks, notes, note-on/off timing, meter, and tempo metadata.
-- [ ] Implement and verify the approved D6 timing policy within its scope; decide handling for other unsupported MIDI constructs separately.
-- [ ] Export a score to MIDI and test round-trip properties.
-- [ ] Report information that cannot be preserved.
+- [x] Select and document the Rust MIDI library.
+- [x] Import tracks, notes, note-on/off timing, meter, and tempo metadata.
+- [x] Implement and verify the approved D6 timing policy within its scope; document rejected unsupported MIDI constructs.
+- [x] Export a score to MIDI and test round-trip properties and protocol limits.
+- [x] Report information that cannot be preserved.
+- [x] Connect MIDI import through the packaged CLI to the existing desktop player,
+  preserving the current Score on cancellation or failure and exposing diagnostics.
 
 Exit criteria: representative MIDI fixtures import, validate, and export with documented behavior.
 
-## Phase 3: Music analysis primitives
-**Status:** Planned
+Evidence: 84 root tests, 17 MIDI tests in release, 7 desktop Rust tests, 8 frontend
+tests, three-workspace formatting/Clippy, frontend/release application builds,
+and unchanged independent 20-test / 267-fixed / 10,000-sample numeric checks passed.
+Native Windows file selection loaded a Unicode/space-path MIDI, with advancing
+playhead and key highlights; the supplied ode-to-joy file failed for 22 out-of-range
+notes while preserving the loaded Score. Local Playwright/Edge checked reports,
+cancel/error retention and 1280/800/390 widths. No new CI run, commit or publication
+is claimed; physical speaker output was not measured.
 
-- [ ] Define an unrestricted internal music/transcription representation.
-- [ ] Add tempo, key/scale, and note-event analysis where measurable.
-- [ ] Prototype candidate melody extraction and role estimation.
-- [ ] Create a small licensed/owned evaluation corpus.
-- [ ] Record accuracy, runtime, and memory results.
+## Phase 3: Music analysis primitives
+**Status:** P3-A/B/C implemented and locally verified on Windows after the full-prompt reconciliation. Required CLI commands and the native desktop analysis flow display the real ode-to-joy source. Heuristics remain uncalibrated; external asset provenance and human musical review remain open. Phase 2 hosted CI has no run, not a passing result. See [final delivery evidence](docs/phase-3-delivery.md).
+
+- [x] Complete P3-A: optional MIDI provenance, generic notes, unrestricted pitch display/helpers and source preservation.
+- [x] Complete P3-B: register/track/pair analysis, musical positions, score components and specific diagnostics.
+- [x] Prototype traceable candidate melody extraction and role estimation.
+- [x] Create 14 original synthetic evaluation cases, separate from owner-supplied MIDI.
+- [x] Add explicit score-component/ranking/Unknown regressions and all 14 corpus cases through the MIDI path.
+- [x] Complete P3-C: `inspect-music`, `analyze`, desktop analysis UI and actual ode-to-joy display.
+- [x] Run CLI/desktop/frontend/build checks and verify existing Score playback.
+- [ ] Obtain human-reviewed references and resolve external real-MIDI provenance.
+- [x] Record provisional reference agreement, runtime, memory and engineering checks; human-validated accuracy remains pending.
+
+`analyze-midi` uses the existing parser and reusable music crate. All 52
+ode-to-joy notes, including 22 out-of-range accompaniment notes, remain unchanged.
+Internal velocity never enters Score v1. Confidence is uncalibrated; Phase 4
+arrangement is not included.
 
 Exit criteria: analysis outputs include diagnostics and are evaluated against reference examples.
 
 ## Phase 4: Sky 15-key arrangement
-**Status:** Planned
+**Status:** Phase 4-A implemented with the owner-approved D6 projection boundary:
+global semitone search, exact-key mapping, melody-priority retention, per-note
+loss reports, valid Score output and CLI/desktop integration. Phase 4-B/C is now
+implemented as an integrated candidate. Windows engineering checks and hosted
+Linux CI for `13ce7b8` pass; the owner accepted the revised Ode sample's overall
+sound. Final phase sign-off and detailed musical/playability ratings remain open;
+neither phase is marked fully accepted. Draft PR #1 targets Phase 4-A, not main.
+See [Phase 4-A implementation and evidence](docs/phase-4a-arrangement.md).
+See [Phase 4-B/C rules, results and outstanding gates](docs/phase-4bc-arrangement.md).
 
-- [ ] Implement target-instrument pitch constraints.
-- [ ] Compare global transposition candidates.
-- [ ] Implement context-aware pitch mapping and octave placement.
-- [ ] Implement melody-first and polyphonic arrangement modes.
-- [ ] Implement note reduction and playability diagnostics.
-- [ ] Evaluate recognizability and musical coherence with human review.
+- [x] Implement target-instrument pitch constraints.
+- [x] Compare global transposition candidates.
+- [x] Implement context-aware pitch mapping and octave placement (P4-B1 local candidate).
+- [x] Implement melody-first, simple-accompaniment and polyphonic modes (P4-B2 local candidate).
+- [x] Implement note reduction and playability diagnostics.
+- [x] Implement CLI parameters and desktop preview/report/load/save workflow (P4-C local candidate).
+- [x] Evaluate the representative Ode sample with owner audition; revise the rejected first polyphonic candidate.
+- [ ] Obtain final phase sign-off; detailed per-mode musical/physical-playability ratings remain unrecorded.
 
 Exit criteria: generated arrangements are playable and retain recognizable musical structure on a reviewed test set.
 

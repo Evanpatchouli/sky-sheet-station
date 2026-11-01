@@ -1,0 +1,13 @@
+[package]
+name = "skysheet-arrange"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+description = "Deterministic global transposition and transparent Sky instrument adaptation"
+
+[dependencies]
+skysheet-music = { path = "../skysheet-music" }
+skysheet-score = { path = "../skysheet-score" }
+skysheet-midi = { path = "../skysheet-midi" }
+serde.workspace = true
+serde_json.workspace = true

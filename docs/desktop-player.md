@@ -2,8 +2,37 @@
 
 The owner authorized Phase 6 on 2026-11-01 before audio/MIDI conversion was
 implemented. This is a Windows desktop **Score visualization and local audition
-client**, not a transcription engine or game-input player. Phases 2–5 remain
-unimplemented. The original score format, pitch mapping and CLI commands are unchanged.
+client**, not a transcription engine or game-input player. Phase 2 subsequently
+adds MIDI import through the packaged CLI; see [MIDI usage](midi.md).
+Score format and pitch mapping remain unchanged. Audio transcription remains
+unimplemented; Phase 4-A adds MIDI arrangement below.
+
+Phase 3 adds **分析 MIDI** and **分析结果** in the existing toolbar. They display
+the packaged CLI's unrestricted analysis without replacing the loaded Score.
+See [music analysis](music-analysis.md#desktop) and the
+[Phase 3 delivery/GUI verification](phase-3-delivery.md). The player engine and
+Score format are unchanged; analysis does not generate a playable arrangement.
+
+Phase 4-B/C extends **Sky 编曲** / **适配为 Sky 乐谱** without replacing the app:
+
+1. **分析 MIDI** opens the source and retains an immutable byte snapshot.
+2. Select melody-first, simple-accompaniment or polyphonic; automatic/fixed global
+   transposition; octave permission; priorities (0..5); optional overlap ceiling.
+3. **生成编曲预览** invokes the packaged CLI into private temporary files.
+4. Review final role counts, ranges, all per-note mappings (20 per page), losses,
+   interval changes, chord candidates, repeated-key conflicts and playability.
+5. **加载生成乐谱并预览试听** explicitly replaces the player only after CLI success,
+   report checks, production Score reread/validation and per-note correspondence.
+6. Use existing play/pause/stop/seek controls. Return to **Sky 编曲** and choose
+   **保存 Score 和报告**; both destinations must be new. Preview is not the source.
+
+Canceling a file picker preserves state. Failed arrangement preserves the loaded
+Score. Cancel-wait ignores the result, allowing the subprocess to finish its
+temporary calculation; it is not process termination. Request generations reject
+stale frontend results; a backend token ties saving to the validated preview.
+Save errors clean only newly created files (cleanup failure is reported); the pair
+is not crash-atomic. No algorithm runs in React or Tauri. The timing boundary is
+unchanged from [Phase 4-A](phase-4a-arrangement.md); see [4-B/C evidence](phase-4bc-arrangement.md).
 
 ## Run on Windows
 
@@ -45,6 +74,9 @@ this delivery.
 - **打开内置示例** loads the actual checked-in `docs/examples/sky-15-example.json`,
   through the same CLI path. It contains two tracks, six notes, and one second
   of musical material at 120 quarter notes/min. It is not an audio conversion.
+- **打开 MIDI** selects a `.mid`/`.midi` file, runs CLI import and reuses the
+  validated Score loader and player. **导入报告** shows losses/source metadata
+  on success or failure. Cancellation/failure preserves the previous Score.
 - **音频导入** selects MP3/WAV/FLAC and explicitly reports that conversion is not
   connected. Only the selected path is retained in memory. There is no fake
   conversion, audio playback, generated score or background transcription.
@@ -74,8 +106,8 @@ frontend never parses pitch strings, raw JSON, or original tempo tokens. The
 existing N2 raw-byte adapter remains in use. All 84 frozen tempo fixtures are
 also checked through the real sidecar and desktop projection.
 
-Only three application commands are exposed: `open_score`, `load_example`, and
-`select_audio`. They accept no executable names, command strings or arbitrary
+Four application commands are exposed: `open_score`, `open_midi`, `load_example`,
+and `select_audio`. They accept no executable names, command strings or arbitrary
 file paths from JavaScript. Shell/dialog plugins have no frontend permissions.
 The CSP permits local application resources and IPC, with no remote application
 content. All processing is local; no cloud, credentials, telemetry or service is
@@ -84,7 +116,7 @@ introduced. See Tauri's [sidecar](https://v2.tauri.app/develop/sidecar/) and
 
 The desktop Rust package is an **isolated workspace** with its own lockfile.
 This prevents Tauri dependencies from unifying parser features with the CLI and
-the independent numeric verification gate. The root workspace remains CLI/Score.
+the independent numeric verification gate. The root workspace contains CLI/Score/MIDI.
 Both workspaces use the same checked-in Score source.
 
 ### Local playback policy

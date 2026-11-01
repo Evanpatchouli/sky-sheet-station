@@ -124,7 +124,8 @@ all frozen midpoints, deliberate incorrect observations, 10,000 exact representa
 values and 1,000 sampled adjacent midpoint cells (tie and both sides). Expected
 values come from selected bits and parity, not parsed floating-point text. The
 mathematical interval argument, not mere agreement with another implementation,
-is the basis of the Oracle. D6's musical half-up quantizer is not implemented.
+is the basis of the Oracle. D6's musical half-up quantizer is implemented and
+tested separately in `skysheet-midi`; this N2 Oracle does not call that quantizer.
 
 ## Corpus and evidence preservation
 

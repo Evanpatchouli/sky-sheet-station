@@ -30,6 +30,17 @@ export interface LoadedScore {
   score: Score;
   midi_keys: number[];
   source: string;
+  import_report?: ImportReport | null;
+}
+export interface ImportReport {
+  report_version: number;
+  source_ppq: number | null;
+  track_count: number;
+  note_count: number;
+  reference_tempo: number | null;
+  tempos: { tick: number; microseconds_per_quarter: number; track: number }[];
+  meters: { tick: number; numerator: number; denominator_power: number }[];
+  diagnostics: { severity: string; code: string; message: string; track: number | null; event: number | null; source_tick: number | null }[];
 }
 export interface PlayerNote {
   id: string;

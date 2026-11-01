@@ -10,6 +10,9 @@ name = "skysheet"
 path = "src/main.rs"
 
 [dependencies]
+skysheet-arrange = { path = "../skysheet-arrange" }
+skysheet-music = { path = "../skysheet-music" }
 skysheet-score = { path = "../skysheet-score" }
+skysheet-midi = { path = "../skysheet-midi" }
 serde.workspace = true
 serde_json.workspace = true

@@ -1,5 +1,9 @@
 # CLI Alpha (Phase 1.5)
 
+This document records the Phase 1.5 inspect/validate contract. Phase 2 subsequently
+adds [MIDI commands and desktop integration](midi.md); the original command
+responses and raw Score validation remain unchanged.
+
 `skysheet 0.1.0-alpha.1` reads, inspects and validates existing SkySheet score
 JSON. The Windows Release target verified for this milestone is
 `x86_64-pc-windows-msvc`. This is a local build, not a published release.

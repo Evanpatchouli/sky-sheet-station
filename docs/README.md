@@ -20,8 +20,34 @@ Repository-wide instructions live in [AGENTS.md](../AGENTS.md). Product goals an
 - [CLI Alpha](./cli-alpha.md): implemented inspect/validate commands, Windows build, JSON results and exit codes.
 - [Desktop player](./desktop-player.md): Phase 6 Tauri client, real Score loading, Canvas visualization and local audition; audio conversion is not connected.
 - [CLI specification](./cli.md): current Alpha boundary and future command proposals.
+- [MIDI usage](./midi.md): import/export commands, diagnostics, D6 arithmetic,
+  protocol limits and desktop integration.
+- [Phase 2 MIDI preparation](./phase-2-midi.md): approved dependencies, design
+  proposal and preflight verification.
+- [Music analysis](./music-analysis.md): unrestricted source representation,
+  read-only primitives, candidate extraction and `analyze-midi`.
+- [Phase 3 evaluation](./phase-3-evaluation.md): independent event references,
+  observed quality, preservation, resource measurements and acceptance gaps.
+- [Phase 3 full-prompt audit](./phase-3-full-prompt-audit.md): requirement-by-requirement
+  historical gap reconciliation, subsequently addressed.
+- [Phase 3 delivery](./phase-3-delivery.md): P3-A/B/C implementation, actual CLI/native
+  evidence, final verification matrix and remaining limitations.
+- [Phase 4-A arrangement](./phase-4a-arrangement.md): global pitch search,
+  deterministic scoring, approved D6 projection, complete loss reports and
+  Score/CLI/desktop integration.
 
 ## Status
+
+The owner authorized Phase 2 MIDI interoperability and existing desktop-player
+integration on 2026-11-01, then approved its dependencies. MIDI import/export
+and desktop integration are implemented on `codex/phase-2-midi`.
+Earlier no-Phase-2 statements below describe prior milestones.
+See the [Phase 2 preparation record](phase-2-midi.md). The owner subsequently
+authorized Phase 3, now locally implemented and verified through the required CLI
+commands and existing desktop analysis view; see the delivery record.
+Phase 4-A is now implemented with the owner-approved D6 projection boundary.
+Phase 4-B/C remain deferred, and remaining Phase 1 checks are not
+declared complete. Earlier scope statements below describe historical milestones.
 
 Phase 1.5 delivers the first runnable CLI Alpha for existing Score files, including
 a locally verified Windows Release executable. See the

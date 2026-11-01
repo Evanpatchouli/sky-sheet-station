@@ -6,6 +6,351 @@ use std::process::{Command, Output};
 use std::sync::atomic::{AtomicUsize, Ordering};
 
 const EXAMPLE: &str = include_str!("../../../docs/examples/sky-15-example.json");
+
+#[test]
+fn context_modes_parameters_and_actual_outputs() {
+    let sandbox = Sandbox::new();
+    let input = sandbox.file("ode.mid", include_bytes!("../../../audios/ode-to-joy.mid"));
+    for mode in ["melody-first", "simple-accompaniment", "polyphonic"] {
+        let output = sandbox.0.join(format!("{mode}.json"));
+        let response = cli(&[
+            OsStr::new("arrange"),
+            input.as_os_str(),
+            OsStr::new("-o"),
+            output.as_os_str(),
+            OsStr::new("--mode"),
+            OsStr::new(mode),
+            OsStr::new("--json"),
+        ]);
+        let r = machine(&response, 0);
+        assert_eq!(r["result"]["report"]["arrangement_mode"], mode);
+        assert_eq!(r["result"]["report"]["kept"], 52);
+        machine(&run("validate", &output, true), 0);
+    }
+    for flags in [
+        vec!["--mode", "invalid"],
+        vec!["--max-polyphony", "0"],
+        vec!["--max-polyphony", "129"],
+        vec!["--melody-priority", "6"],
+        vec!["--bass-priority", "-1"],
+        vec!["--accompaniment-priority", "1.5"],
+        vec!["--auto", "--transpose", "0"],
+        vec!["--mode", "polyphonic", "--mode", "melody-first"],
+    ] {
+        let output = sandbox.0.join("invalid.json");
+        let mut args = vec![
+            OsStr::new("arrange"),
+            input.as_os_str(),
+            OsStr::new("-o"),
+            output.as_os_str(),
+            OsStr::new("--json"),
+        ];
+        args.extend(flags.iter().map(OsStr::new));
+        machine(&cli(&args), 2);
+        assert!(!output.exists());
+    }
+}
+
+#[test]
+fn arrangement_cli_generates_real_score_report_and_validates_source_time() {
+    let sandbox = Sandbox::new();
+    let raw = include_bytes!("../../../audios/ode-to-joy.mid");
+    let input = sandbox.file("欢乐颂 & input.mid", raw);
+    let output = sandbox.0.join("sky.json");
+    let r = machine(&convert("arrange", &input, &output), 0);
+    let report = &r["result"]["report"];
+    assert_eq!(report["arrangement_report_version"], 2);
+    assert_eq!(report["original_notes"], 52);
+    assert_eq!(report["kept"], 52);
+    assert_eq!(report["dropped"], 0);
+    assert_eq!(report["transpose_semitones"], 0);
+    assert_eq!(report["candidates"].as_array().unwrap().len(), 255);
+    assert_eq!(report["note_mappings"].as_array().unwrap().len(), 52);
+    let disk: Value = serde_json::from_slice(
+        &std::fs::read(sandbox.0.join("sky.json.arrangement.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(&disk, report);
+    machine(&run("validate", &output, true), 0);
+    machine(&run("inspect", &output, true), 0);
+    let score: skysheet_score::Score =
+        serde_json::from_slice(&std::fs::read(&output).unwrap()).unwrap();
+    assert_eq!(score.timeline.ppq, 960);
+    assert_eq!(score.timeline.tempo.to_bits(), 100f64.to_bits());
+    assert_eq!(std::fs::read(&input).unwrap(), raw);
+    machine(&convert("arrange", &input, &output), 3);
+}
+
+#[test]
+fn fixed_arrangement_never_falls_back_and_reports_zero_retention_failure() {
+    let sandbox = Sandbox::new();
+    let input = sandbox.file(
+        "input.mid",
+        include_bytes!("../../../audios/ode-to-joy.mid"),
+    );
+    for (shift, code) in [("12", 0), ("-12", 0), ("127", 1)] {
+        let output = sandbox.0.join(format!("fixed-{shift}.json"));
+        let report = sandbox.0.join(format!("report-{shift}.json"));
+        let result = cli(&[
+            OsStr::new("arrange"),
+            input.as_os_str(),
+            OsStr::new("-o"),
+            output.as_os_str(),
+            OsStr::new("--report"),
+            report.as_os_str(),
+            OsStr::new("--transpose"),
+            OsStr::new(shift),
+            OsStr::new("--json"),
+        ]);
+        let value = machine(&result, code);
+        let r = if code == 0 {
+            &value["result"]["report"]
+        } else {
+            &value["error"]["arrangement_report"]
+        };
+        assert_eq!(r["transpose_semitones"], shift.parse::<i16>().unwrap());
+        assert_eq!(r["candidates"].as_array().unwrap().len(), 1);
+        assert_eq!(r["note_mappings"].as_array().unwrap().len(), 52);
+        assert_eq!(output.exists(), code == 0);
+        assert!(report.exists());
+    }
+}
+
+#[test]
+fn arrangement_refuses_output_report_aliases_existing_files_and_invalid_flags() {
+    let sandbox = Sandbox::new();
+    let raw = include_bytes!("../../../audios/ode-to-joy.mid");
+    let input = sandbox.file("input.mid", raw);
+    let output = sandbox.0.join("out.json");
+    let occupied = sandbox.file("report.json", b"keep me");
+    for report in [&output, &occupied, &input] {
+        machine(
+            &cli(&[
+                OsStr::new("arrange"),
+                input.as_os_str(),
+                OsStr::new("-o"),
+                output.as_os_str(),
+                OsStr::new("--report"),
+                report.as_os_str(),
+                OsStr::new("--json"),
+            ]),
+            3,
+        );
+        assert!(!output.exists());
+    }
+    let alias = sandbox.0.join("alias.mid");
+    std::fs::hard_link(&input, &alias).unwrap();
+    machine(&convert("arrange", &input, &alias), 3);
+    machine(&convert("arrange", &input, &input), 3);
+    for extra in [
+        vec!["--auto", "--transpose", "12"],
+        vec!["--transpose", "128"],
+        vec!["--transpose", "1.5"],
+        vec!["--auto", "--auto"],
+    ] {
+        let mut args = vec![
+            OsStr::new("arrange"),
+            input.as_os_str(),
+            OsStr::new("-o"),
+            output.as_os_str(),
+            OsStr::new("--json"),
+        ];
+        args.extend(extra.iter().map(OsStr::new));
+        machine(&cli(&args), 2);
+        assert!(!output.exists());
+    }
+    assert_eq!(std::fs::read(&input).unwrap(), raw);
+    assert_eq!(std::fs::read(&occupied).unwrap(), b"keep me");
+}
+
+#[test]
+fn invalid_arrangement_source_saves_explicit_preparation_failure_without_score() {
+    let sandbox = Sandbox::new();
+    let input = sandbox.file("broken.mid", b"MThd");
+    let output = sandbox.0.join("out.json");
+    let r = machine(&convert("arrange", &input, &output), 1);
+    assert!(!output.exists());
+    assert_eq!(
+        r["error"]["arrangement_report"]["stage"],
+        "preparation_failed"
+    );
+    assert!(r["error"]["arrangement_report"]["original_notes"].is_null());
+    let disk: Value = serde_json::from_slice(
+        &std::fs::read(sandbox.0.join("out.json.arrangement.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(disk, r["error"]["arrangement_report"]);
+}
+
+#[test]
+fn required_music_commands_have_versioned_reports_and_stable_error_categories() {
+    let sandbox = Sandbox::new();
+    let path = sandbox.file(
+        "欢乐颂.mid",
+        include_bytes!("../../../audios/ode-to-joy.mid"),
+    );
+    for command in ["inspect-music", "analyze"] {
+        let r = machine(&run(command, &path, true), 0);
+        assert_eq!(r["command"], command);
+        assert_eq!(r["result"]["report"]["report_version"], 2);
+        assert_eq!(r["result"]["report"]["note_statistics"]["total_notes"], 52);
+        assert_eq!(
+            r["result"]["report"]["structure_analysis"]["tracks"][1]["pitch_range"]["lowest_name"],
+            "C5"
+        );
+        let human = run(command, &path, false);
+        assert!(human.status.success());
+        assert!(human.stderr.is_empty());
+        let text = String::from_utf8(human.stdout).unwrap();
+        assert!(text.contains("Tempo Map"));
+        assert!(text.contains("Meter Map"));
+        machine(&run(command, &sandbox.0.join("missing.mid"), true), 3);
+        let bad = sandbox.file("bad.mid", b"broken");
+        machine(&run(command, &bad, true), 1);
+        machine(&cli(&[OsStr::new(command), OsStr::new("--json")]), 2);
+        let output = sandbox.0.join("not-created.json");
+        machine(&convert(command, &path, &output), 2);
+        assert!(!output.exists());
+        if command == "analyze" {
+            assert_eq!(r["result"]["report"]["track_ranking"][0]["track"], 1);
+            assert!(text.contains("continuity"));
+        } else {
+            assert!(r["result"]["report"].get("melody_candidates").is_none());
+        }
+    }
+}
+
+#[test]
+fn analyze_midi_preserves_source_and_existing_cli_contracts() {
+    let sandbox = Sandbox::new();
+    let raw = include_bytes!("../../../audios/ode-to-joy.mid");
+    let path = sandbox.file("欢乐颂 & source.mid", raw);
+    let response = machine(&run("analyze-midi", &path, true), 0);
+    let report = &response["result"]["report"];
+    assert_eq!(response["command"], "analyze-midi");
+    assert_eq!(report["report_version"], 2);
+    assert_eq!(report["note_statistics"]["total_notes"], 52);
+    assert_eq!(report["source"]["notes"].as_array().unwrap().len(), 52);
+    assert_eq!(report["source"]["ppq"], 480);
+    assert!(report["confidence"]["probability"].is_null());
+    assert!(report["source"].get("original_midi").is_none());
+    assert!(response["result"].get("score").is_none());
+    let human = run("analyze-midi", &path, false);
+    assert_eq!(human.status.code(), Some(0));
+    assert!(human.stderr.is_empty());
+    assert!(
+        String::from_utf8(human.stdout)
+            .unwrap()
+            .contains("Notes: 52")
+    );
+    assert_eq!(std::fs::read(&path).unwrap(), raw);
+    machine(&run("inspect-midi", &path, true), 0);
+    let output = sandbox.0.join("unchanged-policy.json");
+    machine(&convert("import-midi", &path, &output), 1);
+    assert!(!output.exists());
+    machine(&convert("analyze-midi", &path, &output), 2);
+    assert!(!output.exists());
+    machine(
+        &cli(&[
+            OsStr::new("analyze-midi"),
+            path.as_os_str(),
+            OsStr::new("--tempo"),
+            OsStr::new("60"),
+            OsStr::new("--json"),
+        ]),
+        2,
+    );
+    machine(
+        &run("analyze-midi", &sandbox.0.join("missing.mid"), true),
+        3,
+    );
+    let bad = sandbox.file("bad.mid", b"broken");
+    machine(&run("analyze-midi", &bad, true), 1);
+}
+
+fn convert(command: &str, input: &Path, output: &Path) -> Output {
+    cli(&[
+        OsStr::new(command),
+        input.as_os_str(),
+        OsStr::new("-o"),
+        output.as_os_str(),
+        OsStr::new("--json"),
+    ])
+}
+
+#[test]
+fn midi_cli_roundtrip_real_files_and_source_preservation() {
+    let sandbox = Sandbox::new();
+    let input = sandbox.file("原始 & score.json", EXAMPLE);
+    let midi = sandbox.0.join("导出 & 空格.mid");
+    let exported = machine(&convert("export-midi", &input, &midi), 0);
+    assert_eq!(exported["result"]["report"]["note_count"], 6);
+    let raw_midi = std::fs::read(&midi).unwrap();
+    assert_eq!(&raw_midi[..4], b"MThd");
+    machine(&run("inspect-midi", &midi, true), 0);
+    let output = sandbox.0.join("导入.json");
+    let imported = machine(&convert("import-midi", &midi, &output), 0);
+    assert_eq!(imported["result"]["report"]["note_count"], 6);
+    machine(&run("validate", &output, true), 0);
+    assert_eq!(std::fs::read_to_string(input).unwrap(), EXAMPLE);
+    assert_eq!(std::fs::read(midi).unwrap(), raw_midi);
+}
+
+#[test]
+fn midi_cli_refuses_overwrites_aliases_and_missing_parents() {
+    let sandbox = Sandbox::new();
+    let input = sandbox.file("source.json", EXAMPLE);
+    machine(&convert("export-midi", &input, &input), 3);
+    let existing = sandbox.file("existing.mid", b"keep me");
+    machine(&convert("export-midi", &input, &existing), 3);
+    assert_eq!(std::fs::read(existing).unwrap(), b"keep me");
+    let alias = sandbox.0.join("alias.mid");
+    std::fs::hard_link(&input, &alias).unwrap();
+    machine(&convert("export-midi", &input, &alias), 3);
+    assert_eq!(std::fs::read_to_string(input).unwrap(), EXAMPLE);
+    let missing = sandbox.0.join("missing").join("output.mid");
+    machine(&convert("export-midi", &alias, &missing), 3);
+    assert!(!missing.exists());
+}
+
+#[test]
+fn midi_failures_have_reports_and_never_create_outputs() {
+    let sandbox = Sandbox::new();
+    let bad = sandbox.file("broken.mid", b"MThd");
+    let output = sandbox.0.join("failed.json");
+    let response = machine(&convert("import-midi", &bad, &output), 1);
+    assert_eq!(response["error"]["report"]["report_version"], 1);
+    assert!(!output.exists());
+    let duplicate = sandbox.file(
+        "duplicate.json",
+        EXAMPLE.replacen("\"tempo\": 120", "\"tempo\": 120, \"tempo\": 120", 1),
+    );
+    machine(&convert("export-midi", &duplicate, &output), 1);
+    assert!(!output.exists());
+    let unsupported = sandbox.file("pitch.json", EXAMPLE.replace("\"C4\"", "\"C#4\""));
+    machine(&convert("export-midi", &unsupported, &output), 1);
+    assert!(!output.exists());
+    machine(
+        &cli(&[
+            OsStr::new("import-midi"),
+            bad.as_os_str(),
+            OsStr::new("--json"),
+        ]),
+        2,
+    );
+    machine(
+        &cli(&[
+            OsStr::new("export-midi"),
+            bad.as_os_str(),
+            OsStr::new("-o"),
+            output.as_os_str(),
+            OsStr::new("--tempo"),
+            OsStr::new("60"),
+            OsStr::new("--json"),
+        ]),
+        2,
+    );
+}
 static NEXT_ID: AtomicUsize = AtomicUsize::new(0);
 
 struct Sandbox(PathBuf);
