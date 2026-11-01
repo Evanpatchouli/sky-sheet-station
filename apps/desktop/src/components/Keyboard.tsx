@@ -52,7 +52,7 @@ export function Keyboard({
       <div className="instrument-note">
         <span className="status-dot" />
         {song ? "已通过 CLI 验证" : "等待 Score JSON"}
-        <p>音频转换尚未接通</p>
+        <p>音频转录后可进入 Sky 编曲</p>
         <span>试听音色不模拟游戏原声</span>
       </div>
     </section>

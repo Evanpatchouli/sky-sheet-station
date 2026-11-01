@@ -152,5 +152,39 @@ The default 120 BPM timeline is not beat-quantized notation. Human audition and
 acceptance of representative music remain required; no general transcription
 accuracy, source separation or finished Phase 1 contract freeze is claimed.
 
-Final engineering/native/Linux results are recorded in the Draft PR and appended
-below after observing the actual checks.
+## Engineering and native verification
+
+- Root `cargo fmt --all -- --check`, `cargo test --workspace --locked` (138 Windows
+  tests) and `cargo clippy --workspace --all-targets --locked -- -D warnings` passed.
+- Isolated desktop fmt, 14 Rust tests and Clippy passed. Frontend 11 tests,
+  TypeScript/Vite production build, packaged sidecar and Windows Tauri Release
+  build passed. The model checksum was independently read from the installed
+  dependency and matches the report. License resources are present in the build.
+- Isolated numeric fmt, 20 tests, Clippy and full gate passed: 267 fixed cases,
+  10000 historical samples, zero failures. The focused 84 and research 3016
+  cases also passed. Independent lockfile and parser-feature restrictions remain
+  unchanged.
+- Native Release at `http://tauri.localhost/`, approximately 1280×880 content:
+  selected the Unicode/space piano MP3 in the Windows picker, observed real
+  progress and 676 note rows, saved MIDI/report, entered the existing arrangement
+  dialog, generated 635-note Score, saved Score/report and loaded the player.
+  Playback advanced to 18 seconds with C4/A4/E5 highlights, then paused. The saved
+  Score passed the production CLI validator. Saved MIDI SHA-256 matches the
+  standalone CLI output: `edddda914322d1f2d52c75336bf38b4354ee5faba4cde8c0705a8fa82709ec37`.
+- Native complex-MP3 transcription displayed 2717 notes. Invalid MP3 displayed a
+  decoding error and retained that result and the previously loaded 635-note
+  Score. A Rust-generated 590-second stereo WAV completed as one sustained A4
+  (0.023–589.993 s), additionally checking window joining and the long-file tail.
+- The native cancel click attempts occurred after these fast transcriptions had
+  already completed; they are not claimed as mid-inference cancellation evidence.
+  Actual cancellation during inference is covered by the Rust observer test;
+  native mid-job cancellation timing remains a manual acceptance check.
+- Native screenshots show a populated interface without a framework overlay,
+  legible reports and working primary actions. Physical loudspeaker output,
+  musical quality ratings, additional desktop sizes and console capture were not
+  independently measured. The old keyboard-panel audio-placeholder caption found
+  during QA was corrected.
+- [Linux CI for implementation `4e702e4`](https://github.com/Evanpatchouli/sky-sheet-station/actions/runs/41326305238)
+  passed core/CLI tests, fmt/Clippy, independent numeric checks and the added
+  Node frontend test/build job. Final-head CI and acceptance status are maintained
+  in [Draft PR #3](https://github.com/Evanpatchouli/sky-sheet-station/pull/3).
