@@ -76,6 +76,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "skysheet-cli"
+version = "0.1.0-alpha.1"
+dependencies = [
+ "serde",
+ "serde_json",
+ "skysheet-score",
+]
+
+[[package]]
 name = "skysheet-score"
 version = "0.1.0"
 dependencies = [

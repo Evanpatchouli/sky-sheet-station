@@ -1,6 +1,8 @@
 # CLI Specification
 
-**Status:** initial command proposal. Exact flags and subcommands may change before implementation.
+**Status:** Phase 1.5 implements `--help`, `--version`, `inspect`, `validate`
+and `--json`. See [CLI Alpha](cli-alpha.md) for the current executable contract,
+build instructions and limitations. The other commands below remain proposals.
 
 ## Goals
 
@@ -25,7 +27,9 @@ Input format is detected from the file or can be specified explicitly if needed.
     skysheet inspect output.json
     skysheet inspect output.json --json
 
-Inspection reports format version, duration, tempo, track count, note count, pitch range, and instrument compatibility.
+Alpha inspection reports format version, score/instrument identity, tempo, PPQ,
+time signature, track count and per-track note counts after Score validation.
+Duration and pitch-range summaries remain future proposals.
 
 ### Export MIDI
 
@@ -35,7 +39,9 @@ Inspection reports format version, duration, tempo, track count, note count, pit
 
     skysheet validate output.json
 
-Validation checks the schema, timing values, unique identifiers, and target-instrument pitch constraints.
+Alpha validation directly deserializes original JSON through the Score reader,
+then calls `Score::validate()` for timing, IDs and instrument pitch constraints.
+It does not run a separate production JSON Schema validator.
 
 ### Show available instruments
 
@@ -64,18 +70,18 @@ Recommended conventions:
 
 A future machine-readable progress mode may use JSON Lines on stderr or a separately selected event stream. It is not required for the first CLI prototype.
 
-## Exit-code proposal
+## Implemented Alpha exit codes
 
 | Code | Meaning |
 |---:|---|
 | 0 | Success |
-| 1 | General processing failure |
+| 1 | Score parsing or semantic validation failure |
 | 2 | Invalid arguments or options |
-| 3 | Unsupported or invalid input |
-| 4 | Score validation failure |
-| 5 | Output I/O failure |
+| 3 | Filesystem or I/O failure |
+| 4 | Internal execution error |
 
-The exact codes should be centralized and documented in the CLI implementation.
+These supersede the original unimplemented proposal. Stable diagnostic kinds and
+JSON response fields are documented in [CLI Alpha](cli-alpha.md).
 
 ## Tauri integration
 

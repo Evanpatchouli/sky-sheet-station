@@ -11,6 +11,17 @@ not all implemented; see the [decision record](docs/phase-1-decisions.md) and
 [development plan](PLANS.md) before relying on support. MIDI implementation
 remains Phase 2.
 
+Phase 1.5 now provides a runnable Windows CLI Alpha for existing Score JSON:
+
+```powershell
+cargo build -p skysheet-cli --release --locked --target x86_64-pc-windows-msvc
+& .\target\x86_64-pc-windows-msvc\release\skysheet.exe inspect .\docs\examples\sky-15-example.json
+& .\target\x86_64-pc-windows-msvc\release\skysheet.exe validate .\docs\examples\sky-15-example.json --json
+```
+
+See [CLI Alpha](docs/cli-alpha.md) for help/version, diagnostics, exit codes and
+the [Windows verification record](harness/build/phase-015-cli-alpha.md).
+
 ## Project direction
 
 - Rust core and standalone CLI.
@@ -32,7 +43,8 @@ remains Phase 2.
 
 ## Current Rust workspace
 
-The initial workspace contains the score model crate. Check the current workspace state before assuming other commands or crates exist.
+The workspace contains the reusable `skysheet-score` crate and the
+`skysheet-cli` package, whose executable is named `skysheet`.
 
 Use a Rust toolchain supporting edition 2024 with the `rustfmt` and `clippy`
 components, plus the native linker/build tools for your Rust target. The Phase 0
@@ -49,8 +61,8 @@ Keep `Cargo.lock` in version control to reproduce the dependency resolution.
 The first build needs registry access unless dependencies are already cached.
 Build output under `target/` is ignored. CI runs the same three checks on stable
 Rust plus the isolated Rust numeric/Schema gate below; it does not freeze
-the compiler version. The numeric gate currently fails on documented Rust/N2
-differences. Passing the existing Cargo suite alone does not complete Phase 1.
+the compiler version. The N2 repair passed Windows checks and Linux CI; passing
+the existing Cargo suite alone does not complete the remaining Phase 1 work.
 
 If Rust is installed but `cargo` is unavailable in a PowerShell session, reopen
 the terminal after installation or add its existing bin directory for that session:
@@ -68,8 +80,8 @@ No additional runtime is needed. This workspace and its Cargo.lock are isolated
 because Schema dependencies enable precision features that must not alter the
 observed root reader. Root workspace tests alone do not cover the tool.
 The default gate preserves 267 fixed cases and all 10,000 historical samples,
-returning failure on the same 2,981 observed case differences. This is not a parser
-fix. See [numeric verification](docs/numeric-verification.md) for the exact Oracle,
+now passing after the accepted RawValue repair. The old 2,981 differences remain
+archived as historical evidence. See [numeric verification](docs/numeric-verification.md) for the exact Oracle,
 corpus/evidence preservation, report, exit codes and single-case reproductions.
 
 The project stack is defined in [AGENTS.md](AGENTS.md). Rust is preferred and

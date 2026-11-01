@@ -17,9 +17,16 @@ Repository-wide instructions live in [AGENTS.md](../AGENTS.md). Product goals an
 - [Conformance audit](../harness/build/phase-01-conformance-audit.md): rule coverage, raw-input observations, and verification results.
 - [Independent numeric verification](./numeric-verification.md): N1-N4 decisions, locked tooling, acceptance corpus, current Rust precision differences and minimal reproductions.
 - [Conversion and arrangement](./conversion-and-arrangement.md): proposed audio/MIDI analysis and 15-key adaptation pipeline.
-- [CLI specification](./cli.md): initial command-line interface proposal.
+- [CLI Alpha](./cli-alpha.md): implemented inspect/validate commands, Windows build, JSON results and exit codes.
+- [CLI specification](./cli.md): current Alpha boundary and future command proposals.
 
 ## Status
+
+Phase 1.5 delivers the first runnable CLI Alpha for existing Score files, including
+a locally verified Windows Release executable. See the
+[verification record](../harness/build/phase-015-cli-alpha.md). N2 is complete;
+remaining Phase 1 contract work is nonblocking for these commands. MIDI and
+music analysis remain later phases; GUI remains deferred.
 
 These documents capture early product decisions and proposals. Approved score
 policies are identified separately from future features; the score contract is

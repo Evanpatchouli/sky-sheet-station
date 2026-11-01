@@ -145,6 +145,36 @@ agree, including a passing independent numeric gate with no unresolved N2 differ
 calibration and game recordings are not Phase 1 completion conditions. Removing
 that requirement does not itself complete Phase 1 or start MIDI implementation.
 
+## Phase 1.5: CLI Alpha — first runnable experience
+**Status:** Implemented and locally verified on Windows (2026-11-01). This is
+the current delivery milestone; no Phase 2 work is started. N2 is complete and
+its original production reader, expectations and evidence remain unchanged.
+
+- [x] Add `skysheet` help/version and inspect/validate commands using the existing Score API.
+- [x] Read raw JSON directly, then call `Score::validate()` without an alternate validator.
+- [x] Document stable JSON results, error categories and exit codes 0–4.
+- [x] Add real-process CLI integration tests, including the existing 84 N2 cases.
+- [x] Build and run Windows x86_64 MSVC Release executable on real fixtures.
+- [x] Run workspace and isolated numeric fmt/tests/Clippy and the full numeric gate.
+
+Exit criteria: Windows users can run `skysheet.exe`, inspect and validate the
+example, consume success/failure JSON, and distinguish invalid scores, usage and
+I/O failures by exit code. Tests and executable identity are recorded in the
+[Alpha verification record](harness/build/phase-015-cli-alpha.md); usage is in
+[CLI Alpha](docs/cli-alpha.md). Local verification does not claim new hosted CI
+results or a published release.
+
+Remaining Phase 1 work is explicitly separate:
+
+- CLI blockers: none identified by implementation and verification.
+- Nonblocking contract work: final specification/Schema/semantic audit remains open.
+- After Alpha: finish positive/negative coverage for the finalized contract;
+  retain the passing N2 gate. Real MIDI/D6 implementation tests belong to Phase 2.
+
+P2 follow-ups: richer field locations, shell completion, localization and release
+automation. MIDI, audio/music analysis and arrangement remain later phases; GUI
+stays deferred. Phase 1 is not marked complete.
+
 ## Phase 2: MIDI interoperability
 **Status:** Planned
 
@@ -180,12 +210,14 @@ Exit criteria: analysis outputs include diagnostics and are evaluated against re
 Exit criteria: generated arrangements are playable and retain recognizable musical structure on a reviewed test set.
 
 ## Phase 5: CLI product surface
-**Status:** Planned
+**Status:** Broader product surface planned; inspect/validate foundation delivered in Phase 1.5.
 
-- [ ] Implement convert, inspect, validate, and export commands.
-- [ ] Define stable exit codes and diagnostics.
-- [ ] Keep JSON output clean for scripting.
-- [ ] Add end-to-end CLI tests using fixture files.
+- [ ] Implement convert and export commands after their core phases.
+- [x] Implement inspect and validate in Phase 1.5.
+- [x] Define Alpha exit codes and diagnostics.
+- [x] Keep Alpha JSON output clean for scripting.
+- [x] Add end-to-end inspect/validate CLI tests using fixture files.
+- [ ] Extend diagnostics and end-to-end tests to future convert/export workflows.
 
 Exit criteria: documented workflows work headlessly from a clean checkout.
 
