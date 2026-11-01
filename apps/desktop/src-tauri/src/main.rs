@@ -6,6 +6,7 @@ mod score_io;
 
 use score_io::{LoadedScore, Snapshot};
 use std::sync::Mutex;
+use std::sync::atomic::{AtomicU64, Ordering};
 use tauri::Manager;
 use tauri_plugin_dialog::DialogExt;
 use tauri_plugin_shell::ShellExt;
@@ -128,6 +129,7 @@ async fn select_audio(app: tauri::AppHandle) -> Result<Option<String>, String> {
 async fn analyze_midi(
     app: tauri::AppHandle,
 ) -> Result<Option<analysis_io::LoadedAnalysis>, score_io::ImportError> {
+    let generation = app.state::<AtomicU64>().fetch_add(1, Ordering::SeqCst) + 1;
     let picker = app.clone();
     let selected = tauri::async_runtime::spawn_blocking(move || {
         picker
@@ -164,6 +166,9 @@ async fn analyze_midi(
         .as_str()
         .ok_or_else(|| "分析缺少源标识".to_string())?
         .to_string();
+    if app.state::<AtomicU64>().load(Ordering::SeqCst) != generation {
+        return Err("分析请求已过期".to_string().into());
+    }
     *app.state::<Mutex<Option<arrangement_io::ArrangementSource>>>()
         .lock()
         .map_err(|e| e.to_string())? = Some(arrangement_io::ArrangementSource {
@@ -178,7 +183,9 @@ async fn arrange_midi(
     app: tauri::AppHandle,
     source_document_id: String,
     transpose: Option<i16>,
+    options: arrangement_io::Options,
 ) -> Result<Option<arrangement_io::LoadedArrangement>, score_io::ImportError> {
+    let generation = app.state::<AtomicU64>().fetch_add(1, Ordering::SeqCst) + 1;
     if transpose.is_some_and(|v| !(-127..=127).contains(&v)) {
         return Err("移调必须是 -127..127 的整数".to_string().into());
     }
@@ -200,22 +207,7 @@ async fn arrange_midi(
                 .ok_or_else(|| "无效来源".to_string())?,
         )?
     };
-    let picker = app.clone();
-    let selected = tauri::async_runtime::spawn_blocking(move || {
-        picker
-            .dialog()
-            .file()
-            .set_title("保存 Sky 编曲（不会覆盖已有文件）")
-            .set_file_name("sky-arrangement.json")
-            .add_filter("SkySheet Score", &["json"])
-            .blocking_save_file()
-    })
-    .await
-    .map_err(|e| e.to_string())?;
-    let Some(selected) = selected else {
-        return Ok(None);
-    };
-    let output_path = selected.into_path().map_err(|e| e.to_string())?;
+    let output_path = snapshot.converted_path();
     let output = app
         .shell()
         .sidecar("skysheet")
@@ -224,11 +216,12 @@ async fn arrange_midi(
             &snapshot.path,
             &output_path,
             transpose,
+            &options,
         ))
         .output()
         .await
         .map_err(|e| e.to_string())?;
-    let report = arrangement_io::check_arrangement(
+    let mut report = arrangement_io::check_arrangement(
         output.status.code(),
         &output.stdout,
         &output.stderr,
@@ -238,15 +231,85 @@ async fn arrange_midi(
     let loaded = load_bytes(
         &app,
         score_io::read_file(&output_path)?,
-        output_path.to_string_lossy().into_owned(),
+        "编曲预览（未保存）".into(),
     )
     .await?;
-    Ok(Some(arrangement_io::LoadedArrangement { loaded, report }))
+    arrangement_io::verify_score(&report, &loaded)?;
+    if app.state::<AtomicU64>().load(Ordering::SeqCst) != generation {
+        return Err("编曲请求已过期".to_string().into());
+    }
+    let token = output_path.to_string_lossy().into_owned();
+    report["score_file"] = serde_json::Value::Null;
+    report["report_file"] = serde_json::Value::Null;
+    *app.state::<Mutex<Option<arrangement_io::PendingArrangement>>>()
+        .lock()
+        .map_err(|e| e.to_string())? = Some(arrangement_io::PendingArrangement {
+        snapshot,
+        token: token.clone(),
+    });
+    Ok(Some(arrangement_io::LoadedArrangement {
+        token,
+        loaded,
+        report,
+    }))
+}
+
+#[tauri::command]
+async fn save_arrangement(
+    app: tauri::AppHandle,
+    token: String,
+) -> Result<Option<serde_json::Value>, String> {
+    // Capture the validated preview before opening the dialog; token prevents
+    // a stale frontend result from saving a different arrangement.
+    let (score, report) = {
+        let state = app.state::<Mutex<Option<arrangement_io::PendingArrangement>>>();
+        let guard = state.lock().map_err(|e| e.to_string())?;
+        let pending = guard
+            .as_ref()
+            .filter(|p| p.token == token)
+            .ok_or("编曲预览已过期，请重新生成")?;
+        let output = pending.snapshot.converted_path();
+        let score = score_io::read_file(&output)?;
+        let raw = std::fs::read(format!("{}.arrangement.json", output.display()))
+            .map_err(|e| e.to_string())?;
+        (
+            score,
+            serde_json::from_slice(&raw).map_err(|e| e.to_string())?,
+        )
+    };
+    let picker = app.clone();
+    let selected = tauri::async_runtime::spawn_blocking(move || {
+        picker
+            .dialog()
+            .file()
+            .set_title("保存 Score 和独立编曲报告（不覆盖）")
+            .set_file_name("sky-arrangement.json")
+            .add_filter("SkySheet Score", &["json"])
+            .blocking_save_file()
+    })
+    .await
+    .map_err(|e| e.to_string())?;
+    let Some(selected) = selected else {
+        return Ok(None);
+    };
+    let path = selected.into_path().map_err(|e| e.to_string())?;
+    tauri::async_runtime::spawn_blocking(move || arrangement_io::save_pair(&path, &score, report))
+        .await
+        .map_err(|e| e.to_string())?
+        .map(Some)
+}
+
+#[tauri::command]
+fn cancel_arrangement(app: tauri::AppHandle) {
+    // Invalidate completion without terminating a CLI that owns temporary files.
+    app.state::<AtomicU64>().fetch_add(1, Ordering::SeqCst);
 }
 
 fn main() {
     tauri::Builder::default()
         .manage(Mutex::new(None::<arrangement_io::ArrangementSource>))
+        .manage(Mutex::new(None::<arrangement_io::PendingArrangement>))
+        .manage(AtomicU64::new(0))
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
@@ -254,6 +317,8 @@ fn main() {
             open_midi,
             analyze_midi,
             arrange_midi,
+            save_arrangement,
+            cancel_arrangement,
             load_example,
             select_audio
         ])

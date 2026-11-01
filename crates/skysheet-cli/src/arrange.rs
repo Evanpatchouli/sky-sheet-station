@@ -117,7 +117,7 @@ pub(crate) fn execute(args: &Args) -> Result<(Value, String), Diagnostic> {
     };
     let (doc, projection) = prepare().map_err(|mut error| {
         let mut report = json!({
-            "arrangement_report_version":1, "stage":"preparation_failed",
+            "arrangement_report_version":2, "stage":"preparation_failed",
             "source_file":input.file_name().map(|n|n.to_string_lossy()), "source_document_id":null,
             "target_instrument":skysheet_score::SKY_15_INSTRUMENT_ID,
             "requested_transpose_semitones":args.transpose,
@@ -146,27 +146,29 @@ pub(crate) fn execute(args: &Args) -> Result<(Value, String), Diagnostic> {
     let mode = args
         .transpose
         .map_or(TransposeMode::Auto, TransposeMode::Fixed);
-    let mut result = skysheet_arrange::arrange(&doc, &projection, mode).map_err(|e| {
-        let mut diagnostic = Diagnostic::new("arrangement", e.message, INVALID_SCORE);
-        let mut report = e.report;
-        if let Some(report) = &mut report {
-            report.report_file = Some(report_path.to_string_lossy().into_owned());
-            let saved = serde_json::to_vec_pretty(report)
-                .map_err(|e| e.to_string())
-                .and_then(|bytes| {
-                    crate::midi::write_new(&report_path, &bytes).map_err(|e| e.message)
-                });
-            if let Err(e) = saved {
-                report.report_file = None;
+    let mut result =
+        skysheet_arrange::arrange_with_options(&doc, &projection, mode, &args.arrangement)
+            .map_err(|e| {
+                let mut diagnostic = Diagnostic::new("arrangement", e.message, INVALID_SCORE);
+                let mut report = e.report;
+                if let Some(report) = &mut report {
+                    report.report_file = Some(report_path.to_string_lossy().into_owned());
+                    let saved = serde_json::to_vec_pretty(report)
+                        .map_err(|e| e.to_string())
+                        .and_then(|bytes| {
+                            crate::midi::write_new(&report_path, &bytes).map_err(|e| e.message)
+                        });
+                    if let Err(e) = saved {
+                        report.report_file = None;
+                        diagnostic
+                            .message
+                            .push_str(&format!("; diagnostic report could not be saved: {e}"));
+                    }
+                }
+                diagnostic.arrangement_report =
+                    report.map(|r| Box::new(ArrangementDiagnostic::Complete(r)));
                 diagnostic
-                    .message
-                    .push_str(&format!("; diagnostic report could not be saved: {e}"));
-            }
-        }
-        diagnostic.arrangement_report =
-            report.map(|r| Box::new(ArrangementDiagnostic::Complete(r)));
-        diagnostic
-    })?;
+            })?;
     result.report.score_file = Some(output.to_string_lossy().into_owned());
     result.report.report_file = Some(report_path.to_string_lossy().into_owned());
     let encode = |e: serde_json::Error| Diagnostic::new("internal", e.to_string(), INTERNAL);
@@ -177,7 +179,15 @@ pub(crate) fn execute(args: &Args) -> Result<(Value, String), Diagnostic> {
         .validate()
         .map_err(|e| Diagnostic::new("score_validation", e.to_string(), INVALID_SCORE))?;
     let diagnostic = serde_json::to_vec_pretty(&result.report).map_err(encode)?;
+    if diagnostic.len() > 64 * 1024 * 1024 {
+        return Err(Diagnostic::new(
+            "arrangement_resource_limit",
+            "report exceeds 64 MiB; no output files created",
+            INVALID_SCORE,
+        ));
+    }
     if let Err(e) = write_pair(output, &bytes, &report_path, &diagnostic) {
+        result.report.stage = "file_write_failed";
         result.report.score_generated = false;
         result.report.score_file = None;
         result.report.report_file = None;
@@ -187,26 +197,29 @@ pub(crate) fn execute(args: &Args) -> Result<(Value, String), Diagnostic> {
         ))));
         return Err(error);
     }
-    let selected = result
-        .report
-        .candidates
+    let melody = &result.report.role_retention[0];
+    let support_total: usize = result.report.role_retention[1..5]
         .iter()
-        .find(|c| c.selected)
-        .expect("selected candidate");
+        .map(|r| r.total)
+        .sum();
+    let support_kept: usize = result.report.role_retention[1..5]
+        .iter()
+        .map(|r| r.kept)
+        .sum();
     let mut human = format!(
         "arrange: {}\nOutput: {}\nReport: {}\nGlobal transpose: {} semitones ({})\nRetained: {}/{}; dropped: {}\nMelody: {:?}/{:?}; accompaniment: {}/{}\nScore validation: OK; D6 projection time preserved: true\n{}\n",
         input.display(),
         output.display(),
         report_path.display(),
-        selected.transpose_semitones,
-        result.report.mode,
+        result.report.transpose_semitones.unwrap(),
+        result.report.arrangement_mode,
         result.report.kept,
         result.report.original_notes,
         result.report.dropped,
-        selected.melody_kept,
-        selected.melody_total,
-        selected.accompaniment_kept,
-        selected.accompaniment_total,
+        melody.kept,
+        melody.total,
+        support_kept,
+        support_total,
         result.report.melody.reason
     );
     for n in result.report.note_mappings.iter().filter(|n| !n.mapped) {

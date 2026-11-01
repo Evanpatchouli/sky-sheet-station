@@ -8,6 +8,50 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 const EXAMPLE: &str = include_str!("../../../docs/examples/sky-15-example.json");
 
 #[test]
+fn context_modes_parameters_and_actual_outputs() {
+    let sandbox = Sandbox::new();
+    let input = sandbox.file("ode.mid", include_bytes!("../../../audios/ode-to-joy.mid"));
+    for mode in ["melody-first", "simple-accompaniment", "polyphonic"] {
+        let output = sandbox.0.join(format!("{mode}.json"));
+        let response = cli(&[
+            OsStr::new("arrange"),
+            input.as_os_str(),
+            OsStr::new("-o"),
+            output.as_os_str(),
+            OsStr::new("--mode"),
+            OsStr::new(mode),
+            OsStr::new("--json"),
+        ]);
+        let r = machine(&response, 0);
+        assert_eq!(r["result"]["report"]["arrangement_mode"], mode);
+        assert_eq!(r["result"]["report"]["kept"], 52);
+        machine(&run("validate", &output, true), 0);
+    }
+    for flags in [
+        vec!["--mode", "invalid"],
+        vec!["--max-polyphony", "0"],
+        vec!["--max-polyphony", "129"],
+        vec!["--melody-priority", "6"],
+        vec!["--bass-priority", "-1"],
+        vec!["--accompaniment-priority", "1.5"],
+        vec!["--auto", "--transpose", "0"],
+        vec!["--mode", "polyphonic", "--mode", "melody-first"],
+    ] {
+        let output = sandbox.0.join("invalid.json");
+        let mut args = vec![
+            OsStr::new("arrange"),
+            input.as_os_str(),
+            OsStr::new("-o"),
+            output.as_os_str(),
+            OsStr::new("--json"),
+        ];
+        args.extend(flags.iter().map(OsStr::new));
+        machine(&cli(&args), 2);
+        assert!(!output.exists());
+    }
+}
+
+#[test]
 fn arrangement_cli_generates_real_score_report_and_validates_source_time() {
     let sandbox = Sandbox::new();
     let raw = include_bytes!("../../../audios/ode-to-joy.mid");
@@ -15,10 +59,10 @@ fn arrangement_cli_generates_real_score_report_and_validates_source_time() {
     let output = sandbox.0.join("sky.json");
     let r = machine(&convert("arrange", &input, &output), 0);
     let report = &r["result"]["report"];
-    assert_eq!(report["arrangement_report_version"], 1);
+    assert_eq!(report["arrangement_report_version"], 2);
     assert_eq!(report["original_notes"], 52);
-    assert_eq!(report["kept"], 30);
-    assert_eq!(report["dropped"], 22);
+    assert_eq!(report["kept"], 52);
+    assert_eq!(report["dropped"], 0);
     assert_eq!(report["transpose_semitones"], 0);
     assert_eq!(report["candidates"].as_array().unwrap().len(), 255);
     assert_eq!(report["note_mappings"].as_array().unwrap().len(), 52);

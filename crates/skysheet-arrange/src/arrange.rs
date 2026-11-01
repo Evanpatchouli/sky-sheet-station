@@ -37,6 +37,25 @@ pub fn arrange(
     projection: &ScoreTimeProjection,
     mode: TransposeMode,
 ) -> Result<Arrangement, ArrangementError> {
+    arrange_internal(doc, projection, mode, None)
+}
+
+pub fn arrange_with_options(
+    doc: &MusicDocument,
+    projection: &ScoreTimeProjection,
+    transpose: TransposeMode,
+    options: &crate::ArrangementOptions,
+) -> Result<Arrangement, ArrangementError> {
+    options.validate()?;
+    arrange_internal(doc, projection, transpose, Some(options))
+}
+
+fn arrange_internal(
+    doc: &MusicDocument,
+    projection: &ScoreTimeProjection,
+    mode: TransposeMode,
+    options: Option<&crate::ArrangementOptions>,
+) -> Result<Arrangement, ArrangementError> {
     if !projection.matches(doc) {
         return Err(
             "time projection does not match source document, notes or maps"
@@ -44,10 +63,19 @@ pub fn arrange(
                 .into(),
         );
     }
-    let search = search_transposition(doc, mode).map_err(|e| e.to_string())?;
+    let mut search = search_transposition(doc, mode).map_err(|e| e.to_string())?;
+    let instrument = sky_15_instrument();
+    if options.is_some_and(|o| o.allow_octave_shifts) {
+        crate::context::rerank(doc, &mut search, &instrument);
+    }
+    let legacy_options = crate::ArrangementOptions {
+        allow_octave_shifts: false,
+        ..Default::default()
+    };
+    let config = options.unwrap_or(&legacy_options);
+    let octaves = crate::context::octaves(doc, &search, &instrument, config);
     let selected = &search.candidates[search.selected_index];
     let shift = selected.transpose_semitones;
-    let instrument = sky_15_instrument();
     let mut tracks: Vec<_> = doc
         .tracks
         .iter()
@@ -89,13 +117,25 @@ pub fn arrange(
         .unwrap();
     let mut mappings = Vec::with_capacity(doc.notes.len());
     let mut ranges = vec![(None::<u8>, None::<u8>, 0usize); tracks.len()];
-    for (n, time) in doc.notes.iter().zip(projection.notes()) {
-        let target = i16::from(n.pitch.value()) + shift;
-        let key_index = crate::search::key_index(&instrument, target);
+    for (index, (n, time)) in doc.notes.iter().zip(projection.notes()).enumerate() {
+        let global = i16::from(n.pitch.value()) + shift;
+        let target = global + 12 * octaves[index];
+        let key_index = if (0..=127).contains(&global) {
+            crate::search::key_index(&instrument, target)
+        } else {
+            None
+        };
         let drop_reason = if key_index.is_some() {
             None
-        } else if !(0..=127).contains(&target) {
+        } else if !(0..=127).contains(&global) || !(0..=127).contains(&target) {
             Some(DropReason::MidiOutOfRange)
+        } else if config.allow_octave_shifts
+            && !instrument
+                .keys
+                .iter()
+                .any(|p| i16::from(p.midi_number()) % 12 == global % 12)
+        {
+            Some(DropReason::NotInInstrumentKeys)
         } else if target < low {
             Some(DropReason::BelowInstrumentRange)
         } else if target > high {
@@ -117,6 +157,13 @@ pub fn arrange(
         range.1 = Some(range.1.map_or(n.pitch.value(), |v| v.max(n.pitch.value())));
         range.2 += 1;
         mappings.push(NoteMapping {
+            global_transposed_midi: global,
+            voice_octave_shift: octaves[index],
+            mapping_reason: if options.is_some() { "same pitch class; track/onset octave DP minimizes losses then contour/register cost".into() } else { "Phase 4-A exact global transposition".into() },
+            importance: crate::context::importance(doc, &search, config, index).0,
+            importance_reasons: crate::context::importance(doc, &search, config, index).1,
+            previous_interval_change: None,
+            next_interval_change: None,
             source_track: n.track,
             source_note_id: n.id.clone(),
             source_event_index: n.midi.as_ref().map(|m| m.on_event),
@@ -134,15 +181,43 @@ pub fn arrange(
             projected_duration_ticks: time.duration_ticks,
         });
     }
+    if options.is_some() {
+        crate::context::reduce(&mut mappings, &search, config);
+        let kept: std::collections::BTreeSet<_> = mappings
+            .iter()
+            .filter(|n| n.mapped)
+            .map(|n| n.source_note_id.as_str())
+            .collect();
+        for track in &mut tracks {
+            track.notes.retain(|n| kept.contains(n.id.as_str()));
+        }
+    }
     let track_reports = doc.tracks.iter().map(|t| {
         let (low, high, total) = ranges[t.index];
         let kept = tracks[t.index].notes.len();
-        TrackReport { source_track: t.index, output_track_id: tracks[t.index].id.clone(), name: t.name.clone(), original_notes: total,
+        TrackReport { final_lowest_midi: None, final_highest_midi: None, adjusted: 0, source_track: t.index, output_track_id: tracks[t.index].id.clone(), name: t.name.clone(), original_notes: total,
             source_lowest_midi: low, source_highest_midi: high, transposed_lowest_midi: low.map(|n| i16::from(n)+shift), transposed_highest_midi: high.map(|n|i16::from(n)+shift),
             kept, dropped: total-kept, retention: crate::search::ratio(kept,total), phase3_role: search.analysis.track_roles[t.index].clone(), confidence_explanation: "Uncalibrated Phase 3 role hypothesis; Unknown is not accompaniment. Selected melody remains provisional." }
     }).collect();
     let mut report = ArrangementReport {
-        arrangement_report_version: 1,
+        stage: "pitch_mapping",
+        arrangement_report_version: 2,
+        arrangement_mode: options.map_or("global-only", |o| o.mode.name()).into(),
+        global_transpose: Some(shift),
+        per_track_octave_shift: vec![],
+        accompaniment_policy: if config.mode == crate::ArrangementMode::SimpleAccompaniment {
+            "two distinct support pitches per onset; repeats preserved"
+        } else {
+            "retain all mapped support unless user overlap constraint"
+        }
+        .into(),
+        maximum_polyphony: config.maximum_polyphony,
+        custom_parameters: config.clone(),
+        compatibility: "v1 fields retained; candidate counts are pre-DP upper bounds in context mode; final counts are in role_retention/tracks/note_mappings",
+        role_retention: vec![],
+        onset_groups: vec![],
+        conflicts: vec![],
+        playability: Default::default(),
         source_file: doc.source_name.clone(),
         source_document_id: doc.id.clone(),
         target_instrument: instrument.id.clone(),
@@ -178,7 +253,8 @@ pub fn arrange(
         time_preserved: false,
         pitch_mapping_valid: false,
     };
-    report.diagnostics.push("Timing equality is against the independent D6 projection, not raw MIDI ticks. No Arrange quantization, octave folding, pitch snapping, note merging or polyphony reduction.".into());
+    crate::diagnostics::complete(&mut report);
+    report.diagnostics.push("Timing equality is against the independent D6 projection, not raw MIDI ticks. No quantization, pitch-class snapping or event merging. Roles and integer costs are uncalibrated heuristics; octave placement is optimized per track, not globally across tracks.".into());
     if report.dropped > 0 {
         report.diagnostics.push(format!(
             "{} of {} source notes could not map; every loss is listed in note_mappings.",
@@ -210,6 +286,7 @@ pub fn arrange(
         tracks,
         text: None,
     };
+    report.stage = "score_validation";
     let verify = || -> Result<(), String> {
         score.validate().map_err(|e| e.to_string())?;
         let bytes = serde_json::to_vec(&score).map_err(|e| e.to_string())?;
@@ -254,5 +331,6 @@ pub fn arrange(
     report.score_validation = true;
     report.time_preserved = true;
     report.pitch_mapping_valid = true;
+    report.stage = "complete";
     Ok(Arrangement { score, report })
 }

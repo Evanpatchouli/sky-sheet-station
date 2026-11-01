@@ -2,11 +2,11 @@
 
 **Status:** research-backed design proposal; algorithm choices require prototyping and evaluation.
 
-Phase 4-A now implements only the approved global-transposition/exact-key subset,
-with transparent per-note losses and melody-priority heuristics. See
-[the implemented rules and evidence](phase-4a-arrangement.md). The context-aware
-substitutions, octave displacement, reduction and broader modes below remain
-proposals; they are not enabled by `arrange`.
+Phase 4-A implements the global-transposition/exact-key baseline. Phase 4-B/C adds
+conditional track/onset octave optimization, three modes, explicit support-note
+reduction and desktop preview/save. See [implemented rules and evidence](phase-4bc-arrangement.md).
+Pitch-class substitution, generated harmony and rhythm rewriting below remain
+proposals; they are not enabled by `arrange`. Human musical acceptance is pending.
 
 ## Inputs
 

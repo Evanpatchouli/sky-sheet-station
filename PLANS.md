@@ -225,15 +225,18 @@ Exit criteria: analysis outputs include diagnostics and are evaluated against re
 ## Phase 4: Sky 15-key arrangement
 **Status:** Phase 4-A implemented with the owner-approved D6 projection boundary:
 global semitone search, exact-key mapping, melody-priority retention, per-note
-loss reports, valid Score output and CLI/desktop integration. Phase 4-B/C and
-human-reviewed musical coherence remain deferred; Linux CI is unverified.
+loss reports, valid Score output and CLI/desktop integration. Phase 4-B/C is now
+implemented locally as an integrated candidate, with acceptance still open for
+human musical review and hosted Linux CI. Neither is marked complete.
 See [Phase 4-A implementation and evidence](docs/phase-4a-arrangement.md).
+See [Phase 4-B/C rules, results and outstanding gates](docs/phase-4bc-arrangement.md).
 
 - [x] Implement target-instrument pitch constraints.
 - [x] Compare global transposition candidates.
-- [ ] Implement context-aware pitch mapping and octave placement.
-- [ ] Implement melody-first and polyphonic arrangement modes.
-- [ ] Implement note reduction and playability diagnostics.
+- [x] Implement context-aware pitch mapping and octave placement (P4-B1 local candidate).
+- [x] Implement melody-first, simple-accompaniment and polyphonic modes (P4-B2 local candidate).
+- [x] Implement note reduction and playability diagnostics.
+- [x] Implement CLI parameters and desktop preview/report/load/save workflow (P4-C local candidate).
 - [ ] Evaluate recognizability and musical coherence with human review.
 
 Exit criteria: generated arrangements are playable and retain recognizable musical structure on a reviewed test set.
