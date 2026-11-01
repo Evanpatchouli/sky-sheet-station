@@ -1,7 +1,10 @@
 # Phase 4-B/C: context-aware polyphonic arrangement
 
-Status: locally implemented candidate, **not fully accepted**. Human musical
-review and hosted Linux CI are pending. Phase 5/audio transcription are not begun.
+Status: implemented candidate, **awaiting final phase sign-off**. Windows checks
+and Linux CI for `13ce7b8` pass; the owner accepted the revised Ode sample's overall
+sound. Detailed per-mode musical/physical-playability ratings remain unrecorded.
+Phase 5/audio transcription are not begun. Historical checkpoints below retain
+their original pending states; the final evidence at the end supersedes them.
 
 ## Baseline
 
@@ -239,3 +242,35 @@ and times on this example, but that equality is a program fact, not separate
 per-mode human testimony. Physical speaker output remains unmeasured.
 The owner explicitly authorized committing, pushing this branch and opening a
 draft PR against Phase 4-A for Linux CI; no merge authorization was given.
+
+### Linux CI and native save acceptance
+
+Implementation commit `13ce7b8e303396dff37865aa457ba176761048d2` was pushed under
+owner authorization. Draft [PR #1](https://github.com/Evanpatchouli/sky-sheet-station/pull/1)
+targets `codex/phase-4a-sky-arrangement`; no main merge/release/deployment.
+[Linux run 41320029798](https://github.com/Evanpatchouli/sky-sheet-station/actions/runs/41320029798)
+completed successfully: root fmt/tests/Clippy, isolated numeric fmt/tests/Clippy,
+full conformance and artifact upload. Downloaded artifacts under ignored
+`target/p4bc-linux-13ce7b8/` confirm 267 fixed + 10,000 historical samples with
+zero failures; focused-84 and research-3016 reports also say passed, zero failures.
+This is actual hosted Linux evidence; the old Phase 4-A no-run observation remains
+historical and is not rewritten as if that commit had been independently run.
+
+The native Windows save dialog wrote
+`target/p4bc-results/native-saved-melody.json` (8,324 bytes) and its independent
+report (230,116 bytes), with matching paths and 52 notes. Production validate
+passed on the saved file. Current player Score was preserved throughout saving.
+Native simple-accompaniment was generated via its mode selector, explicitly
+loaded, and played past 9.13 seconds with D4/D5 key highlights. Melody-first had
+already been generated/loaded and observed in native audition. Revised
+polyphonic was accepted by the owner's listening; final native state recorded
+below. Application synthesis/playback state is verified; physical speaker output
+and measured hand-playability remain unverified.
+
+Final native polyphonic confirmation: selected **多声部优先**, generated a fresh
+CLI preview, observed the report label `polyphonic`, explicitly loaded 52 notes,
+and played past 12.27 seconds with G4/F5 highlights. The native controls were
+left paused with the result available. Together with melody-first and simple
+observations above, all three modes traversed the native application audition
+path. Visible playback speed was 1.25x (the user's existing setting), Score tempo
+100 BPM, 4/4, PPQ 960. No physical-output measurement is claimed.

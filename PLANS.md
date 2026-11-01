@@ -226,8 +226,10 @@ Exit criteria: analysis outputs include diagnostics and are evaluated against re
 **Status:** Phase 4-A implemented with the owner-approved D6 projection boundary:
 global semitone search, exact-key mapping, melody-priority retention, per-note
 loss reports, valid Score output and CLI/desktop integration. Phase 4-B/C is now
-implemented locally as an integrated candidate, with acceptance still open for
-human musical review and hosted Linux CI. Neither is marked complete.
+implemented as an integrated candidate. Windows engineering checks and hosted
+Linux CI for `13ce7b8` pass; the owner accepted the revised Ode sample's overall
+sound. Final phase sign-off and detailed musical/playability ratings remain open;
+neither phase is marked fully accepted. Draft PR #1 targets Phase 4-A, not main.
 See [Phase 4-A implementation and evidence](docs/phase-4a-arrangement.md).
 See [Phase 4-B/C rules, results and outstanding gates](docs/phase-4bc-arrangement.md).
 
@@ -237,7 +239,8 @@ See [Phase 4-B/C rules, results and outstanding gates](docs/phase-4bc-arrangemen
 - [x] Implement melody-first, simple-accompaniment and polyphonic modes (P4-B2 local candidate).
 - [x] Implement note reduction and playability diagnostics.
 - [x] Implement CLI parameters and desktop preview/report/load/save workflow (P4-C local candidate).
-- [ ] Evaluate recognizability and musical coherence with human review.
+- [x] Evaluate the representative Ode sample with owner audition; revise the rejected first polyphonic candidate.
+- [ ] Obtain final phase sign-off; detailed per-mode musical/physical-playability ratings remain unrecorded.
 
 Exit criteria: generated arrangements are playable and retain recognizable musical structure on a reviewed test set.
 
