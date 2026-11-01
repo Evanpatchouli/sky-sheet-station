@@ -19,7 +19,7 @@ workspace to prevent Schema dependencies from changing the tested parser feature
 - **Reusable core:** business logic belongs in Rust libraries, not in CLI command handlers.
 - **GUI as a client:** the Tauri application delegates conversion and inspection to the packaged CLI.
 - **Interoperability:** JSON is the default native score format; MIDI is supported for import and export.
-- **Explicit boundaries:** actual playback and key-input scheduling belong to downstream applications.
+- **Explicit boundaries:** the core does not schedule playback. The Phase 6 desktop client provides local synthesized audition; game-input scheduling remains outside SkySheet.
 - **MCP deferred:** MCP is out of scope for the initial implementation.
 
 ## Component responsibilities
@@ -37,6 +37,14 @@ Own command parsing, input/output paths, user-facing diagnostics, machine-readab
 Provides graphical workflows and editing/visualization. Its Rust backend invokes the packaged SkySheet CLI as a sidecar and consumes its outputs. It must not reimplement transcription or arrangement logic.
 
 The CLI remains independently usable when the desktop application is not installed.
+
+The owner authorized a Score-first Phase 6 on 2026-11-01 while conversion remains
+unimplemented. `apps/desktop` uses React/TypeScript/Vite and Tauri 2. Its isolated
+Rust workspace protects the CLI's parser-feature graph. The desktop validates a
+raw-byte snapshot through the bundled CLI, then reads it using the existing
+Score API. Canvas and Web Audio implement visualization and local synthesized
+audition in the client. Audio selection is explicitly unconnected to conversion.
+See [desktop player](desktop-player.md) for loading, safety, timing and build details.
 
 ### Downstream playback clients
 

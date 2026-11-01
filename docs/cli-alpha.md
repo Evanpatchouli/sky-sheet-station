@@ -179,6 +179,9 @@ JSON results contain no original score text, note events or token spellings.
 
 Phase 1's final contract/fixture audit remains open and is not a prerequisite for
 these existing Score workflows. MIDI import/export/playback/quantization, audio
-analysis, arrangement, GUI, MCP, networking and database features are absent.
+analysis, arrangement, MCP, networking and database features are absent from the
+CLI. The subsequently authorized [Phase 6 desktop client](desktop-player.md)
+packages this unchanged CLI for Score validation and provides local audition.
+There is still no audio conversion command.
 Shell completion, richer source locations, localization and release automation
 are deferred. No further phase is started by this Alpha.

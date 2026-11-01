@@ -18,6 +18,7 @@ Repository-wide instructions live in [AGENTS.md](../AGENTS.md). Product goals an
 - [Independent numeric verification](./numeric-verification.md): N1-N4 decisions, locked tooling, acceptance corpus, current Rust precision differences and minimal reproductions.
 - [Conversion and arrangement](./conversion-and-arrangement.md): proposed audio/MIDI analysis and 15-key adaptation pipeline.
 - [CLI Alpha](./cli-alpha.md): implemented inspect/validate commands, Windows build, JSON results and exit codes.
+- [Desktop player](./desktop-player.md): Phase 6 Tauri client, real Score loading, Canvas visualization and local audition; audio conversion is not connected.
 - [CLI specification](./cli.md): current Alpha boundary and future command proposals.
 
 ## Status
@@ -26,7 +27,8 @@ Phase 1.5 delivers the first runnable CLI Alpha for existing Score files, includ
 a locally verified Windows Release executable. See the
 [verification record](../harness/build/phase-015-cli-alpha.md). N2 is complete;
 remaining Phase 1 contract work is nonblocking for these commands. MIDI and
-music analysis remain later phases; GUI remains deferred.
+music analysis remain later phases. The owner has now authorized Phase 6's
+Score-first desktop player without starting those intermediate phases.
 
 These documents capture early product decisions and proposals. Approved score
 policies are identified separately from future features; the score contract is

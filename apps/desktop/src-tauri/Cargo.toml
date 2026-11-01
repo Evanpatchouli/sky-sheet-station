@@ -1,0 +1,20 @@
+[package]
+name = "skysheet-desktop"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+description = "SkySheet desktop score visualization and local audition client"
+
+# Keep Tauri's feature graph separate from the production CLI/numeric reader.
+[workspace]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-shell = "2"
+tauri-plugin-dialog = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["raw_value"] }
+skysheet-score = { path = "../../../crates/skysheet-score" }

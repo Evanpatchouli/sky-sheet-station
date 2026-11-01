@@ -172,8 +172,9 @@ Remaining Phase 1 work is explicitly separate:
   retain the passing N2 gate. Real MIDI/D6 implementation tests belong to Phase 2.
 
 P2 follow-ups: richer field locations, shell completion, localization and release
-automation. MIDI, audio/music analysis and arrangement remain later phases; GUI
-stays deferred. Phase 1 is not marked complete.
+automation. MIDI, audio/music analysis and arrangement remain later phases. GUI
+was deferred at Alpha delivery; the owner subsequently authorized the Score-first
+Phase 6 below. Phase 1 is not marked complete.
 
 ## Phase 2: MIDI interoperability
 **Status:** Planned
@@ -221,13 +222,30 @@ Exit criteria: generated arrangements are playable and retain recognizable music
 
 Exit criteria: documented workflows work headlessly from a clean checkout.
 
-## Phase 6: Tauri GUI
-**Status:** Deferred until core CLI workflows are stable
+## Phase 6: Tauri Desktop Player
+**Status:** Score-first desktop player implemented and locally verified on Windows (2026-11-01), within the owner's Phase 6 authorization. Audio conversion is absent; no Phases 2–5 implementation is implied. No installer/release has been published.
 
-- [ ] Design GUI workflows around the CLI capabilities.
-- [ ] Package the CLI as a Tauri sidecar.
-- [ ] Implement progress, cancellation, and error presentation.
-- [ ] Avoid duplicating music algorithms in the GUI backend.
+- [x] Implement React/TypeScript/Vite desktop workflows around actual CLI capabilities.
+- [x] Package the CLI as a Tauri sidecar with argument-array invocation.
+- [x] Reuse raw-byte Score parsing and CLI validation, including N2; isolate desktop dependencies.
+- [x] Canvas piano roll, dynamic ordered-key keyboard, nominal meter guides, zoom and scrolling.
+- [x] Local synthesized audition, synchronized pointer/highlights, pause/stop/seek/speed/loop controls.
+- [x] File-picker cancellation, loading state and actionable CLI errors.
+- [x] Audio-file selection explicitly marked as unconnected; no conversion output fabricated.
+- [x] Complete Windows executable and rendered/native workflow verification.
+
+Local playback is a desktop-client responsibility, not new core or game-input
+behavior. Conversion progress/cancellation is deferred until a real CLI conversion
+command exists. See [desktop player](docs/desktop-player.md) for usage and limitations.
+
+Evidence: root 64 tests, desktop 5 Rust tests (including 84 frozen N2 cases),
+8 frontend timing/playback tests, isolated numeric 20 tests, fmt/Clippy, the full
+267-fixed/10,000-sample gate, TypeScript/Vite production build, and Windows release
+build passed locally. Native Release loaded a real Unicode/space path through its
+file picker and CLI with the dev server stopped; playback advanced the pointer
+and key highlights. Local browser checks exercised controls, errors, responsive
+layout and a 600-note validated test fixture. See the verification section in
+[desktop player](docs/desktop-player.md#local-verification-2026-11-01).
 
 ## Deferred: MCP
 MCP is a possible future integration. Do not implement it as part of the initial phases unless the product owner explicitly reprioritizes it.

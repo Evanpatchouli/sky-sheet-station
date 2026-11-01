@@ -21,7 +21,7 @@ The central product value is not merely detecting notes. It is producing a music
 4. Transparent loss: report octave shifts, pitch substitutions, removed notes, and other lossy transformations where feasible.
 5. Human-readable formats: JSON is the default native score format; MIDI is supported for import/export.
 6. Separation of concerns: original music/transcription data is distinct from instrument-specific arrangements.
-7. Playback is external: SkySheet does not automate game controls or implement the downstream playback scheduler.
+7. Playback stays outside the core: the Phase 6 desktop client provides local Score audition and visualization; SkySheet never automates game controls.
 8. No assumed lyrics: text is user-authored metadata; lyric recognition is not a product requirement.
 9. Incremental quality: validate the data contract and MIDI path before investing heavily in complex audio transcription.
 
