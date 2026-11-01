@@ -6,8 +6,12 @@ license.workspace = true
 description = "MIDI interoperability and conversion diagnostics for SkySheet"
 
 [dependencies]
+skysheet-music = { path = "../skysheet-music" }
 skysheet-score = { path = "../skysheet-score" }
 serde.workspace = true
 midly.workspace = true
 num-bigint.workspace = true
 num-traits.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true

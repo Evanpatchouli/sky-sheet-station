@@ -7,6 +7,92 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 
 const EXAMPLE: &str = include_str!("../../../docs/examples/sky-15-example.json");
 
+#[test]
+fn required_music_commands_have_versioned_reports_and_stable_error_categories() {
+    let sandbox = Sandbox::new();
+    let path = sandbox.file(
+        "欢乐颂.mid",
+        include_bytes!("../../../audios/ode-to-joy.mid"),
+    );
+    for command in ["inspect-music", "analyze"] {
+        let r = machine(&run(command, &path, true), 0);
+        assert_eq!(r["command"], command);
+        assert_eq!(r["result"]["report"]["report_version"], 2);
+        assert_eq!(r["result"]["report"]["note_statistics"]["total_notes"], 52);
+        assert_eq!(
+            r["result"]["report"]["structure_analysis"]["tracks"][1]["pitch_range"]["lowest_name"],
+            "C5"
+        );
+        let human = run(command, &path, false);
+        assert!(human.status.success());
+        assert!(human.stderr.is_empty());
+        let text = String::from_utf8(human.stdout).unwrap();
+        assert!(text.contains("Tempo Map"));
+        assert!(text.contains("Meter Map"));
+        machine(&run(command, &sandbox.0.join("missing.mid"), true), 3);
+        let bad = sandbox.file("bad.mid", b"broken");
+        machine(&run(command, &bad, true), 1);
+        machine(&cli(&[OsStr::new(command), OsStr::new("--json")]), 2);
+        let output = sandbox.0.join("not-created.json");
+        machine(&convert(command, &path, &output), 2);
+        assert!(!output.exists());
+        if command == "analyze" {
+            assert_eq!(r["result"]["report"]["track_ranking"][0]["track"], 1);
+            assert!(text.contains("continuity"));
+        } else {
+            assert!(r["result"]["report"].get("melody_candidates").is_none());
+        }
+    }
+}
+
+#[test]
+fn analyze_midi_preserves_source_and_existing_cli_contracts() {
+    let sandbox = Sandbox::new();
+    let raw = include_bytes!("../../../audios/ode-to-joy.mid");
+    let path = sandbox.file("欢乐颂 & source.mid", raw);
+    let response = machine(&run("analyze-midi", &path, true), 0);
+    let report = &response["result"]["report"];
+    assert_eq!(response["command"], "analyze-midi");
+    assert_eq!(report["report_version"], 2);
+    assert_eq!(report["note_statistics"]["total_notes"], 52);
+    assert_eq!(report["source"]["notes"].as_array().unwrap().len(), 52);
+    assert_eq!(report["source"]["ppq"], 480);
+    assert!(report["confidence"]["probability"].is_null());
+    assert!(report["source"].get("original_midi").is_none());
+    assert!(response["result"].get("score").is_none());
+    let human = run("analyze-midi", &path, false);
+    assert_eq!(human.status.code(), Some(0));
+    assert!(human.stderr.is_empty());
+    assert!(
+        String::from_utf8(human.stdout)
+            .unwrap()
+            .contains("Notes: 52")
+    );
+    assert_eq!(std::fs::read(&path).unwrap(), raw);
+    machine(&run("inspect-midi", &path, true), 0);
+    let output = sandbox.0.join("unchanged-policy.json");
+    machine(&convert("import-midi", &path, &output), 1);
+    assert!(!output.exists());
+    machine(&convert("analyze-midi", &path, &output), 2);
+    assert!(!output.exists());
+    machine(
+        &cli(&[
+            OsStr::new("analyze-midi"),
+            path.as_os_str(),
+            OsStr::new("--tempo"),
+            OsStr::new("60"),
+            OsStr::new("--json"),
+        ]),
+        2,
+    );
+    machine(
+        &run("analyze-midi", &sandbox.0.join("missing.mid"), true),
+        3,
+    );
+    let bad = sandbox.file("bad.mid", b"broken");
+    machine(&run("analyze-midi", &bad, true), 1);
+}
+
 fn convert(command: &str, input: &Path, output: &Path) -> Output {
     cli(&[
         OsStr::new(command),

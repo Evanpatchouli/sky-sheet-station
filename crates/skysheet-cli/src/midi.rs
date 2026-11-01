@@ -61,6 +61,17 @@ pub(crate) fn execute(args: &Args) -> Result<(Value, String), Diagnostic> {
         .file
         .as_deref()
         .ok_or_else(|| Diagnostic::new("internal", "missing input", INTERNAL))?;
+    if matches!(
+        args.command,
+        Command::AnalyzeMidi | Command::Analyze | Command::InspectMusic
+    ) {
+        let document = skysheet_midi::read_music(
+            &read_midi(input)?,
+            input.file_name().map(|s| s.to_string_lossy().into_owned()),
+        )
+        .map_err(failure)?;
+        return crate::music::execute(args.command, &document);
+    }
     let (bytes, report) = match args.command {
         Command::ImportMidi => {
             let options = skysheet_midi::ImportOptions {

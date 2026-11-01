@@ -24,6 +24,14 @@ Repository-wide instructions live in [AGENTS.md](../AGENTS.md). Product goals an
   protocol limits and desktop integration.
 - [Phase 2 MIDI preparation](./phase-2-midi.md): approved dependencies, design
   proposal and preflight verification.
+- [Music analysis](./music-analysis.md): unrestricted source representation,
+  read-only primitives, candidate extraction and `analyze-midi`.
+- [Phase 3 evaluation](./phase-3-evaluation.md): independent event references,
+  observed quality, preservation, resource measurements and acceptance gaps.
+- [Phase 3 full-prompt audit](./phase-3-full-prompt-audit.md): requirement-by-requirement
+  historical gap reconciliation, subsequently addressed.
+- [Phase 3 delivery](./phase-3-delivery.md): P3-A/B/C implementation, actual CLI/native
+  evidence, final verification matrix and remaining limitations.
 
 ## Status
 
@@ -31,8 +39,11 @@ The owner authorized Phase 2 MIDI interoperability and existing desktop-player
 integration on 2026-11-01, then approved its dependencies. MIDI import/export
 and desktop integration are implemented on `codex/phase-2-midi`.
 Earlier no-Phase-2 statements below describe prior milestones.
-See the [Phase 2 preparation record](phase-2-midi.md). Phases 3/4 remain outside
-the current task, and the remaining Phase 1 checks are not declared complete.
+See the [Phase 2 preparation record](phase-2-midi.md). The owner subsequently
+authorized Phase 3, now locally implemented and verified through the required CLI
+commands and existing desktop analysis view; see the delivery record.
+Phase 4 remains outside the current task, and remaining Phase 1 checks are not
+declared complete. Earlier scope statements below describe historical milestones.
 
 Phase 1.5 delivers the first runnable CLI Alpha for existing Score files, including
 a locally verified Windows Release executable. See the

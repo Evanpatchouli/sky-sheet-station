@@ -11,6 +11,9 @@ Usage:
   skysheet import-midi <FILE> -o <OUTPUT.json> [--tempo <BPM>] [--json]
   skysheet export-midi <FILE> -o <OUTPUT.mid> [--json]
   skysheet inspect-midi <FILE> [--json]
+  skysheet analyze-midi <FILE> [--json]
+  skysheet inspect-music <FILE.mid> [--json]
+  skysheet analyze <FILE.mid> [--json]
 
 Options:
   -h, --help     Show help (also accepted with inspect/validate)
@@ -33,6 +36,9 @@ pub enum Command {
     ImportMidi,
     ExportMidi,
     InspectMidi,
+    AnalyzeMidi,
+    InspectMusic,
+    Analyze,
 }
 
 impl Command {
@@ -45,6 +51,9 @@ impl Command {
             Self::ImportMidi => "import-midi",
             Self::ExportMidi => "export-midi",
             Self::InspectMidi => "inspect-midi",
+            Self::AnalyzeMidi => "analyze-midi",
+            Self::InspectMusic => "inspect-music",
+            Self::Analyze => "analyze",
         }
     }
 }
@@ -141,6 +150,9 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
         Some("import-midi") => Command::ImportMidi,
         Some("export-midi") => Command::ExportMidi,
         Some("inspect-midi") => Command::InspectMidi,
+        Some("analyze-midi") => Command::AnalyzeMidi,
+        Some("inspect-music") => Command::InspectMusic,
+        Some("analyze") => Command::Analyze,
         _ => {
             return Err(format!(
                 "unsupported command {:?}; use --help",

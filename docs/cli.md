@@ -5,6 +5,12 @@ and `--json`. Phase 2 adds `import-midi`, `export-midi`, and `inspect-midi`;
 see [MIDI commands and limits](midi.md). See [CLI Alpha](cli-alpha.md) for the
 original executable contract. Generic `convert`/`export` below remain proposals.
 
+Phase 3 adds `inspect-music <FILE.mid> [--json]` and `analyze <FILE.mid> [--json]`;
+`analyze-midi` remains an alias for analysis. JSON uses the same envelope with
+version 2 of the internal `result.report`, including
+source facts, statistics, uncertain candidates and diagnostics. It accepts neither
+output paths nor reference-tempo overrides. See [music analysis](music-analysis.md).
+
 ## Goals
 
 - The CLI is the primary interface to SkySheet.

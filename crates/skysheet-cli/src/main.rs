@@ -1,5 +1,6 @@
 mod args;
 mod midi;
+mod music;
 
 use args::Command;
 use serde::Serialize;
@@ -140,7 +141,12 @@ fn human_inspect(score: &Score, path: &Path) -> String {
 
 fn execute(args: &args::Args) -> Result<(Value, String), Diagnostic> {
     match args.command {
-        Command::ImportMidi | Command::ExportMidi | Command::InspectMidi => midi::execute(args),
+        Command::ImportMidi
+        | Command::ExportMidi
+        | Command::InspectMidi
+        | Command::AnalyzeMidi
+        | Command::Analyze
+        | Command::InspectMusic => midi::execute(args),
         Command::Help => Ok((json!({"help": args::HELP}), args::HELP.into())),
         Command::Version => Ok((
             json!({"name": "skysheet", "version": VERSION}),

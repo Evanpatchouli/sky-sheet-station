@@ -203,13 +203,22 @@ cancel/error retention and 1280/800/390 widths. No new CI run, commit or publica
 is claimed; physical speaker output was not measured.
 
 ## Phase 3: Music analysis primitives
-**Status:** Planned
+**Status:** P3-A/B/C implemented and locally verified on Windows after the full-prompt reconciliation. Required CLI commands and the native desktop analysis flow display the real ode-to-joy source. Heuristics remain uncalibrated; external asset provenance and human musical review remain open. Phase 2 hosted CI has no run, not a passing result. See [final delivery evidence](docs/phase-3-delivery.md).
 
-- [ ] Define an unrestricted internal music/transcription representation.
-- [ ] Add tempo, key/scale, and note-event analysis where measurable.
-- [ ] Prototype candidate melody extraction and role estimation.
-- [ ] Create a small licensed/owned evaluation corpus.
-- [ ] Record accuracy, runtime, and memory results.
+- [x] Complete P3-A: optional MIDI provenance, generic notes, unrestricted pitch display/helpers and source preservation.
+- [x] Complete P3-B: register/track/pair analysis, musical positions, score components and specific diagnostics.
+- [x] Prototype traceable candidate melody extraction and role estimation.
+- [x] Create 14 original synthetic evaluation cases, separate from owner-supplied MIDI.
+- [x] Add explicit score-component/ranking/Unknown regressions and all 14 corpus cases through the MIDI path.
+- [x] Complete P3-C: `inspect-music`, `analyze`, desktop analysis UI and actual ode-to-joy display.
+- [x] Run CLI/desktop/frontend/build checks and verify existing Score playback.
+- [ ] Obtain human-reviewed references and resolve external real-MIDI provenance.
+- [x] Record provisional reference agreement, runtime, memory and engineering checks; human-validated accuracy remains pending.
+
+`analyze-midi` uses the existing parser and reusable music crate. All 52
+ode-to-joy notes, including 22 out-of-range accompaniment notes, remain unchanged.
+Internal velocity never enters Score v1. Confidence is uncalibrated; Phase 4
+arrangement is not included.
 
 Exit criteria: analysis outputs include diagnostics and are evaluated against reference examples.
 

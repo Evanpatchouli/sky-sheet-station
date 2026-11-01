@@ -122,6 +122,7 @@ dependencies = [
  "serde",
  "serde_json",
  "skysheet-midi",
+ "skysheet-music",
  "skysheet-score",
 ]
 
@@ -133,7 +134,17 @@ dependencies = [
  "num-bigint",
  "num-traits",
  "serde",
+ "serde_json",
+ "skysheet-music",
  "skysheet-score",
+]
+
+[[package]]
+name = "skysheet-music"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

@@ -5,6 +5,9 @@ import { PianoRoll, TRACK_COLORS } from "./components/PianoRoll.tsx";
 import { Transport } from "./components/Transport.tsx";
 import { Modal } from "./components/Modal.tsx";
 import { ImportReport } from "./components/ImportReport.tsx";
+import { MusicAnalysis } from "./components/MusicAnalysis.tsx";
+import { analysisErrorMessage } from "./analysis/model.ts";
+import type { LoadedAnalysis } from "./analysis/model.ts";
 import { PlayerEngine } from "./player/engine.ts";
 import { prepareScore } from "./player/model.ts";
 import type {
@@ -17,6 +20,7 @@ import {
   loadExample,
   openScore,
   openMidi,
+  analyzeMidi,
   selectAudio,
 } from "./services/desktop.ts";
 
@@ -26,10 +30,13 @@ export default function App() {
   const [song, setSong] = useState<PreparedScore | null>(null);
   const [busy, setBusy] = useState(false),
     [error, setError] = useState<string | null>(null);
-  const [modal, setModal] = useState<"info" | "settings" | "audio" | "import" | null>(
+  const [modal, setModal] = useState<"info" | "settings" | "audio" | "import" | "analysis" | null>(
     null,
   );
   const [audio, setAudio] = useState<string | null>(null);
+  const [analysis, setAnalysis] = useState<LoadedAnalysis | null>(null);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const [analysisBusy, setAnalysisBusy] = useState(false);
   const [importReport, setImportReport] = useState<Report | null>(null);
   const [zoom, setZoom] = useState(1),
     [follow, setFollow] = useState(true),
@@ -68,6 +75,19 @@ export default function App() {
       if (path) setAudio(path);
     } catch (e) {
       setError(String(e));
+    }
+  }
+  async function analyze() {
+    const id = ++request.current;
+    engine.pause();
+    setBusy(true); setAnalysisBusy(true); setAnalysisError(null); setModal("analysis");
+    try {
+      const loaded = await analyzeMidi();
+      if (loaded && id === request.current) setAnalysis(loaded);
+    } catch (error) {
+      if (id === request.current) setAnalysisError(analysisErrorMessage(error));
+    } finally {
+      if (id === request.current) { setBusy(false); setAnalysisBusy(false); }
     }
   }
   const message = error || state.error;
@@ -114,6 +134,8 @@ export default function App() {
               <span>导入报告</span>
             </button>
           )}
+          <button aria-label="分析 MIDI" disabled={busy} onClick={() => void analyze()}><Icon name="info" /><span>分析 MIDI</span></button>
+          {analysis && <button aria-label="分析结果" onClick={() => setModal("analysis")}><Icon name="info" /><span>分析结果</span></button>}
           <button disabled={!song} onClick={() => setModal("info")}>
             <Icon name="info" />
             <span>乐谱信息</span>
@@ -235,6 +257,11 @@ export default function App() {
           <ImportReport report={importReport} />
         </Modal>
       )}
+      {modal === "analysis" && <Modal title="音乐分析" wide onClose={() => setModal(null)}>
+        {analysisBusy && <p role="status">正在读取 MIDI 并通过 CLI 分析…</p>}
+        {analysisError && <p className="notice error" role="alert">{analysisError}</p>}
+        {analysis ? <MusicAnalysis loaded={analysis} /> : !analysisBusy && <p>选择 MIDI 文件以查看原始轨道、音域与旋律候选。</p>}
+      </Modal>}
       {modal === "settings" && (
         <Modal title="试听设置" onClose={() => setModal(null)}>
           <label className="setting">

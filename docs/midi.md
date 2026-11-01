@@ -7,6 +7,10 @@ adaptation, music analysis or a new Score format. See the
 
 ## Commands
 
+Phase 3 adds `skysheet analyze-midi input.mid [--json]`, using the same source
+parser without Sky pitch constraints. See [music analysis](music-analysis.md).
+The Phase 2 conversion policies and commands below remain unchanged.
+
 ```powershell
 cargo build -p skysheet-cli --release --locked
 .\target\release\skysheet.exe import-midi input.mid -o output.json

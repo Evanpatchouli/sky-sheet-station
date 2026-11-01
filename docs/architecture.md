@@ -74,6 +74,13 @@ The exact crate boundaries can evolve. A practical starting point is:
 
 Avoid creating a crate for every small type prematurely. Split crates when dependency direction or independent testing justifies it.
 
+Phase 3 implements `skysheet-music` for unrestricted source events and analysis
+in one crate instead of introducing separate core/analysis crates. It depends
+only on Serde, not Score or a target instrument. The existing MIDI scanner adapts
+to `MusicDocument`; CLI calls that adapter and the music analyzer. Original
+events remain separate from inferred reports and future arrangements.
+See [music analysis](music-analysis.md).
+
 ## Data flow
 
     MP3/WAV/FLAC -> decode -> transcription --+

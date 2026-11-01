@@ -1,5 +1,6 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import type { LoadedScore } from "../player/model.ts";
+import type { LoadedAnalysis } from "../analysis/model.ts";
 
 export const desktopAvailable = () => isTauri();
 
@@ -13,5 +14,6 @@ function desktopInvoke<T>(command: string): Promise<T> {
 
 export const openScore = () => desktopInvoke<LoadedScore | null>("open_score");
 export const openMidi = () => desktopInvoke<LoadedScore | null>("open_midi");
+export const analyzeMidi = () => desktopInvoke<LoadedAnalysis | null>("analyze_midi");
 export const loadExample = () => desktopInvoke<LoadedScore>("load_example");
 export const selectAudio = () => desktopInvoke<string | null>("select_audio");

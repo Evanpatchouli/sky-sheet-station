@@ -1,5 +1,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod analysis_io;
 mod score_io;
 
 use score_io::{LoadedScore, Snapshot};
@@ -120,6 +121,44 @@ async fn select_audio(app: tauri::AppHandle) -> Result<Option<String>, String> {
     .map_err(|e| e.to_string())
 }
 
+#[tauri::command]
+async fn analyze_midi(
+    app: tauri::AppHandle,
+) -> Result<Option<analysis_io::LoadedAnalysis>, score_io::ImportError> {
+    let picker = app.clone();
+    let selected = tauri::async_runtime::spawn_blocking(move || {
+        picker
+            .dialog()
+            .file()
+            .set_title("分析 MIDI")
+            .add_filter("Standard MIDI File", &["mid", "midi"])
+            .blocking_pick_file()
+    })
+    .await
+    .map_err(|e| e.to_string())?;
+    let Some(selected) = selected else {
+        return Ok(None);
+    };
+    let path = selected.into_path().map_err(|e| e.to_string())?;
+    let source = path.to_string_lossy().into_owned();
+    let snapshot = tauri::async_runtime::spawn_blocking(move || {
+        let bytes = score_io::read_file(&path)?;
+        Snapshot::midi(&bytes, path.file_name().ok_or("MIDI 文件名无效")?)
+    })
+    .await
+    .map_err(|e| e.to_string())??;
+    let output = app
+        .shell()
+        .sidecar("skysheet")
+        .map_err(|e| e.to_string())?
+        .args(analysis_io::analysis_args(&snapshot.path))
+        .output()
+        .await
+        .map_err(|e| e.to_string())?;
+    analysis_io::check_analysis(output.status.code(), &output.stdout, &output.stderr, source)
+        .map(Some)
+}
+
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
@@ -127,6 +166,7 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             open_score,
             open_midi,
+            analyze_midi,
             load_example,
             select_audio
         ])

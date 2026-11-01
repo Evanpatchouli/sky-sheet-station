@@ -742,3 +742,21 @@ dd {
 .diagnostic-list { padding-left: 20px; }
 .diagnostic-list li { margin: 14px 0; }
 .diagnostic-list p { margin: 4px 0; }
+.analysis-dialog { width: min(1080px, 94vw); max-height: 90dvh; overflow: auto; }
+.analysis-dialog .dialog-title { position: sticky; top: -25px; background: #171f29; z-index: 1; padding: 12px 0; }
+.analysis-source { overflow-wrap: anywhere; color: var(--muted); }
+.analysis-metrics { display: grid; grid-template-columns: repeat(4, 1fr); border-block: 1px solid var(--line); margin: 18px 0; }
+.analysis-metrics > div { padding: 12px 16px; display: flex; flex-direction: column; }
+.analysis-metrics strong { font-size: 27px; font-weight: 500; }
+.analysis-metrics span { color: var(--muted); }
+.music-analysis h3 { font-size: 17px; font-weight: 500; margin: 26px 0 12px; }
+.analysis-table-scroll { overflow: auto; }
+.music-analysis table { width: 100%; border-collapse: collapse; text-align: left; font-variant-numeric: tabular-nums; }
+.music-analysis th { color: var(--muted); font-weight: 500; white-space: nowrap; }
+.music-analysis th, .music-analysis td { padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.music-analysis td { min-width: 80px; overflow-wrap: anywhere; }
+.music-analysis summary { cursor: pointer; color: #76c6e3; }
+.music-analysis details p { font-size: 12px; min-width: 180px; }
+.analysis-pagination { display: flex; justify-content: flex-end; align-items: center; gap: 14px; margin: 12px 0; }
+@media (min-width: 701px) { .toolbar { height: auto; min-height: 80px; flex-wrap: wrap; padding-top: 12px; padding-bottom: 12px; } .toolbar nav { flex-wrap: wrap; } }
+@media (max-width: 700px) { .analysis-dialog { padding: 16px; } .analysis-metrics { grid-template-columns: repeat(2, 1fr); } .analysis-dialog .dialog-title { top: -16px; } }

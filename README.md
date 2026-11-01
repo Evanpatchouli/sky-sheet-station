@@ -11,6 +11,13 @@ sky-15 pitches fail with diagnostics; automatic arrangement and audio transcript
 remain future work. See [MIDI usage and limits](docs/midi.md) and the
 [development plan](PLANS.md).
 
+Phase 3 adds unrestricted MIDI inspection with `inspect-music <FILE> [--json]`
+and analysis with `analyze <FILE> [--json]` (`analyze-midi` remains an alias):
+source notes, tempo/meter maps, statistics and uncertain melody/key/role candidates.
+It retains pitches outside sky-15 and does not generate arrangements. See
+[analysis usage](docs/music-analysis.md) and [delivery evidence](docs/phase-3-delivery.md).
+The existing desktop's **分析 MIDI** entry displays the same Rust analysis report.
+
 Phase 1.5 now provides a runnable Windows CLI Alpha for existing Score JSON:
 
 ```powershell
@@ -44,7 +51,8 @@ the [Windows verification record](harness/build/phase-015-cli-alpha.md).
 ## Current Rust workspace
 
 The workspace contains the reusable `skysheet-score` crate and the
-`skysheet-midi` interoperability crate, plus the `skysheet-cli` package,
+`skysheet-midi` interoperability crate, the instrument-independent
+`skysheet-music` source/analysis crate, plus the `skysheet-cli` package,
 whose executable is named `skysheet`.
 
 Use a Rust toolchain supporting edition 2024 with the `rustfmt` and `clippy`

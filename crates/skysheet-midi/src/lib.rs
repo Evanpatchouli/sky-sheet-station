@@ -1,8 +1,11 @@
 //! SMF interoperability. Source provenance and conversion losses stay outside Score v1.
 mod export;
 mod import;
+mod music;
 mod structure;
 mod timing;
+
+pub use music::read_music;
 
 pub use export::export;
 pub use import::{ImportOptions, import, inspect};

@@ -7,6 +7,12 @@ adds MIDI import through the packaged CLI; see [MIDI usage](midi.md).
 Score format and pitch mapping remain unchanged. Audio analysis and arrangement
 are not implemented.
 
+Phase 3 adds **分析 MIDI** and **分析结果** in the existing toolbar. They display
+the packaged CLI's unrestricted analysis without replacing the loaded Score.
+See [music analysis](music-analysis.md#desktop) and the
+[Phase 3 delivery/GUI verification](phase-3-delivery.md). The player engine and
+Score format are unchanged; analysis does not generate a playable arrangement.
+
 ## Run on Windows
 
 Prerequisites: Node.js 22.18+ (Node's built-in TypeScript stripping is used for
