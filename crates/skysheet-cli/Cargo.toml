@@ -11,5 +11,6 @@ path = "src/main.rs"
 
 [dependencies]
 skysheet-score = { path = "../skysheet-score" }
+skysheet-midi = { path = "../skysheet-midi" }
 serde.workspace = true
 serde_json.workspace = true

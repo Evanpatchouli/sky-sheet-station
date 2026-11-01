@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/skysheet-score", "crates/skysheet-cli"]
+members = ["crates/skysheet-score", "crates/skysheet-cli", "crates/skysheet-midi"]
 exclude = ["apps/desktop/src-tauri"]
 
 [workspace.package]
@@ -11,3 +11,6 @@ repository = "https://github.com/Evanpatchouli/sky-sheet-station"
 [workspace.dependencies]
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["raw_value"] }
+midly = { version = "=0.5.3", default-features = false, features = ["std", "strict"] }
+num-bigint = { version = "=0.4.8", default-features = false, features = ["std"] }
+num-traits = { version = "=0.2.19", default-features = false, features = ["std"] }

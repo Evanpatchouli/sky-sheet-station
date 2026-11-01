@@ -6,6 +6,90 @@ use std::process::{Command, Output};
 use std::sync::atomic::{AtomicUsize, Ordering};
 
 const EXAMPLE: &str = include_str!("../../../docs/examples/sky-15-example.json");
+
+fn convert(command: &str, input: &Path, output: &Path) -> Output {
+    cli(&[
+        OsStr::new(command),
+        input.as_os_str(),
+        OsStr::new("-o"),
+        output.as_os_str(),
+        OsStr::new("--json"),
+    ])
+}
+
+#[test]
+fn midi_cli_roundtrip_real_files_and_source_preservation() {
+    let sandbox = Sandbox::new();
+    let input = sandbox.file("原始 & score.json", EXAMPLE);
+    let midi = sandbox.0.join("导出 & 空格.mid");
+    let exported = machine(&convert("export-midi", &input, &midi), 0);
+    assert_eq!(exported["result"]["report"]["note_count"], 6);
+    let raw_midi = std::fs::read(&midi).unwrap();
+    assert_eq!(&raw_midi[..4], b"MThd");
+    machine(&run("inspect-midi", &midi, true), 0);
+    let output = sandbox.0.join("导入.json");
+    let imported = machine(&convert("import-midi", &midi, &output), 0);
+    assert_eq!(imported["result"]["report"]["note_count"], 6);
+    machine(&run("validate", &output, true), 0);
+    assert_eq!(std::fs::read_to_string(input).unwrap(), EXAMPLE);
+    assert_eq!(std::fs::read(midi).unwrap(), raw_midi);
+}
+
+#[test]
+fn midi_cli_refuses_overwrites_aliases_and_missing_parents() {
+    let sandbox = Sandbox::new();
+    let input = sandbox.file("source.json", EXAMPLE);
+    machine(&convert("export-midi", &input, &input), 3);
+    let existing = sandbox.file("existing.mid", b"keep me");
+    machine(&convert("export-midi", &input, &existing), 3);
+    assert_eq!(std::fs::read(existing).unwrap(), b"keep me");
+    let alias = sandbox.0.join("alias.mid");
+    std::fs::hard_link(&input, &alias).unwrap();
+    machine(&convert("export-midi", &input, &alias), 3);
+    assert_eq!(std::fs::read_to_string(input).unwrap(), EXAMPLE);
+    let missing = sandbox.0.join("missing").join("output.mid");
+    machine(&convert("export-midi", &alias, &missing), 3);
+    assert!(!missing.exists());
+}
+
+#[test]
+fn midi_failures_have_reports_and_never_create_outputs() {
+    let sandbox = Sandbox::new();
+    let bad = sandbox.file("broken.mid", b"MThd");
+    let output = sandbox.0.join("failed.json");
+    let response = machine(&convert("import-midi", &bad, &output), 1);
+    assert_eq!(response["error"]["report"]["report_version"], 1);
+    assert!(!output.exists());
+    let duplicate = sandbox.file(
+        "duplicate.json",
+        EXAMPLE.replacen("\"tempo\": 120", "\"tempo\": 120, \"tempo\": 120", 1),
+    );
+    machine(&convert("export-midi", &duplicate, &output), 1);
+    assert!(!output.exists());
+    let unsupported = sandbox.file("pitch.json", EXAMPLE.replace("\"C4\"", "\"C#4\""));
+    machine(&convert("export-midi", &unsupported, &output), 1);
+    assert!(!output.exists());
+    machine(
+        &cli(&[
+            OsStr::new("import-midi"),
+            bad.as_os_str(),
+            OsStr::new("--json"),
+        ]),
+        2,
+    );
+    machine(
+        &cli(&[
+            OsStr::new("export-midi"),
+            bad.as_os_str(),
+            OsStr::new("-o"),
+            output.as_os_str(),
+            OsStr::new("--tempo"),
+            OsStr::new("60"),
+            OsStr::new("--json"),
+        ]),
+        2,
+    );
+}
 static NEXT_ID: AtomicUsize = AtomicUsize::new(0);
 
 struct Sandbox(PathBuf);

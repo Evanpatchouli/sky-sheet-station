@@ -46,10 +46,10 @@ The first prototype should compare at least one polyphonic transcription baselin
 
 The owner approved D6-A through D6-F after the initial diagnostic-flattening and
 short-note-error principles. The policy covers PPQ-based SMF Format 0/1 only;
-Format 2 and SMPTE support remain separate decisions. No importer or quantizer is
-implemented. See the [Phase 1 decision record](phase-1-decisions.md) and the
+Format 2 and SMPTE remain unsupported. Phase 2 now implements this policy;
+see [MIDI usage and limits](midi.md), the [Phase 1 decision record](phase-1-decisions.md) and the
 [normative timing policy and examples](music-data-format.md#16-approved-midi-timing-conversion-policy-d6).
-Implementation and real-file validation remain Phase 2 and are not authorized here.
+The broader analysis/arrangement pipeline in this document remains a proposal.
 
 MIDI import should preserve, where supported:
 
@@ -92,9 +92,9 @@ profile, including noncanonical spellings. Canonical pitch spelling is recommend
 for newly generated data without conflicting existing profile identity; never
 silently normalize or merge the profile's keys.
 
-Approved D8 keeps source-note provenance outside the v1 score. Loss diagnostics
-remain required; a separate report may be designed only in a later scoped task.
-No report schema or structured provenance in user-authored score text is introduced.
+Approved D8 keeps source-note provenance outside the v1 score. The authorized
+Phase 2 task adds a separate conversion report; no structured provenance is
+inserted into user-authored Score text.
 
 ## Music analysis
 

@@ -61,6 +61,51 @@ async fn load_example(app: tauri::AppHandle) -> Result<LoadedScore, String> {
 }
 
 #[tauri::command]
+async fn open_midi(app: tauri::AppHandle) -> Result<Option<LoadedScore>, score_io::ImportError> {
+    let picker = app.clone();
+    let selected = tauri::async_runtime::spawn_blocking(move || {
+        picker
+            .dialog()
+            .file()
+            .set_title("打开 MIDI")
+            .add_filter("Standard MIDI File", &["mid", "midi"])
+            .blocking_pick_file()
+    })
+    .await
+    .map_err(|e| e.to_string())?;
+    let Some(selected) = selected else {
+        return Ok(None);
+    };
+    let path = selected.into_path().map_err(|e| e.to_string())?;
+    let source = path.to_string_lossy().into_owned();
+    let snapshot = tauri::async_runtime::spawn_blocking(move || {
+        let bytes = score_io::read_file(&path)?;
+        score_io::Snapshot::midi(&bytes, path.file_name().ok_or("MIDI 文件名无效")?)
+    })
+    .await
+    .map_err(|e| e.to_string())??;
+    let output_path = snapshot.converted_path();
+    let output = app
+        .shell()
+        .sidecar("skysheet")
+        .map_err(|e| e.to_string())?
+        .args(score_io::import_args(&snapshot.path, &output_path))
+        .output()
+        .await
+        .map_err(|e| e.to_string())?;
+    let report = score_io::check_import(
+        output.status.code(),
+        &output.stdout,
+        &output.stderr,
+        &output_path,
+    )?;
+    let bytes = score_io::read_file(&output_path)?;
+    let mut loaded = load_bytes(&app, bytes, source).await?;
+    loaded.import_report = Some(report);
+    Ok(Some(loaded))
+}
+
+#[tauri::command]
 async fn select_audio(app: tauri::AppHandle) -> Result<Option<String>, String> {
     // Selection only. No convert command exists in CLI Alpha.
     tauri::async_runtime::spawn_blocking(move || {
@@ -81,6 +126,7 @@ fn main() {
         .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
             open_score,
+            open_midi,
             load_example,
             select_audio
         ])

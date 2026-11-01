@@ -8,15 +8,20 @@ Usage:
   skysheet --version
   skysheet inspect <FILE> [--json]
   skysheet validate <FILE> [--json]
+  skysheet import-midi <FILE> -o <OUTPUT.json> [--tempo <BPM>] [--json]
+  skysheet export-midi <FILE> -o <OUTPUT.mid> [--json]
+  skysheet inspect-midi <FILE> [--json]
 
 Options:
   -h, --help     Show help (also accepted with inspect/validate)
   -V, --version  Show program version
   --json         Emit one JSON result, including errors
+  -o, --output   New output file (existing destinations are refused)
+  --tempo        Import reference BPM (default: effective source tempo at zero)
   --             Treat remaining arguments as positional (for filenames starting with -)
 
-Both commands read original JSON and run Score validation; input files are never modified.
-Exit codes: 0 success; 1 invalid score; 2 usage; 3 I/O; 4 internal error.
+Score inputs use original JSON and Score validation; input files are never modified.
+Exit codes: 0 success; 1 invalid/unconvertible input; 2 usage; 3 I/O; 4 internal error.
 ";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -25,6 +30,9 @@ pub enum Command {
     Version,
     Inspect,
     Validate,
+    ImportMidi,
+    ExportMidi,
+    InspectMidi,
 }
 
 impl Command {
@@ -34,6 +42,9 @@ impl Command {
             Self::Version => "version",
             Self::Inspect => "inspect",
             Self::Validate => "validate",
+            Self::ImportMidi => "import-midi",
+            Self::ExportMidi => "export-midi",
+            Self::InspectMidi => "inspect-midi",
         }
     }
 }
@@ -42,6 +53,8 @@ impl Command {
 pub struct Args {
     pub command: Command,
     pub file: Option<PathBuf>,
+    pub output: Option<PathBuf>,
+    pub tempo: Option<f64>,
 }
 
 // Detect output mode even when argument parsing fails. After --, --json is a filename.
@@ -57,7 +70,10 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
     let mut help = false;
     let mut version = false;
     let mut json = false;
-    for arg in args {
+    let mut output = None;
+    let mut tempo = None;
+    let mut iter = args.iter();
+    while let Some(arg) = iter.next() {
         if !literal {
             match arg.to_str() {
                 Some("--") => {
@@ -66,6 +82,23 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
                 }
                 Some("--json") if !json => {
                     json = true;
+                    continue;
+                }
+                Some("-o" | "--output") if output.is_none() => {
+                    output = Some(PathBuf::from(iter.next().ok_or("missing output path")?));
+                    continue;
+                }
+                Some("--tempo") if tempo.is_none() => {
+                    let value: f64 = iter
+                        .next()
+                        .and_then(|s| s.to_str())
+                        .ok_or("missing tempo")?
+                        .parse()
+                        .map_err(|_| "invalid reference tempo")?;
+                    if !value.is_finite() || value <= 0.0 {
+                        return Err("tempo must be finite and positive".into());
+                    }
+                    tempo = Some(value);
                     continue;
                 }
                 Some("--help" | "-h") if !help => {
@@ -98,11 +131,16 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
         return Ok(Args {
             command,
             file: None,
+            output: None,
+            tempo: None,
         });
     }
     let command = match positional[0].to_str() {
         Some("inspect") => Command::Inspect,
         Some("validate") => Command::Validate,
+        Some("import-midi") => Command::ImportMidi,
+        Some("export-midi") => Command::ExportMidi,
+        Some("inspect-midi") => Command::InspectMidi,
         _ => {
             return Err(format!(
                 "unsupported command {:?}; use --help",
@@ -117,6 +155,8 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
         return Ok(Args {
             command: Command::Help,
             file: None,
+            output: None,
+            tempo: None,
         });
     }
     if positional.len() != 2 || help {
@@ -125,9 +165,21 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
             command.name()
         ));
     }
+    if matches!(command, Command::ImportMidi | Command::ExportMidi) {
+        if output.is_none() {
+            return Err("conversion requires -o <OUTPUT>".into());
+        }
+    } else if output.is_some() {
+        return Err("--output is only valid for import-midi/export-midi".into());
+    }
+    if tempo.is_some() && command != Command::ImportMidi {
+        return Err("--tempo is only valid for import-midi".into());
+    }
     Ok(Args {
         command,
         file: Some(PathBuf::from(positional[1])),
+        output,
+        tempo,
     })
 }
 

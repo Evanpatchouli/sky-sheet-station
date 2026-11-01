@@ -4,13 +4,19 @@ import { Keyboard } from "./components/Keyboard.tsx";
 import { PianoRoll, TRACK_COLORS } from "./components/PianoRoll.tsx";
 import { Transport } from "./components/Transport.tsx";
 import { Modal } from "./components/Modal.tsx";
+import { ImportReport } from "./components/ImportReport.tsx";
 import { PlayerEngine } from "./player/engine.ts";
 import { prepareScore } from "./player/model.ts";
-import type { LoadedScore, PreparedScore } from "./player/model.ts";
+import type {
+  LoadedScore,
+  PreparedScore,
+  ImportReport as Report,
+} from "./player/model.ts";
 import {
   desktopAvailable,
   loadExample,
   openScore,
+  openMidi,
   selectAudio,
 } from "./services/desktop.ts";
 
@@ -20,10 +26,11 @@ export default function App() {
   const [song, setSong] = useState<PreparedScore | null>(null);
   const [busy, setBusy] = useState(false),
     [error, setError] = useState<string | null>(null);
-  const [modal, setModal] = useState<"info" | "settings" | "audio" | null>(
+  const [modal, setModal] = useState<"info" | "settings" | "audio" | "import" | null>(
     null,
   );
   const [audio, setAudio] = useState<string | null>(null);
+  const [importReport, setImportReport] = useState<Report | null>(null);
   const [zoom, setZoom] = useState(1),
     [follow, setFollow] = useState(true),
     [volume, setVolume] = useState(0.65);
@@ -34,15 +41,22 @@ export default function App() {
     engine.pause();
     setBusy(true);
     setError(null);
+    setImportReport(null);
     try {
       const loaded = await action();
       if (loaded && id === request.current) {
         const prepared = prepareScore(loaded);
         engine.load(prepared);
         setSong(prepared);
+        setImportReport(loaded.import_report ?? null);
       }
     } catch (e) {
-      if (id === request.current) setError(String(e));
+      if (id === request.current) {
+        if (e && typeof e === "object" && "message" in e) {
+          setError(String(e.message));
+          if ("report" in e && e.report) setImportReport(e.report as Report);
+        } else setError(String(e));
+      }
     } finally {
       if (id === request.current) setBusy(false);
     }
@@ -81,6 +95,25 @@ export default function App() {
             <Icon name="audio" />
             <span>音频导入</span>
           </button>
+          <button
+            aria-label="打开 MIDI"
+            title="打开 MIDI"
+            disabled={busy}
+            onClick={() => void load(openMidi)}
+          >
+            <Icon name="open" />
+            <span>打开 MIDI</span>
+          </button>
+          {importReport && (
+            <button
+              aria-label="导入报告"
+              title="导入报告"
+              onClick={() => setModal("import")}
+            >
+              <Icon name="info" />
+              <span>导入报告</span>
+            </button>
+          )}
           <button disabled={!song} onClick={() => setModal("info")}>
             <Icon name="info" />
             <span>乐谱信息</span>
@@ -155,7 +188,7 @@ export default function App() {
             : song
               ? `${song.score.timeline.tempo} BPM · ${song.score.timeline.time_signature.numerator}/${song.score.timeline.time_signature.denominator} 参考拍号 · ${song.score.timeline.ppq} PPQ`
               : desktopAvailable()
-                ? "支持 SkySheet Score 1.0 JSON"
+                ? "支持 Score JSON 与 MIDI（.mid / .midi）"
                 : "浏览器预览 · 文件工作流请使用桌面应用"}
         </span>
         <button
@@ -197,6 +230,11 @@ export default function App() {
           </p>
         </Modal>
       )}
+      {modal === "import" && importReport && (
+        <Modal title="MIDI 导入报告" onClose={() => setModal(null)}>
+          <ImportReport report={importReport} />
+        </Modal>
+      )}
       {modal === "settings" && (
         <Modal title="试听设置" onClose={() => setModal(null)}>
           <label className="setting">
@@ -225,8 +263,7 @@ export default function App() {
       {modal === "audio" && (
         <Modal title="音频转换尚未接通" onClose={() => setModal(null)}>
           <p>
-            当前 CLI Alpha 仅支持 inspect 和 validate，尚不能将 MP3、WAV 或 FLAC
-            转为乐谱。
+            当前支持 MIDI 导入与 Score JSON，尚不能将 MP3、WAV 或 FLAC 转为乐谱。
           </p>
           {audio && (
             <div className="audio-file">

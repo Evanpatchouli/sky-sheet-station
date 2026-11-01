@@ -559,7 +559,11 @@ dd {
   }
   nav {
     width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+  nav button:nth-child(3) span,
+  nav button:nth-child(4) span { display: inline; }
   nav button {
     flex: 1;
     font-size: 11px;
@@ -731,3 +735,10 @@ dd {
     gap: 5px;
   }
 }
+.import-report { overflow-wrap: anywhere; }
+.import-report pre { max-height: 260px; overflow: auto; white-space: pre-wrap; font-size: 12px; }
+.import-report details { margin: 12px 0; }
+.import-report summary { cursor: pointer; }
+.diagnostic-list { padding-left: 20px; }
+.diagnostic-list li { margin: 14px 0; }
+.diagnostic-list p { margin: 4px 0; }

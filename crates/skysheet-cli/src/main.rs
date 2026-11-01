@@ -1,4 +1,5 @@
 mod args;
+mod midi;
 
 use args::Command;
 use serde::Serialize;
@@ -21,6 +22,8 @@ struct Diagnostic {
     issues: Vec<String>,
     line: Option<usize>,
     column: Option<usize>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    report: Option<Box<skysheet_midi::Report>>,
     #[serde(skip)]
     exit_code: u8,
 }
@@ -33,6 +36,7 @@ impl Diagnostic {
             issues: Vec::new(),
             line: None,
             column: None,
+            report: None,
             exit_code,
         }
     }
@@ -136,6 +140,7 @@ fn human_inspect(score: &Score, path: &Path) -> String {
 
 fn execute(args: &args::Args) -> Result<(Value, String), Diagnostic> {
     match args.command {
+        Command::ImportMidi | Command::ExportMidi | Command::InspectMidi => midi::execute(args),
         Command::Help => Ok((json!({"help": args::HELP}), args::HELP.into())),
         Command::Version => Ok((
             json!({"name": "skysheet", "version": VERSION}),
@@ -196,6 +201,15 @@ fn emit(response: &Response, human: &str, json_mode: bool) -> u8 {
         );
         for issue in &error.issues {
             let _ = writeln!(stderr, "  - {issue}");
+        }
+        if let Some(report) = &error.report {
+            for d in &report.diagnostics {
+                let _ = writeln!(
+                    stderr,
+                    "  [{}] {}: {} (track {:?}, event {:?}, tick {:?})",
+                    d.severity, d.code, d.message, d.track, d.event, d.source_tick
+                );
+            }
         }
     } else if let Err(error) = write_stdout(human.as_bytes()) {
         let _ = writeln!(

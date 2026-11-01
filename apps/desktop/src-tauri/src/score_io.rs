@@ -17,6 +17,7 @@ pub struct LoadedScore {
     // Computed by the core Pitch API; the frontend never parses pitch spellings.
     pub midi_keys: Vec<u8>,
     pub source: String,
+    pub import_report: Option<serde_json::Value>,
 }
 
 pub fn read_file(path: &Path) -> Result<Vec<u8>, String> {
@@ -36,6 +37,21 @@ pub struct Snapshot {
 }
 
 impl Snapshot {
+    pub fn midi(bytes: &[u8], name: &std::ffi::OsStr) -> Result<Self, String> {
+        let mut snapshot = Self::new(bytes)?;
+        let path = snapshot.path.parent().unwrap().join(name);
+        if path.parent() != snapshot.path.parent() || path.file_name() != Some(name) {
+            return Err("MIDI 快照文件名无效".into());
+        }
+        fs::rename(&snapshot.path, &path).map_err(|e| e.to_string())?;
+        snapshot.path = path;
+        Ok(snapshot)
+    }
+
+    pub fn converted_path(&self) -> PathBuf {
+        self.path.parent().unwrap().join("converted-score.json")
+    }
+
     pub fn new(bytes: &[u8]) -> Result<Self, String> {
         let stamp = std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
@@ -57,6 +73,7 @@ impl Snapshot {
 
 impl Drop for Snapshot {
     fn drop(&mut self) {
+        let _ = fs::remove_file(self.converted_path());
         let _ = fs::remove_file(&self.path);
         if let Some(dir) = self.path.parent() {
             let _ = fs::remove_dir(dir);
@@ -147,6 +164,84 @@ pub fn decode_validated(bytes: &[u8], source: String) -> Result<LoadedScore, Str
         score,
         midi_keys,
         source,
+        import_report: None,
+    })
+}
+
+pub fn import_args(input: &Path, output: &Path) -> Vec<OsString> {
+    vec![
+        "import-midi".into(),
+        "--json".into(),
+        "-o".into(),
+        output.as_os_str().into(),
+        "--".into(),
+        input.as_os_str().into(),
+    ]
+}
+
+#[derive(Debug, Serialize)]
+pub struct ImportError {
+    pub message: String,
+    pub report: Option<serde_json::Value>,
+}
+
+impl From<String> for ImportError {
+    fn from(message: String) -> Self {
+        Self {
+            message,
+            report: None,
+        }
+    }
+}
+
+pub fn check_import(
+    code: Option<i32>,
+    stdout: &[u8],
+    stderr: &[u8],
+    expected: &Path,
+) -> Result<serde_json::Value, ImportError> {
+    // Only the separate diagnostic envelope is read as Value; Score bytes still
+    // go through load_bytes and the production raw JSON reader.
+    let value: serde_json::Value = serde_json::from_slice(stdout).map_err(|e| {
+        ImportError::from(format!(
+            "CLI MIDI 响应无效：{e} {}",
+            String::from_utf8_lossy(stderr)
+        ))
+    })?;
+    let valid_header = value["output_version"] == 1
+        && value["command"] == "import-midi"
+        && code.is_some()
+        && value["exit_code"].as_i64() == code.map(i64::from);
+    if !valid_header {
+        return Err("CLI MIDI 响应版本、命令或退出码不匹配".to_string().into());
+    }
+    if code == Some(0)
+        && value["ok"] == true
+        && value["error"].is_null()
+        && value["result"]["output_path"].as_str() == Some(expected.to_string_lossy().as_ref())
+        && value["result"]["report"]["report_version"] == 1
+    {
+        return Ok(value["result"]["report"].clone());
+    }
+    let errors = value["error"]["report"]["diagnostics"]
+        .as_array()
+        .map(|items| items.iter().filter(|d| d["severity"] == "error").count())
+        .unwrap_or(0);
+    Err(ImportError {
+        message: if errors > 0 {
+            format!("MIDI 无法转换：发现 {errors} 项错误。当前乐谱已保留，请查看导入报告。")
+        } else {
+            format!(
+                "MIDI 导入失败：{}",
+                value["error"]["message"]
+                    .as_str()
+                    .unwrap_or("CLI 返回不一致或转换失败")
+            )
+        },
+        report: value["error"]
+            .get("report")
+            .filter(|v| v.is_object())
+            .cloned(),
     })
 }
 
@@ -154,6 +249,85 @@ pub fn decode_validated(bytes: &[u8], source: String) -> Result<LoadedScore, Str
 mod tests {
     use super::*;
     const EXAMPLE: &[u8] = include_bytes!("../../../../docs/examples/sky-15-example.json");
+
+    #[test]
+    fn actual_cli_midi_conversion_report_and_cleanup() {
+        let cli = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("binaries/skysheet-x86_64-pc-windows-msvc.exe");
+        let source = Snapshot::new(EXAMPLE).unwrap();
+        let midi = source.path.parent().unwrap().join("乐谱 & input.mid");
+        let export = std::process::Command::new(&cli)
+            .args([
+                std::ffi::OsStr::new("export-midi"),
+                source.path.as_os_str(),
+                std::ffi::OsStr::new("-o"),
+                midi.as_os_str(),
+                std::ffi::OsStr::new("--json"),
+            ])
+            .output()
+            .unwrap();
+        assert!(
+            export.status.success(),
+            "{}",
+            String::from_utf8_lossy(&export.stdout)
+        );
+        let snapshot =
+            Snapshot::midi(&fs::read(&midi).unwrap(), midi.file_name().unwrap()).unwrap();
+        fs::remove_file(midi).unwrap();
+        let output = snapshot.converted_path();
+        let result = std::process::Command::new(&cli)
+            .args(import_args(&snapshot.path, &output))
+            .output()
+            .unwrap();
+        let report = check_import(
+            result.status.code(),
+            &result.stdout,
+            &result.stderr,
+            &output,
+        )
+        .unwrap();
+        assert_eq!(report["note_count"], 6);
+        let score = real_validate(&fs::read(&output).unwrap()).unwrap();
+        assert_eq!(
+            score
+                .score
+                .tracks
+                .iter()
+                .map(|t| t.notes.len())
+                .sum::<usize>(),
+            6
+        );
+        assert!(check_import(Some(0), &result.stdout, b"", Path::new("wrong.json")).is_err());
+        let dir = snapshot.path.parent().unwrap().to_path_buf();
+        drop(snapshot);
+        assert!(!dir.exists());
+    }
+
+    #[test]
+    fn failed_midi_conversion_retains_diagnostic_report() {
+        let cli = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("binaries/skysheet-x86_64-pc-windows-msvc.exe");
+        let snapshot = Snapshot::midi(b"MThd", std::ffi::OsStr::new("broken.mid")).unwrap();
+        let output = snapshot.converted_path();
+        let result = std::process::Command::new(cli)
+            .args(import_args(&snapshot.path, &output))
+            .output()
+            .unwrap();
+        let error = check_import(
+            result.status.code(),
+            &result.stdout,
+            &result.stderr,
+            &output,
+        )
+        .unwrap_err();
+        assert!(error.message.contains("MIDI"));
+        assert_eq!(
+            error.report.unwrap()["diagnostics"][0]["code"],
+            "midi_structure"
+        );
+        assert!(!output.exists());
+        assert!(check_import(None, b"{}", b"", &output).is_err());
+    }
 
     fn real_validate(bytes: &[u8]) -> Result<LoadedScore, String> {
         let snapshot = Snapshot::new(bytes)?;

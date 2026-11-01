@@ -12,5 +12,6 @@ function desktopInvoke<T>(command: string): Promise<T> {
 }
 
 export const openScore = () => desktopInvoke<LoadedScore | null>("open_score");
+export const openMidi = () => desktopInvoke<LoadedScore | null>("open_midi");
 export const loadExample = () => desktopInvoke<LoadedScore>("load_example");
 export const selectAudio = () => desktopInvoke<string | null>("select_audio");

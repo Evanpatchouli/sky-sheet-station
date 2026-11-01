@@ -1,8 +1,9 @@
 # CLI Specification
 
 **Status:** Phase 1.5 implements `--help`, `--version`, `inspect`, `validate`
-and `--json`. See [CLI Alpha](cli-alpha.md) for the current executable contract,
-build instructions and limitations. The other commands below remain proposals.
+and `--json`. Phase 2 adds `import-midi`, `export-midi`, and `inspect-midi`;
+see [MIDI commands and limits](midi.md). See [CLI Alpha](cli-alpha.md) for the
+original executable contract. Generic `convert`/`export` below remain proposals.
 
 ## Goals
 

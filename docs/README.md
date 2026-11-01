@@ -20,8 +20,19 @@ Repository-wide instructions live in [AGENTS.md](../AGENTS.md). Product goals an
 - [CLI Alpha](./cli-alpha.md): implemented inspect/validate commands, Windows build, JSON results and exit codes.
 - [Desktop player](./desktop-player.md): Phase 6 Tauri client, real Score loading, Canvas visualization and local audition; audio conversion is not connected.
 - [CLI specification](./cli.md): current Alpha boundary and future command proposals.
+- [MIDI usage](./midi.md): import/export commands, diagnostics, D6 arithmetic,
+  protocol limits and desktop integration.
+- [Phase 2 MIDI preparation](./phase-2-midi.md): approved dependencies, design
+  proposal and preflight verification.
 
 ## Status
+
+The owner authorized Phase 2 MIDI interoperability and existing desktop-player
+integration on 2026-11-01, then approved its dependencies. MIDI import/export
+and desktop integration are implemented on `codex/phase-2-midi`.
+Earlier no-Phase-2 statements below describe prior milestones.
+See the [Phase 2 preparation record](phase-2-midi.md). Phases 3/4 remain outside
+the current task, and the remaining Phase 1 checks are not declared complete.
 
 Phase 1.5 delivers the first runnable CLI Alpha for existing Score files, including
 a locally verified Windows Release executable. See the

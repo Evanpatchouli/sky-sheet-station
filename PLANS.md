@@ -177,15 +177,30 @@ was deferred at Alpha delivery; the owner subsequently authorized the Score-firs
 Phase 6 below. Phase 1 is not marked complete.
 
 ## Phase 2: MIDI interoperability
-**Status:** Planned
+**Status:** Implemented and locally verified on Windows (2026-11-01), from main
+`6a91bef` on `codex/phase-2-midi`, after explicit dependency approval. This
+supersedes earlier milestone statements that Phase 2 was unauthorized, without
+completing Phase 1 or starting Phases 3/4. See [MIDI usage and verification](docs/midi.md)
+and the [approved dependency/design record](docs/phase-2-midi.md).
 
-- [ ] Select and document the Rust MIDI library.
-- [ ] Import tracks, notes, note-on/off timing, meter, and tempo metadata.
-- [ ] Implement and verify the approved D6 timing policy within its scope; decide handling for other unsupported MIDI constructs separately.
-- [ ] Export a score to MIDI and test round-trip properties.
-- [ ] Report information that cannot be preserved.
+- [x] Select and document the Rust MIDI library.
+- [x] Import tracks, notes, note-on/off timing, meter, and tempo metadata.
+- [x] Implement and verify the approved D6 timing policy within its scope; document rejected unsupported MIDI constructs.
+- [x] Export a score to MIDI and test round-trip properties and protocol limits.
+- [x] Report information that cannot be preserved.
+- [x] Connect MIDI import through the packaged CLI to the existing desktop player,
+  preserving the current Score on cancellation or failure and exposing diagnostics.
 
 Exit criteria: representative MIDI fixtures import, validate, and export with documented behavior.
+
+Evidence: 84 root tests, 17 MIDI tests in release, 7 desktop Rust tests, 8 frontend
+tests, three-workspace formatting/Clippy, frontend/release application builds,
+and unchanged independent 20-test / 267-fixed / 10,000-sample numeric checks passed.
+Native Windows file selection loaded a Unicode/space-path MIDI, with advancing
+playhead and key highlights; the supplied ode-to-joy file failed for 22 out-of-range
+notes while preserving the loaded Score. Local Playwright/Edge checked reports,
+cancel/error retention and 1280/800/390 widths. No new CI run, commit or publication
+is claimed; physical speaker output was not measured.
 
 ## Phase 3: Music analysis primitives
 **Status:** Planned

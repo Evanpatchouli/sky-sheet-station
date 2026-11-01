@@ -526,6 +526,11 @@ shell validation script is required.
 
 ## 13. Open questions before freezing v1
 
+The checklist below records the Phase 1 approval-stage boundary. The subsequently
+authorized Phase 2 implementation now verifies D6 with binary MIDI fixtures and
+exact-arithmetic tests; see [current evidence and limitations](midi.md). This does
+not declare the remaining Phase 1 freeze work complete.
+
 The owner removed acoustic calibration and game-recording collection from the
 freeze requirements; section 4.2 defines the unchanged logical mapping. Remaining
 verification is not replaced by this scope decision:
@@ -646,9 +651,10 @@ notes continue to have no velocity field.
 
 ## 16. Approved MIDI timing conversion policy (D6)
 
-**Approved on 2026-11-01; not implemented or verified against MIDI files.** These
-rules govern future conversion within D6-F's scope. They define neither a MIDI
-parser nor a numeric implementation, and do not authorize Phase 2. Loss diagnostics
+**Approved on 2026-11-01.** The subsequently authorized Phase 2 implementation
+and verification are described in [MIDI interoperability](midi.md); this section
+retains the approved policy unchanged. These rules define neither a MIDI
+parser nor a numeric implementation and did not themselves authorize Phase 2. Loss diagnostics
 remain outside the score JSON, consistent with D8; no report schema is introduced.
 
 ### 16.1 Reference tempo and origin (D6-A)
@@ -790,6 +796,10 @@ distinguishes PPQ and SMPTE timing. These references do not select a library or
 authorize a dependency, and they do not prescribe SkySheet's conflict/rounding policy.
 
 ### 16.7 Boundary examples and remaining verification
+
+The examples/checklist below were recorded at D6 approval. Phase 2's implementation
+now exercises them with arithmetic and SMF tests; [MIDI verification](midi.md)
+records the current evidence. The mathematical policy remains unchanged.
 
 These are analytical expectations, **not parsed MIDI fixtures or importer tests**.
 Fractional positions below are intermediate mathematical values, never JSON ticks.
