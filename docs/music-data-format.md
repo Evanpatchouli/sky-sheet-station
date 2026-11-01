@@ -133,12 +133,23 @@ tick quantization. Examples: `120`, `120.5`, `1.2e2`, `1e-300`, and `1e300` are 
 `1e400` and `1e-400` fail the current decoder/validation path. Do not clamp invalid
 values to an endpoint or replace them with a fallback.
 
-**Known implementation gap:** the current default serde_json test/read path does
-not satisfy all N2 acceptance, midpoint and bit-round-trip cases. For example,
-`1.7976931348623158e308` should round to the maximum finite value, but the current
-reader rejects it. See [independent numeric verification](numeric-verification.md)
-for strict failing checks and minimal reproductions. N4 requires review before
-changing parser features; this document does not claim those discrepancies fixed.
+**Approved N2 reader correction:** the `tempo` field now captures the original
+JSON value as `Box<serde_json::value::RawValue>` and converts its complete numeric
+text with Rust's `str::parse::<f64>()`. Nonfinite results are parsing errors;
+zero and negative values remain semantic validation errors. Numeric strings and
+nonstandard JSON number syntax remain rejected. The field remains `f64`, with
+unchanged serialization and no token-length restriction. This field adapter is
+JSON-specific; arbitrary non-JSON Serde deserializers are not promised compatible.
+Read original JSON directly: an intermediate `Value` cannot restore discarded
+numeric or duplicate-member information.
+
+`float_roundtrip` is not the fix: it still misrounds certain long integer/exponent
+spellings of exact midpoints, including the zero boundary. Windows verification
+passes the unchanged 267 fixed cases, 10,000 historical samples, 3,016 research
+cases and 84 focused regressions. Linux validation of this revision remains
+pending, so full N2 acceptance is not marked complete. See
+[independent numeric verification](numeric-verification.md) for preserved old
+failures, current evidence and compatibility details.
 
 The reference tempo is used to convert ticks to playback time. At constant tempo:
 
@@ -509,8 +520,8 @@ Rust Schema/raw/numeric gate with a separate Cargo.lock. It reuses the unchanged
 Schema and original tokens/members, and uses exact rational interval search as the
 independent N2 Oracle. Schema engine features cannot unify with the root reader.
 It is not a complete independent score-semantic validator. All former cases and
-10,000 samples are preserved, and the observed reader differences remain blocking;
-see [numeric verification](numeric-verification.md). No interpreter or auxiliary
+10,000 samples are preserved. The RawValue reader passes local Windows gates;
+Linux acceptance remains pending. See [numeric verification](numeric-verification.md). No interpreter or auxiliary
 shell validation script is required.
 
 ## 13. Open questions before freezing v1
@@ -520,7 +531,7 @@ freeze requirements; section 4.2 defines the unchanged logical mapping. Remainin
 verification is not replaced by this scope decision:
 
 - Verify the approved D6 mathematical boundaries and diagnostic requirements against a future implementation; no MIDI/quantizer implementation has been validated. Format 2 and SMPTE support remain outside this policy and require separate decisions.
-- Resolve the observed Rust/N2 differences through a separately approved parser decision; the independent strategy and strict failing gate are now implemented.
+- Complete Linux acceptance of the approved N2 RawValue correction; Windows strict gates pass without changing the independent Oracle or historical expectations.
 - Complete remaining contract verification. Real MIDI implementation and file-based acceptance cases in section 16.7 require separately authorized Phase 2 work; they are not completed Phase 1 tests.
 
 The [audit record](../harness/build/phase-01-conformance-audit.md) records the
@@ -824,8 +835,8 @@ D6-A through D6-F rules:
   not a lossless round-trip claim or an export implementation specification.
 - Decide Format 2/SMPTE support separately if requested. Do not treat these
   excluded cases as unresolved choices inside the approved PPQ Format 0/1 policy.
-- Resolution of the independent numeric gate's observed Rust/N2 differences and
-  remaining contract checks are outstanding Phase 1 freeze requirements; acoustic calibration
+- Complete N2 cross-platform acceptance and remaining contract checks before
+  the Phase 1 freeze; acoustic calibration
   is not required under the owner's logical-pitch decision. Passing document
   arithmetic or existing score tests does not satisfy those requirements or enter
   Phase 2.

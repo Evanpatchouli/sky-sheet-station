@@ -21,7 +21,8 @@ fn observe(parsed: Result<Score, serde_json::Error>, reader_path: bool) -> Value
         }
     };
     if let Err(error) = score.validate() {
-        return json!({"status": "invalid", "stage": "semantic", "error": error.to_string()});
+        return json!({"status": "invalid", "stage": "semantic", "error": error.to_string(),
+            "bits": format!("{:016x}", score.timeline.tempo.to_bits())});
     }
     let encoded = serde_json::to_string(&score).expect("validated score serializes");
     let decoded = if reader_path {

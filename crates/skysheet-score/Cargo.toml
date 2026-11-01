@@ -7,6 +7,4 @@ description = "SkySheet score data model, JSON serialization, and semantic valid
 
 [dependencies]
 serde.workspace = true
-
-[dev-dependencies]
 serde_json.workspace = true

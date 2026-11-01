@@ -68,7 +68,9 @@ See the [design decision](phase-1-decisions.md#logical-sky-pitches-and-actual-ga
 
 N1-N4 now provide independent numeric verification using an isolated Rust workspace
 and locked Rust dependencies. N2 specifies nearest binary64 decoding with ties to even and
-bit-preserving save/read cycles. The checker self-tests and independent fixed
-expectations pass, but the Rust comparison fails on acceptance/rounding/readback
-differences. These remain explicit Phase 1 blockers; no parser feature was changed,
-no expected outcome relaxed, and no Phase 2 work started.
+bit-preserving save/read cycles. The approved tempo RawValue adapter now passes
+Windows numeric and engineering checks, including the unchanged historical corpus
+and separate long-midpoint regressions. Linux verification of this repair is
+pending; N2 and Phase 1 are not marked complete. The Oracle, comparison rules and
+historical expectations are unchanged. No Phase 2 work started. See the
+[N2 repair record](../harness/build/phase-01-n2-raw-value.md).

@@ -1,0 +1,18 @@
+{
+  "status": "passed",
+  "rust_checked": true,
+  "fixed_cases": 267,
+  "samples": 10000,
+  "seed": 5458777,
+  "scope": "raw input, Schema and numeric oracle; not a full independent score-semantic validator",
+  "oracle": "exact rational ordered-bit interval search with rounding-cell certificates",
+  "root_feature_tree": "skysheet-score v0.1.0 (E:\\sky-sheet-station\\crates\\skysheet-score)\n├── serde feature \"default\"\n│   ├── serde v1.0.229\n│   │   ├── serde_core feature \"result\"\n│   │   │   └── serde_core v1.0.229\n│   │   └── serde_derive feature \"default\"\n│   │       └── serde_derive v1.0.229 (proc-macro)\n│   │           ├── proc-macro2 feature \"proc-macro\"\n│   │           │   └── proc-macro2 v1.0.107\n│   │           │       └── unicode-ident feature \"default\"\n│   │           │           └── unicode-ident v1.0.27\n│   │           ├── quote feature \"proc-macro\"\n│   │           │   ├── quote v1.0.47\n│   │           │   │   └── proc-macro2 v1.0.107 (*)\n│   │           │   └── proc-macro2 feature \"proc-macro\" (*)\n│   │           ├── syn feature \"clone-impls\"\n│   │           │   └── syn v3.0.9\n│   │           │       ├── proc-macro2 v1.0.107 (*)\n│   │           │       ├── quote v1.0.47 (*)\n│   │           │       └── unicode-ident feature \"default\" (*)\n│   │           ├── syn feature \"derive\"\n│   │           │   └── syn v3.0.9 (*)\n│   │           ├── syn feature \"parsing\"\n│   │           │   └── syn v3.0.9 (*)\n│   │           ├── syn feature \"printing\"\n│   │           │   └── syn v3.0.9 (*)\n│   │           └── syn feature \"proc-macro\"\n│   │               ├── syn v3.0.9 (*)\n│   │               ├── proc-macro2 feature \"proc-macro\" (*)\n│   │               └── quote feature \"proc-macro\" (*)\n│   └── serde feature \"std\"\n│       ├── serde v1.0.229 (*)\n│       └── serde_core feature \"std\"\n│           └── serde_core v1.0.229\n├── serde feature \"derive\"\n│   ├── serde v1.0.229 (*)\n│   └── serde feature \"serde_derive\"\n│       └── serde v1.0.229 (*)\n├── serde_json feature \"default\"\n│   ├── serde_json v1.0.154\n│   │   ├── memchr v2.8.3\n│   │   ├── serde_core v1.0.229\n│   │   ├── itoa feature \"default\"\n│   │   │   └── itoa v1.0.18\n│   │   └── zmij feature \"default\"\n│   │       └── zmij v1.0.23\n│   └── serde_json feature \"std\"\n│       ├── serde_json v1.0.154 (*)\n│       ├── serde_core feature \"std\" (*)\n│       └── memchr feature \"std\"\n│           ├── memchr v2.8.3\n│           └── memchr feature \"alloc\"\n│               └── memchr v2.8.3\n└── serde_json feature \"raw_value\"\n    └── serde_json v1.0.154 (*)\n",
+  "tool_lock_sha256": "57fbe7147a2ee626d13736654f1f52cee0ee1c312b6eba819fcc9850518a8ad6",
+  "baseline_equivalence": {
+    "matches": false,
+    "historical_count": 2981,
+    "current_count": 0,
+    "comparison": "ordered failure IDs/checks/expected bits/actual bits and acceptance status; diagnostics wording excluded"
+  },
+  "failures": []
+}

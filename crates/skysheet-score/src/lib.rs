@@ -62,9 +62,27 @@ score_object! {
     #[derive(Debug, Clone, PartialEq, Serialize)]
     pub struct Timeline {
         pub ppq: u16,
+        #[serde(deserialize_with = "deserialize_tempo")]
         pub tempo: f64,
         pub time_signature: TimeSignature,
     }
+}
+
+// JSON-specific: preserve the complete token until the standard library performs
+// nearest-binary64 conversion. Box supports both string and reader inputs; this
+// adapter does not promise compatibility with arbitrary non-JSON deserializers.
+// Positivity remains a Score::validate rule, including underflow to zero.
+fn deserialize_tempo<'de, D: Deserializer<'de>>(deserializer: D) -> Result<f64, D::Error> {
+    let raw = Box::<serde_json::value::RawValue>::deserialize(deserializer)?;
+    let value = raw.get().parse::<f64>().map_err(|error| {
+        serde::de::Error::custom(format!("timeline.tempo: expected a JSON number: {error}"))
+    })?;
+    if !value.is_finite() {
+        return Err(serde::de::Error::custom(
+            "timeline.tempo: number out of range",
+        ));
+    }
+    Ok(value)
 }
 
 score_object! {

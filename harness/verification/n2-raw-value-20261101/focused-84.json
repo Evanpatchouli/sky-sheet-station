@@ -1,0 +1,22 @@
+{
+  "status": "passed",
+  "group": "focused-84",
+  "cases": 84,
+  "valid": 60,
+  "tokens_sha256": "91c40d46780bccbc7fa5c0d8f55c3cfc4f77d6c6d3f68ae119f98825f8e645b1",
+  "checks": {
+    "from_str": {
+      "acceptance": 84,
+      "decode_bits": 79,
+      "serialization_oracle": 60,
+      "readback_bits": 60
+    },
+    "from_reader": {
+      "acceptance": 84,
+      "decode_bits": 79,
+      "serialization_oracle": 60,
+      "readback_bits": 60
+    }
+  },
+  "failures": []
+}

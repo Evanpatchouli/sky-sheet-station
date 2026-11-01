@@ -1,0 +1,106 @@
+{
+  "baseline_head": "36a507377f8c94d6941282cefb0bbc4a5dcdcf3d",
+  "platform": "x86_64-pc-windows-msvc",
+  "rustc": "1.99.1",
+  "cargo": "1.99.1",
+  "serde_json": "1.0.154",
+  "files": [
+    {
+      "file": "focused-80.json",
+      "sha256": "d8d09a0655d01afdaa9ef246d6e0430b42d0710c4788967d1e11cc03e14f78a0"
+    },
+    {
+      "file": "focused-84.json",
+      "sha256": "261cd5545bdb0b1701972ec21652ed3ece3380fc3ea9c08c95a94dadd912d7c1"
+    },
+    {
+      "file": "historical-after.json",
+      "sha256": "12788796d0610c283d92a929661cbaf9f7d962c7b1313f266f2fa730c9f234f5"
+    },
+    {
+      "file": "repro-overflow.json",
+      "sha256": "fb6e4b26cf16a179c7222e104e86b1fe67193490bbb15481a32956bd4f7f7799"
+    },
+    {
+      "file": "repro-roundtrip.json",
+      "sha256": "007c7b80ce97d42253c11dc5461845043aa51cbeab8e8b6e9b81ec80f421acd6"
+    },
+    {
+      "file": "repro-tie.json",
+      "sha256": "fb6e4b26cf16a179c7222e104e86b1fe67193490bbb15481a32956bd4f7f7799"
+    },
+    {
+      "file": "research-3016.json",
+      "sha256": "8757f3fea41080ffdd6a1863a19b95d62eafa752ab6537ac1f03a581193376e1"
+    }
+  ],
+  "protected_files": [
+    {
+      "file": "Cargo.lock",
+      "sha256": "e102df124fbccec05c9f9a78f3ce584c761aa0aef0bf0bb93ada918bfb711249"
+    },
+    {
+      "file": "tools/numeric-validation/Cargo.lock",
+      "sha256": "57fbe7147a2ee626d13736654f1f52cee0ee1c312b6eba819fcc9850518a8ad6"
+    },
+    {
+      "file": "tools/numeric-validation/src/oracle.rs",
+      "sha256": "395e0066423ef0c8e94bc79f50d3f035da2542da956ffaf0dbab1a8ffc76547d"
+    },
+    {
+      "file": "tools/numeric-validation/src/runner.rs",
+      "sha256": "d40093b7a78f7db6c48541cb57078c7a3dce071e8bba1fab6758a26bd1caacc6"
+    },
+    {
+      "file": "tools/numeric-validation/src/validation.rs",
+      "sha256": "83fe9d6d6f9193fa58a27a51ba26fba7738cb397abcc7acc5729c96e62311358"
+    },
+    {
+      "file": "tools/numeric-validation/fixtures/manifest.json",
+      "sha256": "93333408f3620da2c82ca55c76f0dd2f3f3d9b8e973246e42227cc0ad01ef310"
+    },
+    {
+      "file": "tools/numeric-validation/fixtures/midpoints.json",
+      "sha256": "a9d7e5980426772d7ae39a14303b595ea5a62cb9c7e28547032c2b4619359205"
+    },
+    {
+      "file": "tools/numeric-validation/fixtures/samples.json",
+      "sha256": "dd0bb76c6767194942a8810e062160443624525536d0c45b3fd451fd89c1b794"
+    },
+    {
+      "file": "harness/verification/numeric-before-rust/manifest.json",
+      "sha256": "941954e5fb308456df20db7e2d2b04f893b38a69f34df10ef17fdd8d86a95d85"
+    },
+    {
+      "file": "harness/verification/numeric-before-rust/numeric-boundaries.json",
+      "sha256": "7994f53ae3b277ff6f906d8a1aba30322ff34c5f03b4ebeff139dae21b9bfb5a"
+    },
+    {
+      "file": "harness/verification/numeric-before-rust/numeric-conformance-report.json",
+      "sha256": "3f11b0997712506a0c33a4db4b48ea64128086b5e39acce151f53859a9767bd9"
+    },
+    {
+      "file": "harness/verification/numeric-before-rust/numeric-independent.json",
+      "sha256": "eea2f16f38b27242e41481b4b45fe22e8f436adff4c424e00daa1f58b5fb64f7"
+    },
+    {
+      "file": "harness/verification/numeric-before-rust/numeric-tool-error-smoke.json",
+      "sha256": "abb5333f9ab8b580d7372bf74ebc95a4968487fef2b8b7bf6901eaf4ebfc30a5"
+    },
+    {
+      "file": "harness/verification/numeric-before-rust/repro-overflow.json",
+      "sha256": "f4f35c1bc851e7c176ab4e3aec76ac2d1d792e1d7c781785b4976ea10bf043f9"
+    },
+    {
+      "file": "harness/verification/numeric-before-rust/repro-roundtrip.json",
+      "sha256": "5556c79764ddc829ba0ed4a20bc7dac103366b8167a17fa8ab60c876e1862118"
+    },
+    {
+      "file": "harness/verification/numeric-before-rust/repro-tie.json",
+      "sha256": "5fa20bef2613ca1d1b31d5f894479f5721d464643995adcd31668eba13f78b8c"
+    }
+  ],
+  "focused_fixture_sha256": "04abd7d56b3d0cd21fec50357e07073e485bb55ad83c32e2b192fcae0a364c9f",
+  "linux_ci": "Not run for this revision; baseline run 41253767247 failed on 2981 differences",
+  "n2_completion": "Pending Linux verification"
+}

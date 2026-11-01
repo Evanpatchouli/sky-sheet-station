@@ -25,7 +25,7 @@ were recorded as open questions. The follow-up below resolves only those three
 boundaries; neither milestone means that the full v1 contract is frozen.
 
 ## Phase 1: Freeze the score contract
-**Status:** In progress. D1-D8 and N1-N4 are approved (2026-11-01). Independent numeric tooling is implemented, but observed Rust/N2 precision and round-trip differences prevent full freeze. Acoustic calibration is outside scope; sky-15 retains its C4-C6 logical mapping. D6 approval is not MIDI implementation/verification; no Phase 2 work is authorized.
+**Status:** In progress. D1-D8 and N1-N4 are approved (2026-11-01). The approved N2 RawValue correction passes Windows numeric and engineering checks; Linux acceptance of this revision remains pending, so N2 is not marked complete. Acoustic calibration is outside scope; sky-15 retains its C4-C6 logical mapping. D6 approval is not MIDI implementation/verification; no Phase 2 work is authorized.
 
 - [x] Resolve pitch range, integer bounds including note ends, and meter denominators as an approved v1 pre-freeze revision.
 - [x] Expand existing-rule fixtures, configure Schema CI, audit raw inputs, and prepare non-normative decision/calibration/tempo-policy drafts.
@@ -38,12 +38,23 @@ boundaries; neither milestone means that the full v1 contract is frozen.
 - [x] Establish N1-N4 independent raw/Schema/numeric verification, locked development/CI dependencies, exact boundary expectations and deterministic sampling; report current failures without changing parser features.
 - [x] Migrate all validation to isolated Rust tooling under the owner-approved stack; preserve 267 fixed cases, all 10,000 historical samples, original reports and strict N1-N4 outcomes. No parser precision fix is included.
 
-The migration's local root/tool checks pass, while full numeric conformance still
-reports the same 2,981 failures. Hosted Actions has not run on the uncommitted
-workflow. Two ignored legacy environment/cache directories remain unused because
+At migration completion, local root/tool checks passed while full numeric conformance
+reported the same 2,981 failures. That historical baseline is preserved; the
+subsequent RawValue correction is recorded below. Two ignored legacy environment/cache directories remain unused because
 automatic approval review blocked their deletion; tracked runtime dependencies
 and invocation paths are removed. See the
 [migration record](harness/build/phase-01-conformance-audit.md#rust-only-verification-migration).
+
+The owner-approved N2 production correction now uses a JSON-specific RawValue
+field adapter and Rust standard-library conversion, retaining `tempo: f64`, the
+format and validation rules. Windows checks pass: 267 fixed cases, all 10,000
+historical samples, the separate 3,016 research cases, 84 focused regressions,
+51 Score tests (debug/release), 20 independent tests, fmt and Clippy. Oracle,
+comparison rules, historical evidence and both lockfiles are unchanged.
+The existing Linux CI at HEAD `36a5073` failed on the old 2,981 differences;
+this uncommitted repair has not run there. Local WSL lacks Rust and a C linker,
+and the Docker Linux engine is unavailable. Full N2 acceptance remains pending
+Linux verification. See the [repair record](harness/build/phase-01-n2-raw-value.md).
 
 The revision keeps format_version 1.0 and existing JSON field/Rust storage types.
 Pitch values map to MIDI 0..=127; meter numerators are 1..=65535; denominators are
@@ -126,7 +137,7 @@ The following broader Phase 1 items remain incomplete:
 
 - [ ] Finalize v1 JSON schema and semantic validation.
 - [ ] Complete positive/negative fixture coverage for the finalized contract (existing rules expanded; unresolved findings/policies still require follow-up).
-- [ ] Resolve observed Rust/N2 acceptance, rounding and save/read differences under a separately approved parser decision, then pass the strict numeric gate and remaining contract checks. See [numeric verification](docs/numeric-verification.md). Actual D6 implementation/file tests remain separately authorized Phase 2 work.
+- [ ] Complete N2 acceptance: the approved RawValue correction passes Windows strict numeric and engineering checks; Linux verification remains pending. See [numeric verification](docs/numeric-verification.md). Actual D6 implementation/file tests remain separately authorized Phase 2 work.
 
 Exit criteria: score specification, schema, example fixtures, Rust types, and tests
 agree, including a passing independent numeric gate with no unresolved N2 differences. Acoustic

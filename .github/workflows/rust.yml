@@ -32,5 +32,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: numeric-conformance-report
-          path: target/numeric-conformance-report.json
+          path: |
+            target/numeric-conformance-report.json
+            target/n2-regressions/**/*.json
           if-no-files-found: warn
