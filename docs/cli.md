@@ -14,7 +14,26 @@ output paths nor reference-tempo overrides. See [music analysis](music-analysis.
 Phase 4-A adds `arrange <FILE.mid> -o <SCORE.json> [--auto | --transpose <SEMITONES>]
 [--report <REPORT.json>] [--json]`. Automatic global transposition is the default;
 fixed offsets are never replaced. Every loss is reported separately from Score.
-See [arrangement rules, reports and output safety](phase-4a-arrangement.md).
+Phase 4-B/C now defaults to context-aware `melody-first` with octave adaptation.
+Use `--mode melody-first|simple-accompaniment|polyphonic`, `--no-octave-shifts`,
+`--melody-priority 0..5` (default 3), `--bass-priority 0..5` (2),
+`--accompaniment-priority 0..5` (1), and optional `--max-polyphony 1..128`.
+No polyphony ceiling applies unless supplied. `--auto` and `--transpose` are
+mutually exclusive; fixed -127..127 remains exact, even when it loses every note.
+Report v2 retains v1 fields and adds final role counts, octave/interval traces,
+onset/chord diagnostics and playability checks. Candidate counts are pre-DP
+retention upper bounds; use final report counts for actual output. Errors retain
+exit codes 1/2/3/4; `--json` emits one response. Existing destinations are refused.
+
+```text
+skysheet arrange audios/ode-to-joy.mid -o melody.json --mode melody-first --auto --json
+skysheet arrange audios/ode-to-joy.mid -o simple.json --mode simple-accompaniment
+skysheet arrange audios/ode-to-joy.mid -o poly.json --mode polyphonic --max-polyphony 4
+skysheet arrange audios/ode-to-joy.mid -o fixed.json --mode melody-first --transpose 12
+skysheet validate melody.json --json
+```
+
+See [implemented rules, parameter meanings and evidence](phase-4bc-arrangement.md).
 
 ## Goals
 

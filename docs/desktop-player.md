@@ -13,13 +13,26 @@ See [music analysis](music-analysis.md#desktop) and the
 [Phase 3 delivery/GUI verification](phase-3-delivery.md). The player engine and
 Score format are unchanged; analysis does not generate a playable arrangement.
 
-Phase 4-A adds **Sky 编曲** and **适配为 Sky 乐谱** after MIDI analysis. Choose
-automatic adaptation or a fixed signed semitone offset, save to a new Score path,
-review retention/loss details, then explicitly load the generated Score for
-preview and audition. CLI also saves a separate adjacent arrangement report.
-The desktop uses the analyzed MIDI snapshot and invokes the packaged CLI;
-failed/cancelled arrangement preserves the previous Score. See
-[Phase 4-A](phase-4a-arrangement.md) for the approved D6 timing boundary and tests.
+Phase 4-B/C extends **Sky 编曲** / **适配为 Sky 乐谱** without replacing the app:
+
+1. **分析 MIDI** opens the source and retains an immutable byte snapshot.
+2. Select melody-first, simple-accompaniment or polyphonic; automatic/fixed global
+   transposition; octave permission; priorities (0..5); optional overlap ceiling.
+3. **生成编曲预览** invokes the packaged CLI into private temporary files.
+4. Review final role counts, ranges, all per-note mappings (20 per page), losses,
+   interval changes, chord candidates, repeated-key conflicts and playability.
+5. **加载生成乐谱并预览试听** explicitly replaces the player only after CLI success,
+   report checks, production Score reread/validation and per-note correspondence.
+6. Use existing play/pause/stop/seek controls. Return to **Sky 编曲** and choose
+   **保存 Score 和报告**; both destinations must be new. Preview is not the source.
+
+Canceling a file picker preserves state. Failed arrangement preserves the loaded
+Score. Cancel-wait ignores the result, allowing the subprocess to finish its
+temporary calculation; it is not process termination. Request generations reject
+stale frontend results; a backend token ties saving to the validated preview.
+Save errors clean only newly created files (cleanup failure is reported); the pair
+is not crash-atomic. No algorithm runs in React or Tauri. The timing boundary is
+unchanged from [Phase 4-A](phase-4a-arrangement.md); see [4-B/C evidence](phase-4bc-arrangement.md).
 
 ## Run on Windows
 

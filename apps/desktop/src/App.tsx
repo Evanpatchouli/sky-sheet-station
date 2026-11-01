@@ -8,6 +8,8 @@ import { ImportReport } from "./components/ImportReport.tsx";
 import { MusicAnalysis } from "./components/MusicAnalysis.tsx";
 import { ArrangementReport } from "./components/ArrangementReport.tsx";
 import type { ArrangementReport as ArrangementDiagnostic, LoadedArrangement } from "./arrangement/model.ts";
+import { defaultArrangementOptions, optionsError } from "./arrangement/model.ts";
+import type { ArrangementOptions } from "./arrangement/model.ts";
 import { analysisErrorMessage } from "./analysis/model.ts";
 import type { LoadedAnalysis } from "./analysis/model.ts";
 import { PlayerEngine } from "./player/engine.ts";
@@ -24,6 +26,8 @@ import {
   openMidi,
   analyzeMidi,
   arrangeMidi,
+  saveArrangement,
+  cancelArrangement,
   selectAudio,
 } from "./services/desktop.ts";
 
@@ -45,6 +49,7 @@ export default function App() {
   const [arrangementError, setArrangementError] = useState<string | null>(null);
   const [arrangementMode, setArrangementMode] = useState("auto");
   const [transpose, setTranspose] = useState("0");
+  const [arrangeOptions, setArrangeOptions] = useState(defaultArrangementOptions);
   const [importReport, setImportReport] = useState<Report | null>(null);
   const [zoom, setZoom] = useState(1),
     [follow, setFollow] = useState(true),
@@ -100,6 +105,8 @@ export default function App() {
   }
   async function arrange() {
     if (!analysis) return;
+    const invalid=optionsError(arrangeOptions);
+    if(invalid) {setArrangementError(invalid);return;}
     const shift = arrangementMode === "auto" ? null : Number(transpose);
     if (shift !== null && (transpose.trim() === "" || !Number.isInteger(shift) || shift < -127 || shift > 127)) {
       setArrangementError("移调必须是 -127..127 的整数。"); return;
@@ -107,7 +114,7 @@ export default function App() {
     const id = ++request.current;
     engine.pause(); setBusy(true); setArrangementError(null);
     try {
-      const result = await arrangeMidi(analysis.report.source_document_id, shift);
+      const result = await arrangeMidi(analysis.report.source_document_id, shift, arrangeOptions);
       if (result && id === request.current) { setArrangement(result); setArrangementReport(result.report); }
     } catch (e) {
       if (id === request.current) {
@@ -116,6 +123,17 @@ export default function App() {
         setArrangement(null);
       }
     } finally { if (id === request.current) setBusy(false); }
+  }
+  async function saveArranged() {
+    if(!arrangement) return;
+    const id=++request.current; setBusy(true);setArrangementError(null);
+    try {const report=await saveArrangement(arrangement.token);if(report&&id===request.current){setArrangementReport(report);setArrangement({...arrangement,report});}}
+    catch(e){if(id===request.current)setArrangementError(analysisErrorMessage(e));}
+    finally {if(id===request.current)setBusy(false);}
+  }
+  function closeArrangement() {
+    if(busy){++request.current;setBusy(false);void cancelArrangement().catch(e=>setArrangementError(analysisErrorMessage(e)));}
+    setModal(null);
   }
   const message = error || state.error;
   return (
@@ -291,21 +309,27 @@ export default function App() {
         {analysis && <button className="primary" disabled={busy} onClick={() => setModal("arrange")}>适配为 Sky 乐谱</button>}
         {analysis ? <MusicAnalysis loaded={analysis} /> : !analysisBusy && <p>选择 MIDI 文件以查看原始轨道、音域与旋律候选。</p>}
       </Modal>}
-      {modal === "arrange" && <Modal title="Sky 15-key 编曲" wide onClose={() => setModal(null)}>
-        <p>目标乐器：sky-15 · C4–C6 · 全曲统一移调</p>
+      {modal === "arrange" && <Modal title="Sky 15-key 编曲" wide onClose={closeArrangement}>
+        <p>目标乐器：sky-15 · C4–C6 · 15 个实际键位 · 上下文八度适配</p>
         {!analysis ? <><p>先分析 MIDI，再选择自动适配或固定移调。</p><button className="primary" disabled={busy} onClick={() => void analyze()}>选择 MIDI 并分析</button></> : <>
           <p className="analysis-source">来源：{analysis.source}</p>
           <div className="arrangement-controls">
+            <label>编曲模式 <select aria-label="编曲模式" value={arrangeOptions.mode} disabled={busy} onChange={e=>setArrangeOptions({...arrangeOptions,mode:e.target.value as ArrangementOptions["mode"]})}><option value="melody-first">旋律优先</option><option value="simple-accompaniment">简易伴奏</option><option value="polyphonic">多声部优先</option></select></label>
             <label><input type="radio" name="arrangement-mode" checked={arrangementMode === "auto"} disabled={busy} onChange={() => setArrangementMode("auto")} /> 自动适配</label>
             <label><input type="radio" name="arrangement-mode" checked={arrangementMode === "fixed"} disabled={busy} onChange={() => setArrangementMode("fixed")} /> 固定移调</label>
             <label>半音数 <input aria-label="移调半音数" type="number" min="-127" max="127" step="1" value={transpose} disabled={busy || arrangementMode !== "fixed"} onChange={e => setTranspose(e.target.value)} /></label>
-            <button className="primary" disabled={busy} onClick={() => void arrange()}>生成并保存 Score</button>
+            <label><input type="checkbox" checked={arrangeOptions.allow_octave_shifts} disabled={busy} onChange={e=>setArrangeOptions({...arrangeOptions,allow_octave_shifts:e.target.checked})}/>允许声部八度调整</label>
+            {([['melody_priority','旋律优先级'],['bass_priority','低音优先级'],['accompaniment_priority','伴奏优先级']] as const).map(([key,label])=><label key={key}>{label}<input aria-label={label} type="number" min="0" max="5" step="1" value={Number.isNaN(arrangeOptions[key])?'':arrangeOptions[key]} disabled={busy} onChange={e=>setArrangeOptions({...arrangeOptions,[key]:e.target.value===''?NaN:Number(e.target.value)})}/></label>)}
+            <label>最大同时发声数<input aria-label="最大同时发声数" type="number" min="1" max="128" step="1" placeholder="不限" value={arrangeOptions.maximum_polyphony??''} disabled={busy} onChange={e=>setArrangeOptions({...arrangeOptions,maximum_polyphony:e.target.value===''?null:Number(e.target.value)})}/></label>
+            <button className="primary" disabled={busy} onClick={() => void arrange()}>生成编曲预览</button>
+            <button onClick={closeArrangement}>{busy?'取消等待并返回':'返回播放器'}</button>
           </div>
-          <p className="muted">将同时保存独立编曲报告；已有文件不会覆盖。无法映射的音符会在报告中逐一列出。</p>
+          <p className="muted">优先级 0–5 影响有取舍时的排序，旋律始终属于受保护层。复音上限是用户约束；留空不限。先预览和试听，再保存 Score 与独立报告，已有文件不会覆盖。取消等待会忽略结果；后台 CLI 可完成临时计算。</p>
         </>}
         {busy && <p role="status">正在通过 CLI 编曲并验证…</p>}
         {arrangementError && <p className="notice error" role="alert">{arrangementError}</p>}
         {arrangement && <button className="primary" disabled={busy} onClick={() => { void load(async () => arrangement.loaded); setModal(null); }}>加载生成乐谱并预览试听</button>}
+        {arrangement && <button disabled={busy} onClick={()=>void saveArranged()}>保存 Score 和报告</button>}
         {arrangementReport && <ArrangementReport key={`${arrangementReport.source_document_id}-${arrangementReport.transpose_semitones}`} report={arrangementReport} />}
       </Modal>}
       {modal === "settings" && (

@@ -9,10 +9,19 @@ pub enum DropReason {
     BelowInstrumentRange,
     AboveInstrumentRange,
     NotInInstrumentKeys,
+    AccompanimentSimplified,
+    MaximumPolyphony,
 }
 
 #[derive(Debug, Clone, Serialize)]
 pub struct NoteMapping {
+    pub global_transposed_midi: i16,
+    pub voice_octave_shift: i16,
+    pub mapping_reason: String,
+    pub importance: u32,
+    pub importance_reasons: Vec<&'static str>,
+    pub previous_interval_change: Option<i16>,
+    pub next_interval_change: Option<i16>,
     pub source_track: usize,
     pub source_note_id: String,
     pub source_event_index: Option<usize>,
@@ -33,6 +42,9 @@ pub struct NoteMapping {
 
 #[derive(Debug, Clone, Serialize)]
 pub struct TrackReport {
+    pub final_lowest_midi: Option<u8>,
+    pub final_highest_midi: Option<u8>,
+    pub adjusted: usize,
     pub source_track: usize,
     pub output_track_id: String,
     pub name: Option<String>,
@@ -50,6 +62,18 @@ pub struct TrackReport {
 
 #[derive(Debug, Clone, Serialize)]
 pub struct ArrangementReport {
+    pub stage: &'static str,
+    pub arrangement_mode: String,
+    pub global_transpose: Option<i16>,
+    pub per_track_octave_shift: Vec<Vec<i16>>,
+    pub accompaniment_policy: String,
+    pub maximum_polyphony: Option<usize>,
+    pub custom_parameters: crate::ArrangementOptions,
+    pub compatibility: &'static str,
+    pub role_retention: Vec<RoleRetention>,
+    pub onset_groups: Vec<OnsetGroup>,
+    pub conflicts: Vec<Conflict>,
+    pub playability: Playability,
     pub arrangement_report_version: u8,
     pub source_file: Option<String>,
     pub source_document_id: String,
@@ -77,4 +101,46 @@ pub struct ArrangementReport {
     pub score_validation: bool,
     pub time_preserved: bool,
     pub pitch_mapping_valid: bool,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct RoleRetention {
+    pub role: String,
+    pub kept: usize,
+    pub total: usize,
+    pub retention: Option<f64>,
+}
+#[derive(Debug, Clone, Serialize)]
+pub struct OnsetGroup {
+    pub start_tick: u64,
+    pub source_note_ids: Vec<String>,
+    pub kept: usize,
+    pub chord_candidate: Option<String>,
+    pub pitch_class_intervals_preserved: bool,
+    pub exact_intervals_changed: bool,
+}
+#[derive(Debug, Clone, Serialize)]
+pub struct Conflict {
+    pub start_tick: u64,
+    pub source_note_ids: Vec<String>,
+    pub source_count: usize,
+    pub kept: usize,
+    pub reason: &'static str,
+    pub resolution: &'static str,
+}
+#[derive(Debug, Clone, Default, Serialize)]
+pub struct Playability {
+    pub maximum_simultaneous_notes: usize,
+    pub same_key_overlap_events: usize,
+    pub cross_track_key_conflicts: usize,
+    pub bass_melody_crossing_events: usize,
+    pub melody_interval_pairs: usize,
+    pub melody_interval_changes: usize,
+    pub melody_direction_changes: usize,
+    pub unnecessary_large_leaps: usize,
+    pub octave_adjusted_notes: usize,
+    pub source_accompaniment_onsets: usize,
+    pub retained_accompaniment_onsets: usize,
+    pub arrangement_constraints_satisfied: bool,
+    pub human_audition: String,
 }

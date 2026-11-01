@@ -25,6 +25,10 @@ Options:
   --auto         Search every global semitone offset (arrange default)
   --transpose    Fixed global offset -127..127; never replaced by auto search
   --report       New arrangement report path (default: OUTPUT.json.arrangement.json)
+  --mode         melody-first (default), simple-accompaniment, polyphonic
+  --no-octave-shifts  Disable context octave placement (global-only pitch mapping)
+  --melody-priority / --bass-priority / --accompaniment-priority  Integer 0..5 (3/2/1)
+  --max-polyphony User overlap limit 1..128 (default unlimited; not a Score rule)
   --             Treat remaining arguments as positional (for filenames starting with -)
 
 Score inputs use original JSON and Score validation; input files are never modified.
@@ -66,6 +70,7 @@ impl Command {
 
 #[derive(Debug)]
 pub struct Args {
+    pub arrangement: skysheet_arrange::ArrangementOptions,
     pub command: Command,
     pub file: Option<PathBuf>,
     pub output: Option<PathBuf>,
@@ -92,10 +97,63 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
     let mut transpose = None;
     let mut report = None;
     let mut auto = false;
+    let mut arrangement = skysheet_arrange::ArrangementOptions::default();
+    let mut arrangement_flags = std::collections::BTreeSet::new();
     let mut iter = args.iter();
     while let Some(arg) = iter.next() {
         if !literal {
             match arg.to_str() {
+                Some(
+                    flag @ ("--mode"
+                    | "--no-octave-shifts"
+                    | "--melody-priority"
+                    | "--bass-priority"
+                    | "--accompaniment-priority"
+                    | "--max-polyphony"),
+                ) => {
+                    if !arrangement_flags.insert(flag) {
+                        return Err(format!("repeated option {flag}"));
+                    }
+                    if flag == "--no-octave-shifts" {
+                        arrangement.allow_octave_shifts = false;
+                        continue;
+                    }
+                    let value = iter
+                        .next()
+                        .and_then(|s| s.to_str())
+                        .ok_or_else(|| format!("missing value for {flag}"))?;
+                    if flag == "--mode" {
+                        arrangement.mode =
+                            match value {
+                                "melody-first" => skysheet_arrange::ArrangementMode::MelodyFirst,
+                                "simple-accompaniment" => {
+                                    skysheet_arrange::ArrangementMode::SimpleAccompaniment
+                                }
+                                "polyphonic" => skysheet_arrange::ArrangementMode::Polyphonic,
+                                _ => return Err(
+                                    "mode must be melody-first, simple-accompaniment or polyphonic"
+                                        .into(),
+                                ),
+                            };
+                    } else if flag == "--max-polyphony" {
+                        arrangement.maximum_polyphony = Some(
+                            value
+                                .parse()
+                                .map_err(|_| "max-polyphony must be an integer in 1..128")?,
+                        );
+                    } else {
+                        let priority = value
+                            .parse()
+                            .map_err(|_| "priority must be an integer in 0..5")?;
+                        match flag {
+                            "--melody-priority" => arrangement.melody_priority = priority,
+                            "--bass-priority" => arrangement.bass_priority = priority,
+                            _ => arrangement.accompaniment_priority = priority,
+                        }
+                    }
+                    arrangement.validate()?;
+                    continue;
+                }
                 Some("--") => {
                     literal = true;
                     continue;
@@ -170,6 +228,7 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
             return Err("missing command; use --help".into());
         };
         return Ok(Args {
+            arrangement,
             command,
             file: None,
             output: None,
@@ -200,6 +259,7 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
     }
     if help && positional.len() == 1 {
         return Ok(Args {
+            arrangement,
             command: Command::Help,
             file: None,
             output: None,
@@ -227,13 +287,16 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
     if tempo.is_some() && command != Command::ImportMidi {
         return Err("--tempo is only valid for import-midi".into());
     }
-    if (auto || transpose.is_some() || report.is_some()) && command != Command::Arrange {
-        return Err("--auto/--transpose are only valid for arrange".into());
+    if (auto || transpose.is_some() || report.is_some() || !arrangement_flags.is_empty())
+        && command != Command::Arrange
+    {
+        return Err("arrangement options are only valid for arrange".into());
     }
     if auto && transpose.is_some() {
         return Err("--auto and --transpose cannot be combined".into());
     }
     Ok(Args {
+        arrangement,
         command,
         file: Some(PathBuf::from(positional[1])),
         output,
