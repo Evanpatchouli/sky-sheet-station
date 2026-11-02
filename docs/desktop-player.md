@@ -8,32 +8,72 @@ Score format and pitch mapping remain unchanged. AT-1/2/3 now adds offline audio
 transcription through the CLI; see [Audio Transcription](audio-transcription.md).
 Phase 4-A/B/C provides the arrangement flow below.
 
-Phase 3 adds **分析 MIDI** and **分析结果** in the existing toolbar. They display
-the packaged CLI's unrestricted analysis without replacing the loaded Score.
-See [music analysis](music-analysis.md#desktop) and the
-[Phase 3 delivery/GUI verification](phase-3-delivery.md). The player engine and
-Score format are unchanged; analysis does not generate a playable arrangement.
+## Import and visual editing (2026-11-03)
 
-Phase 4-B/C extends **Sky 编曲** / **适配为 Sky 乐谱** without replacing the app:
+The desktop entry is now **导入音乐** for both audio and MIDI:
 
-1. **分析 MIDI** opens the source and retains an immutable byte snapshot.
-2. Select melody-first, simple-accompaniment or polyphonic; automatic/fixed global
-   transposition; octave permission; priorities (0..5); optional overlap ceiling.
-3. **生成编曲预览** invokes the packaged CLI into private temporary files.
-4. Review final role counts, ranges, all per-note mappings (20 per page), losses,
-   interval changes, chord candidates, repeated-key conflicts and playability.
-5. **加载生成乐谱并预览试听** explicitly replaces the player only after CLI success,
-   report checks, production Score reread/validation and per-note correspondence.
-6. Use existing play/pause/stop/seek controls. Return to **Sky 编曲** and choose
-   **保存 Score 和报告**; both destinations must be new. Preview is not the source.
+1. Select a MIDI, MP3, WAV or FLAC file in the single generation dialog.
+2. Choose melody-first (default), simple accompaniment or polyphonic arrangement.
+   Transposition, priorities, polyphony and audio thresholds are in **高级设置**.
+3. Click **生成乐谱**. The desktop invokes the existing CLI transcription (audio
+   only), analysis and arrangement pipeline, then installs the validated result
+   directly in the editor. There is no intermediate MIDI, preview or load button.
+4. Edit and audition the score. **另存乐谱** saves the current document to a new
+   JSON file after the existing raw-byte reader and packaged CLI validate it.
 
-Canceling a file picker preserves state. Failed arrangement preserves the loaded
-Score. Cancel-wait ignores the result, allowing the subprocess to finish its
-temporary calculation; it is not process termination. Request generations reject
-stale frontend results; a backend token ties saving to the validated preview.
-Save errors clean only newly created files (cleanup failure is reported); the pair
-is not crash-atomic. No algorithm runs in React or Tauri. The timing boundary is
-unchanged from [Phase 4-A](phase-4a-arrangement.md); see [4-B/C evidence](phase-4bc-arrangement.md).
+**生成详情** retains source analysis, transcription diagnostics and the original
+arrangement report. Those reports describe generation, not subsequent manual
+edits. Saving the original score/report pair is disabled after manual editing;
+use **另存乐谱** for the edited version. Original transcription MIDI/report export
+remains available in the details view.
+
+Cancellation and failures preserve the current document. Request identities
+reject late generation results. Audio cancellation retains the existing process
+termination behavior; MIDI analysis/arrangement cancellation invalidates results
+while the temporary CLI computation may finish. Native selection tokens must
+match the selected file and input kind; the frontend cannot choose arbitrary
+paths through these generation parameters. File contents are snapshotted when
+processing begins, using the existing bounded readers.
+
+### Editing controls
+
+- The smallest editing cell defaults to a sixteenth note (240 ticks), with
+  quarter/eighth/thirty-second/sixty-fourth alternatives. This is an editing
+  preference, not a change to Score's one-tick resolution or MIDI conversion.
+- Click a blank grid cell or ruler to position the insertion line, then click an
+  instrument key to toggle that pitch in the selected track. An empty cell gets
+  a one-cell note; an occupied cell removes the entire intersecting note, even
+  if it sustains across cells or starts off-grid. Other tracks are unchanged;
+  legacy overlaps in the same track are removed one note per click. Outlined
+  keys indicate pitches occupying the current edit cell. Both actions can be undone.
+- Select a note, drag its body to move its time/pitch, or drag either edge to
+  resize it. Wheel up/down over the selected note lengthens/shortens it by a
+  cell. Resize durations are positive cell multiples; the opposite edge stays
+  anchored. A sub-cell imported note at the beginning may have no room to resize
+  its left edge; resize its right edge instead.
+- Del deletes the selected note. The shared icon/text context menu supplies
+  Copy/Delete on notes and Paste on blank cells. Ctrl+C copies the selected note;
+  Ctrl+V over the roll pastes at the hovered cell start, retaining pitch and
+  using the current edit track. Clipboard state is internal to this document.
+- New or edited notes cannot overlap another note of the exact same key/pitch,
+  including other tracks. Touching endpoints and different-pitch chords are
+  allowed. Invalid drags are translucent with a not-allowed cursor and revert
+  on release. Existing imported overlaps remain intact until edited.
+- Imported timing is unchanged on load. Moving/pasting snaps starts and lengths;
+  resizing snaps duration while retaining the opposite edge. Pitch spellings,
+  ordered keys, metadata, tempo and user text are preserved.
+- Undo/redo retains up to 100 recent edits (Ctrl+Z / Ctrl+Y or Ctrl+Shift+Z).
+  Editing pauses audition and rebuilds its note index. Scrolling and zoom remain
+  available, with trailing space for adding notes after the original end.
+- Opening another document prompts to save/discard unsaved work. Saving always
+  uses a new file and never overwrites an existing destination. Browser reload
+  protection uses beforeunload; native window-close behavior still needs manual
+  verification. No autosave or persistent undo/clipboard is implemented.
+
+Score v1, CLI commands, MIDI compatibility, instrument mapping and production
+parser/dependency features are unchanged. Editing guards constrain editor
+operations; Rust remains the authority for file validation. No transcription or
+arrangement algorithm is reimplemented in React or Tauri.
 
 ## Run on Windows
 
@@ -67,31 +107,16 @@ release application does not require Node or a development server. These build
 outputs are ignored. Installer distribution, signing and publishing are outside
 this delivery.
 
-## Workflow
+## Playback and existing files
 
-- **打开乐谱** selects a Score JSON using the native file picker and validates it
-  through the packaged CLI. Cancellation preserves the current score. Invalid
-  input displays the CLI's diagnostic and preserves the previous score, paused.
-- **打开内置示例** loads the actual checked-in `docs/examples/sky-15-example.json`,
-  through the same CLI path. It contains two tracks, six notes, and one second
-  of musical material at 120 quarter notes/min. It is not an audio conversion.
-- **打开 MIDI** selects a `.mid`/`.midi` file, runs CLI import and reuses the
-  validated Score loader and player. **导入报告** shows losses/source metadata
-  on success or failure. Cancellation/failure preserves the previous Score.
-- **音频导入** opens local MP3/WAV/FLAC transcription with real stage progress,
-  cancellation, paged note reports and original MIDI/report save. Continue into
-  existing Sky arrangement to preview, audition and save Score. See
-  [limits, timing and model](audio-transcription.md). Unlike arrangement's
-  cancel-wait, audio cancellation terminates its current sidecar process.
-- The Canvas roll displays note positions/durations in ticks, colors by track,
-  pitch rows, a time ruler and nominal meter guides. Drag the roll or progress
-  slider to seek. Zoom, horizontal scrolling and follow-playhead are supported.
-- Keyboard order comes from `instrument.keys`; sky-15 uses five columns and
-  three rows. Custom profiles retain their exact spelling/order. A key remains
-  lit while any corresponding note is active, including overlapping notes.
-- Play, pause, stop, seek, 0.5/0.75/1/1.25/1.5/2× speed and full-score looping are
-  supported. Settings control audition volume; score information includes source,
-  identity, instrument and user-authored text.
+- **打开乐谱** opens Score JSON through native selection and CLI validation.
+  **打开内置示例** loads the checked-in six-note example through the same path.
+- Notes are colored by track; pitch rows, nominal bar/beat guides, zoom,
+  horizontal scrolling and follow-playhead remain supported.
+- Keyboard order derives from instrument.keys. Play, pause, stop, progress,
+  speed, loop and volume controls provide local synthesized audition.
+- Main-toolbar **打开 MIDI**, **分析 MIDI** and **Sky 编曲** have been replaced by
+  the unified generation flow. Low-level import/analysis CLI behavior is unchanged.
 
 ## Boundaries and architecture
 
@@ -109,9 +134,10 @@ frontend never parses pitch strings, raw JSON, or original tempo tokens. The
 existing N2 raw-byte adapter remains in use. All 84 frozen tempo fixtures are
 also checked through the real sidecar and desktop projection.
 
-Four application commands are exposed: `open_score`, `open_midi`, `load_example`,
-and `select_audio`. They accept no executable names, command strings or arbitrary
-file paths from JavaScript. Shell/dialog plugins have no frontend permissions.
+Application commands handle Score opening/saving, native music selection,
+MIDI analysis/arrangement, audio transcription and report exports. Selection and
+save destinations use native dialogs. No executable names or command strings
+come from JavaScript. Shell/dialog plugins have no frontend permissions.
 The CSP permits local application resources and IPC, with no remote application
 content. All processing is local; no cloud, credentials, telemetry or service is
 introduced. See Tauri's [sidecar](https://v2.tauri.app/develop/sidecar/) and
@@ -236,3 +262,43 @@ approval check rejected deletion of surplus generated platform icons with only
 `blocked by policy`; they remain ignored locally. Only the icon source and
 Windows-consumed ICO/PNG are included in the change. Signing, installer testing,
 hosted CI and other OS platforms were not verified.
+
+## Interaction revision verification (2026-11-03)
+
+- Frontend: 17 Node tests and TypeScript/Vite build passed. Editing tests cover
+  quantization, safe integer bounds, exact-key overlap across tracks, adjacency,
+  endpoint resizing, nonmutating updates and refreshed playback indexes.
+- Desktop: 16 Rust tests, formatting and Clippy with warnings denied passed.
+  The new save test reads the edited file through the real CLI and verifies that
+  existing destinations cannot be overwritten. Windows release build passed.
+- Root workspace formatting/tests/Clippy passed. Independent numeric workspace
+  formatting, 20 tests, Clippy and full gate passed: 267 fixed cases, 10,000
+  historical samples, zero failures; its research/focused regression test passed.
+  Windows reported some incremental-cache finalization notes; commands exited 0.
+- Rendered QA used existing Playwright/Edge because the Browser skill/runtime was
+  unavailable. At localhost:1420, injected IPC fixtures exercised parameter
+  errors, audio/MIDI orchestration, cancellation/late completion, failure retention,
+  unsaved replacement protection, note insertion, both endpoint resizes, wheel,
+  context and keyboard copy/paste/delete, valid/invalid dragging, undo and playback.
+  1280x880, 800x640 and 390x844 viewports had no horizontal overflow. The desktop
+  viewport exposed all 15 keys and transport; narrow windows scroll vertically.
+  There was no framework overlay or runtime exception. Localhost favicon requests
+  returned 404; native console capture had no errors or warnings.
+- Native release at tauri.localhost used the actual Windows picker and packaged
+  CLI: the checked-in piano MP3 generated 635 notes directly into the editor with
+  one Generate action. Adding A4 produced 636 notes; saving to a new temporary file
+  preserved A4 at start_tick 0 / duration_ticks 240 and CLI validation passed.
+  The real Ode MIDI generated 52 notes directly; playback advanced and paused;
+  the existing arrangement report rendered. No inference was mocked in these
+  native checks. Mocked failure/cancellation UI checks are distinct from them.
+- No new production dependencies, public format, pitch mapping, timing policy,
+  commits, release publication or deployment. Human musical acceptance, physical
+  speaker output and native close-with-unsaved-edits remain unverified.
+
+Keyboard-toggle follow-up (2026-11-03): 20 frontend tests and the production
+frontend build passed. Rendered checks confirmed add → second-click delete,
+occupied-key indication, undo/redo, and preservation of the other track's notes.
+The running desktop executable was locked by Windows; the follow-up executable
+is built separately as `skysheet-desktop-key-toggle.exe` beside the existing
+`skysheet.exe` sidecar, without closing the active application.
+Native follow-up executable also passed the actual example flow: first A4 click changed 6 notes to 7; second click returned to 6, with the key action changing back to Add.

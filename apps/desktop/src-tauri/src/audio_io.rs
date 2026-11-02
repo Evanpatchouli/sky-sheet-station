@@ -214,6 +214,7 @@ fn check_transcription(code: Option<i32>, bytes: &[u8], output: &Path) -> Result
 pub async fn transcribe_audio(
     app: tauri::AppHandle,
     request_id: String,
+    source_token: Option<String>,
     options: Options,
     on_progress: Channel<Value>,
 ) -> Result<Option<LoadedAudio>, String> {
@@ -234,22 +235,26 @@ pub async fn transcribe_audio(
         id: request_id.clone(),
     };
     let generation = app.state::<AtomicU64>().fetch_add(1, Ordering::SeqCst) + 1;
-    let picker = app.clone();
-    let selected = tauri::async_runtime::spawn_blocking(move || {
-        picker
-            .dialog()
-            .file()
-            .set_title("选择要转录的音频 · 最长 10 分钟 / 128 MiB")
-            .add_filter("音频", &["mp3", "wav", "flac"])
-            .blocking_pick_file()
-    })
-    .await
-    .map_err(|e| e.to_string())?;
-    let Some(selected) = selected else {
-        return Ok(None);
+    let path = if let Some(token) = source_token {
+        crate::source_io::selected_path(&app, &token, "audio")?
+    } else {
+        let picker = app.clone();
+        let selected = tauri::async_runtime::spawn_blocking(move || {
+            picker
+                .dialog()
+                .file()
+                .set_title("选择要转录的音频 · 最长 10 分钟 / 128 MiB")
+                .add_filter("音频", &["mp3", "wav", "flac"])
+                .blocking_pick_file()
+        })
+        .await
+        .map_err(|e| e.to_string())?;
+        let Some(selected) = selected else {
+            return Ok(None);
+        };
+        selected.into_path().map_err(|e| e.to_string())?
     };
     active(&app, &request_id)?;
-    let path = selected.into_path().map_err(|e| e.to_string())?;
     let source = path.to_string_lossy().into_owned();
     let _ = on_progress.send(serde_json::json!({"stage":"import","completed":0,"total":null}));
     let snapshot = tauri::async_runtime::spawn_blocking(move || {

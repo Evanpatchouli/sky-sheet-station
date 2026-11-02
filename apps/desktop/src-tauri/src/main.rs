@@ -4,6 +4,7 @@ mod analysis_io;
 mod arrangement_io;
 mod audio_io;
 mod score_io;
+mod source_io;
 
 use score_io::{LoadedScore, Snapshot};
 use std::sync::Mutex;
@@ -67,6 +68,38 @@ async fn load_example(app: tauri::AppHandle) -> Result<LoadedScore, String> {
 }
 
 #[tauri::command]
+async fn save_score(app: tauri::AppHandle, json: String) -> Result<Option<String>, String> {
+    if json.len() > 32 * 1024 * 1024 {
+        return Err("此桌面版本最多保存 32 MiB 乐谱。".into());
+    }
+    // Keep the exact frontend bytes through the existing raw reader / CLI gate.
+    // No serde_json::Value conversion may round tempo before validation.
+    load_bytes(&app, json.as_bytes().to_vec(), "编辑乐谱".into()).await?;
+    let picker = app.clone();
+    let selected = tauri::async_runtime::spawn_blocking(move || {
+        picker
+            .dialog()
+            .file()
+            .set_title("另存乐谱（请选择新文件）")
+            .set_file_name("sky-score.json")
+            .add_filter("SkySheet Score", &["json"])
+            .blocking_save_file()
+    })
+    .await
+    .map_err(|e| e.to_string())?;
+    let Some(selected) = selected else {
+        return Ok(None);
+    };
+    let path = selected.into_path().map_err(|e| e.to_string())?;
+    tauri::async_runtime::spawn_blocking(move || {
+        score_io::write_new_score(&path, json.as_bytes())?;
+        Ok(Some(path.to_string_lossy().into_owned()))
+    })
+    .await
+    .map_err(|e| e.to_string())?
+}
+
+#[tauri::command]
 async fn open_midi(app: tauri::AppHandle) -> Result<Option<LoadedScore>, score_io::ImportError> {
     let picker = app.clone();
     let selected = tauri::async_runtime::spawn_blocking(move || {
@@ -114,23 +147,28 @@ async fn open_midi(app: tauri::AppHandle) -> Result<Option<LoadedScore>, score_i
 #[tauri::command]
 async fn analyze_midi(
     app: tauri::AppHandle,
+    source_token: Option<String>,
 ) -> Result<Option<analysis_io::LoadedAnalysis>, score_io::ImportError> {
     let generation = app.state::<AtomicU64>().fetch_add(1, Ordering::SeqCst) + 1;
-    let picker = app.clone();
-    let selected = tauri::async_runtime::spawn_blocking(move || {
-        picker
-            .dialog()
-            .file()
-            .set_title("分析 MIDI")
-            .add_filter("Standard MIDI File", &["mid", "midi"])
-            .blocking_pick_file()
-    })
-    .await
-    .map_err(|e| e.to_string())?;
-    let Some(selected) = selected else {
-        return Ok(None);
+    let path = if let Some(token) = source_token {
+        source_io::selected_path(&app, &token, "midi")?
+    } else {
+        let picker = app.clone();
+        let selected = tauri::async_runtime::spawn_blocking(move || {
+            picker
+                .dialog()
+                .file()
+                .set_title("分析 MIDI")
+                .add_filter("Standard MIDI File", &["mid", "midi"])
+                .blocking_pick_file()
+        })
+        .await
+        .map_err(|e| e.to_string())?;
+        let Some(selected) = selected else {
+            return Ok(None);
+        };
+        selected.into_path().map_err(|e| e.to_string())?
     };
-    let path = selected.into_path().map_err(|e| e.to_string())?;
     let source = path.to_string_lossy().into_owned();
     let snapshot = tauri::async_runtime::spawn_blocking(move || {
         let bytes = score_io::read_file(&path)?;
@@ -293,6 +331,7 @@ fn cancel_arrangement(app: tauri::AppHandle) {
 
 fn main() {
     tauri::Builder::default()
+        .manage(source_io::Selection::default())
         .manage(audio_io::Jobs::default())
         .manage(Mutex::new(None::<audio_io::PendingAudio>))
         .manage(Mutex::new(None::<arrangement_io::ArrangementSource>))
@@ -302,6 +341,8 @@ fn main() {
         .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
             open_score,
+            save_score,
+            source_io::select_source,
             open_midi,
             analyze_midi,
             arrange_midi,

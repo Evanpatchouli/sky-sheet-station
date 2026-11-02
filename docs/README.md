@@ -18,7 +18,7 @@ Repository-wide instructions live in [AGENTS.md](../AGENTS.md). Product goals an
 - [Independent numeric verification](./numeric-verification.md): N1-N4 decisions, locked tooling, acceptance corpus, current Rust precision differences and minimal reproductions.
 - [Conversion and arrangement](./conversion-and-arrangement.md): proposed audio/MIDI analysis and 15-key adaptation pipeline.
 - [CLI Alpha](./cli-alpha.md): implemented inspect/validate commands, Windows build, JSON results and exit codes.
-- [Desktop player](./desktop-player.md): Tauri client, Score loading, Canvas visualization, local audition and audio-to-MIDI integration.
+- [Desktop editor](./desktop-player.md): unified audio/MIDI generation, grid-based note editing, local audition and validated Score saving.
 - [Audio Transcription](./audio-transcription.md): AT-1/2/3 decoding, real local polyphonic inference, MIDI, desktop flow, dependencies and limitations.
 - [CLI specification](./cli.md): current Alpha boundary and future command proposals.
 - [MIDI usage](./midi.md): import/export commands, diagnostics, D6 arithmetic,

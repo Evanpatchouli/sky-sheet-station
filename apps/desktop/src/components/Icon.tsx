@@ -1,4 +1,8 @@
 const paths = {
+  copy: "M9 9h11v12H9ZM4 15H3V3h11v2",
+  paste: "M9 5H5v16h14V5h-4M9 3h6v4H9Z",
+  delete: "M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7",
+  save: "M4 3h13l4 4v14H3V3ZM7 3v6h10V3M7 21v-8h10v8",
   open: "M3 7h7l2 2h9l-3 11H3V7Zm0 0V4h7l2 3",
   audio:
     "M9 18V5l11-2v13M9 8l11-2M9 18c0 3-6 3-6 0s6-3 6 0Zm11-2c0 3-6 3-6 0s6-3 6 0Z",

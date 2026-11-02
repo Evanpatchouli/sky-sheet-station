@@ -32,6 +32,29 @@ pub fn read_file(path: &Path) -> Result<Vec<u8>, String> {
     Ok(bytes)
 }
 
+pub fn write_new_score(path: &Path, bytes: &[u8]) -> Result<(), String> {
+    use std::io::Write;
+    let mut file = fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(path)
+        .map_err(|e| {
+            format!(
+                "无法保存 {}（请选择新文件，已有文件不会覆盖）：{e}",
+                path.display()
+            )
+        })?;
+    if let Err(error) = file.write_all(bytes).and_then(|()| file.sync_all()) {
+        drop(file);
+        let cleanup = fs::remove_file(path)
+            .err()
+            .map(|e| format!("；清理未完成文件失败：{e}"))
+            .unwrap_or_default();
+        return Err(format!("保存失败：{error}{cleanup}"));
+    }
+    Ok(())
+}
+
 pub struct Snapshot {
     pub path: PathBuf,
 }
@@ -260,6 +283,23 @@ pub fn check_import(
 mod tests {
     use super::*;
     const EXAMPLE: &[u8] = include_bytes!("../../../../docs/examples/sky-15-example.json");
+
+    #[test]
+    fn edited_score_save_roundtrips_and_never_overwrites() {
+        let snapshot = Snapshot::new(EXAMPLE).unwrap();
+        let path = snapshot.path.parent().unwrap().join("编辑 & score.json");
+        let edited = std::str::from_utf8(EXAMPLE).unwrap().replacen(
+            "\"duration_ticks\": 480",
+            "\"duration_ticks\": 240",
+            1,
+        );
+        write_new_score(&path, edited.as_bytes()).unwrap();
+        let loaded = real_validate(&fs::read(&path).unwrap()).unwrap();
+        assert_eq!(loaded.score.tracks[0].notes[0].duration_ticks, 240);
+        assert!(write_new_score(&path, EXAMPLE).is_err());
+        assert_eq!(fs::read(&path).unwrap(), edited.as_bytes());
+        fs::remove_file(path).unwrap();
+    }
 
     #[test]
     fn actual_cli_midi_conversion_report_and_cleanup() {

@@ -1,3 +1,4 @@
+import { Select } from "./Select.tsx";
 import type { PlayerEngine, PlaybackState } from "../player/engine.ts";
 import type { PreparedScore } from "../player/model.ts";
 import { formatTime } from "../player/model.ts";
@@ -6,10 +7,12 @@ export function Transport({
   song,
   engine,
   state,
+  onPosition,
 }: {
   song: PreparedScore | null;
   engine: PlayerEngine;
   state: PlaybackState;
+  onPosition?: (seconds: number) => void;
 }) {
   const unavailable = !song || !!song.playbackError || song.notes.length === 0;
   const duration = song && !song.playbackError ? song.duration : 0;
@@ -27,14 +30,20 @@ export function Transport({
         <button
           aria-label="暂停"
           disabled={state.status !== "playing"}
-          onClick={() => engine.pause()}
+          onClick={() => {
+            engine.pause();
+            onPosition?.(engine.snapshot().position);
+          }}
         >
           <Icon name="pause" />
         </button>
         <button
           aria-label="停止"
           disabled={!song}
-          onClick={() => engine.stop()}
+          onClick={() => {
+            engine.stop();
+            onPosition?.(0);
+          }}
         >
           <Icon name="stop" />
         </button>
@@ -53,19 +62,23 @@ export function Transport({
         step="any"
         value={state.position}
         disabled={unavailable}
-        onChange={(e) => engine.seek(Number(e.target.value))}
+        onChange={(e) => {
+          const seconds = Number(e.target.value);
+          engine.seek(seconds);
+          onPosition?.(seconds);
+        }}
       />
-      <select
+      <Select
         aria-label="播放速度"
         value={state.speed}
-        onChange={(e) => engine.setSpeed(Number(e.target.value))}
+        onChange={(value) => engine.setSpeed(Number(value))}
       >
         {[0.5, 0.75, 1, 1.25, 1.5, 2].map((speed) => (
           <option key={speed} value={speed}>
             {speed}×
           </option>
         ))}
-      </select>
+      </Select>
       <button
         className={`loop ${state.loop ? "selected" : ""}`}
         aria-label="循环播放"

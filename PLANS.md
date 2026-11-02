@@ -296,5 +296,14 @@ and key highlights. Local browser checks exercised controls, errors, responsive
 layout and a 600-note validated test fixture. See the verification section in
 [desktop player](docs/desktop-player.md#local-verification-2026-11-01).
 
+## Desktop interaction revision (2026-11-03)
+
+Owner-requested unified audio/MIDI generation and visual note editing are locally
+implemented: one settings dialog opens the generated Score directly; grid insert,
+selection, drag/resize, copy/paste, deletion, undo/redo and validated save are
+available. This does not change Score v1, MIDI conversion or arrangement rules,
+nor constitute musical-quality acceptance of transcription or other phases.
+See [desktop editing and verification](docs/desktop-player.md).
+
 ## Deferred: MCP
 MCP is a possible future integration. Do not implement it as part of the initial phases unless the product owner explicitly reprioritizes it.

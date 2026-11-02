@@ -36,19 +36,19 @@ Lower thresholds increase sensitivity and false positives. The minimum length
 uses Basic Pitch's frame-based rule; this is an estimate, not exact sample-level
 onset/offset detection. Build in release mode for interactive transcription.
 
-Desktop: **音频导入 → 选择音频并转录 → 转录 Report / 保存转录 MIDI 和报告 →
-进入 Sky 编曲与预览试听 → 生成编曲预览 → 加载生成乐谱并预览试听 / 保存 Score 和报告**.
-The audio dialog displays stage progress, decoded duration, note count, paged
-pitch/time/velocity events and diagnostics. Transcription automatically runs the
-existing CLI music analysis. Audition uses the existing arranged Score player.
-The MIDI save action preserves unrestricted notes and velocities; arrangement
-losses are separately disclosed by the existing Report v2.
+Desktop: **导入音乐 → 选择音频 → 设置参数 → 生成乐谱 → 可视化编辑与试听**.
+The single generation dialog runs transcription, analysis and arrangement
+automatically. Thresholds are under advanced settings. Original reports and
+transcription MIDI export are under **生成详情**; **另存乐谱** saves the current
+edited score. See [editing controls](desktop-player.md#import-and-visual-editing-2026-11-03).
+The MIDI save action preserves unrestricted notes and velocities; original
+arrangement losses remain available in Report v2.
 
 Cancellation kills the current sidecar and ignores late results. Picker
 cancellation, failure and cancellation preserve the loaded Score and previous
-successful result. Transcription snapshots survive original-file edits; save and
-arrangement use backend-owned tokens. Reopening an earlier transcription restores
-its own MIDI source before arrangement, even after analyzing another MIDI.
+successful score. Transcription snapshots survive original-file edits; save and
+arrangement use backend-owned tokens. Generation completes directly in the editor;
+manual edits do not change the original reports.
 
 ## AT-1: decoding and preprocessing
 
