@@ -90,6 +90,12 @@ source snapshot. See [Phase 4-A](phase-4a-arrangement.md).
 
 ## Data flow
 
+AT-1/2/3 implements the audio branch with `skysheet-audio`: Symphonia decode,
+Rubato resampling, embedded Basic Pitch inference through tract, then SMF output.
+The existing MIDI source reader, Music analysis, D6 projection and arrangement
+consume those bytes unchanged. Tauri only orchestrates the packaged CLI and owns
+progress/cancellation/snapshot lifetime. See [Audio Transcription](audio-transcription.md).
+
     MP3/WAV/FLAC -> decode -> transcription --+
                                                +-> music representation
     MIDI --------> MIDI import ----------------+

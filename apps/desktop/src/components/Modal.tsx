@@ -20,7 +20,7 @@ export function Modal({
     <dialog
       className={wide ? "analysis-dialog" : undefined}
       ref={dialog}
-      onCancel={onClose}
+      onCancel={(event) => { event.preventDefault(); onClose(); }}
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}

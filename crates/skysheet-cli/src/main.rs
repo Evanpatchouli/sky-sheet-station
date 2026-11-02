@@ -1,5 +1,6 @@
 mod args;
 mod arrange;
+mod audio;
 mod midi;
 mod music;
 
@@ -152,6 +153,7 @@ fn human_inspect(score: &Score, path: &Path) -> String {
 
 fn execute(args: &args::Args) -> Result<(Value, String), Diagnostic> {
     match args.command {
+        Command::Transcribe => audio::execute(args),
         Command::Arrange => arrange::execute(args),
         Command::ImportMidi
         | Command::ExportMidi

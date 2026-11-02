@@ -2,6 +2,7 @@
 
 mod analysis_io;
 mod arrangement_io;
+mod audio_io;
 mod score_io;
 
 use score_io::{LoadedScore, Snapshot};
@@ -108,21 +109,6 @@ async fn open_midi(app: tauri::AppHandle) -> Result<Option<LoadedScore>, score_i
     let mut loaded = load_bytes(&app, bytes, source).await?;
     loaded.import_report = Some(report);
     Ok(Some(loaded))
-}
-
-#[tauri::command]
-async fn select_audio(app: tauri::AppHandle) -> Result<Option<String>, String> {
-    // Selection only. No convert command exists in CLI Alpha.
-    tauri::async_runtime::spawn_blocking(move || {
-        app.dialog()
-            .file()
-            .set_title("选择音频（转换尚未接通）")
-            .add_filter("音频", &["mp3", "wav", "flac"])
-            .blocking_pick_file()
-            .map(|p| p.to_string())
-    })
-    .await
-    .map_err(|e| e.to_string())
 }
 
 #[tauri::command]
@@ -307,6 +293,8 @@ fn cancel_arrangement(app: tauri::AppHandle) {
 
 fn main() {
     tauri::Builder::default()
+        .manage(audio_io::Jobs::default())
+        .manage(Mutex::new(None::<audio_io::PendingAudio>))
         .manage(Mutex::new(None::<arrangement_io::ArrangementSource>))
         .manage(Mutex::new(None::<arrangement_io::PendingArrangement>))
         .manage(AtomicU64::new(0))
@@ -320,7 +308,10 @@ fn main() {
             save_arrangement,
             cancel_arrangement,
             load_example,
-            select_audio
+            audio_io::transcribe_audio,
+            audio_io::activate_transcription,
+            audio_io::cancel_audio,
+            audio_io::save_transcription
         ])
         .run(tauri::generate_context!())
         .expect("cannot start SkySheet desktop");

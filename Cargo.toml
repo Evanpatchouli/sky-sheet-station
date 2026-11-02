@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/skysheet-score", "crates/skysheet-cli", "crates/skysheet-midi", "crates/skysheet-music", "crates/skysheet-arrange"]
+members = ["crates/skysheet-score", "crates/skysheet-cli", "crates/skysheet-midi", "crates/skysheet-music", "crates/skysheet-arrange", "crates/skysheet-audio"]
 exclude = ["apps/desktop/src-tauri"]
 
 [workspace.package]

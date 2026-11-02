@@ -15,6 +15,7 @@ Usage:
   skysheet inspect-music <FILE.mid> [--json]
   skysheet analyze <FILE.mid> [--json]
   skysheet arrange <FILE.mid> -o <OUTPUT.json> [--auto | --transpose <SEMITONES>] [--json]
+  skysheet transcribe <FILE.mp3|wav|flac> -o <OUTPUT.mid> [--json] [--progress]
 
 Options:
   -h, --help     Show help (also accepted with inspect/validate)
@@ -24,11 +25,14 @@ Options:
   --tempo        Import reference BPM (default: effective source tempo at zero)
   --auto         Search every global semitone offset (arrange default)
   --transpose    Fixed global offset -127..127; never replaced by auto search
-  --report       New arrangement report path (default: OUTPUT.json.arrangement.json)
+  --report       New report path (default: OUTPUT.arrangement.json / OUTPUT.transcription.json)
   --mode         melody-first (default), simple-accompaniment, polyphonic
   --no-octave-shifts  Disable context octave placement (global-only pitch mapping)
   --melody-priority / --bass-priority / --accompaniment-priority  Integer 0..5 (3/2/1)
   --max-polyphony User overlap limit 1..128 (default unlimited; not a Score rule)
+  --progress     Transcription progress as JSON lines on stderr (stdout stays clean)
+  --onset-threshold / --frame-threshold  Transcription sensitivity 0.05..0.95 (0.5/0.3)
+  --minimum-note-ms  Transcription minimum note length 30..1000 (127.7 ms)
   --             Treat remaining arguments as positional (for filenames starting with -)
 
 Score inputs use original JSON and Score validation; input files are never modified.
@@ -48,6 +52,7 @@ pub enum Command {
     InspectMusic,
     Analyze,
     Arrange,
+    Transcribe,
 }
 
 impl Command {
@@ -64,12 +69,15 @@ impl Command {
             Self::InspectMusic => "inspect-music",
             Self::Analyze => "analyze",
             Self::Arrange => "arrange",
+            Self::Transcribe => "transcribe",
         }
     }
 }
 
 #[derive(Debug)]
 pub struct Args {
+    pub audio: skysheet_audio::Options,
+    pub progress: bool,
     pub arrangement: skysheet_arrange::ArrangementOptions,
     pub command: Command,
     pub file: Option<PathBuf>,
@@ -98,11 +106,39 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
     let mut report = None;
     let mut auto = false;
     let mut arrangement = skysheet_arrange::ArrangementOptions::default();
+    let mut audio = skysheet_audio::Options::default();
+    let mut progress = false;
+    let mut audio_flags = std::collections::BTreeSet::new();
     let mut arrangement_flags = std::collections::BTreeSet::new();
     let mut iter = args.iter();
     while let Some(arg) = iter.next() {
         if !literal {
             match arg.to_str() {
+                Some(
+                    flag @ ("--onset-threshold" | "--frame-threshold" | "--minimum-note-ms"
+                    | "--progress"),
+                ) => {
+                    if !audio_flags.insert(flag) {
+                        return Err(format!("repeated option {flag}"));
+                    }
+                    if flag == "--progress" {
+                        progress = true;
+                        continue;
+                    }
+                    let value: f64 = iter
+                        .next()
+                        .and_then(|s| s.to_str())
+                        .ok_or_else(|| format!("missing value for {flag}"))?
+                        .parse()
+                        .map_err(|_| format!("invalid value for {flag}"))?;
+                    match flag {
+                        "--onset-threshold" => audio.onset_threshold = value,
+                        "--frame-threshold" => audio.frame_threshold = value,
+                        _ => audio.minimum_note_ms = value,
+                    }
+                    audio.validate().map_err(|e| e.to_string())?;
+                    continue;
+                }
                 Some(
                     flag @ ("--mode"
                     | "--no-octave-shifts"
@@ -228,6 +264,8 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
             return Err("missing command; use --help".into());
         };
         return Ok(Args {
+            audio,
+            progress,
             arrangement,
             command,
             file: None,
@@ -247,6 +285,7 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
         Some("inspect-music") => Command::InspectMusic,
         Some("analyze") => Command::Analyze,
         Some("arrange") => Command::Arrange,
+        Some("transcribe") => Command::Transcribe,
         _ => {
             return Err(format!(
                 "unsupported command {:?}; use --help",
@@ -259,6 +298,8 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
     }
     if help && positional.len() == 1 {
         return Ok(Args {
+            audio,
+            progress,
             arrangement,
             command: Command::Help,
             file: None,
@@ -276,19 +317,24 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
     }
     if matches!(
         command,
-        Command::ImportMidi | Command::ExportMidi | Command::Arrange
+        Command::ImportMidi | Command::ExportMidi | Command::Arrange | Command::Transcribe
     ) {
         if output.is_none() {
             return Err("conversion requires -o <OUTPUT>".into());
         }
     } else if output.is_some() {
-        return Err("--output is only valid for import-midi/export-midi/arrange".into());
+        return Err("--output is only valid for import-midi/export-midi/arrange/transcribe".into());
     }
     if tempo.is_some() && command != Command::ImportMidi {
         return Err("--tempo is only valid for import-midi".into());
     }
-    if (auto || transpose.is_some() || report.is_some() || !arrangement_flags.is_empty())
-        && command != Command::Arrange
+    if !audio_flags.is_empty() && command != Command::Transcribe {
+        return Err("transcription options are only valid for transcribe".into());
+    }
+    if report.is_some() && !matches!(command, Command::Arrange | Command::Transcribe) {
+        return Err("--report is only valid for arrange/transcribe".into());
+    }
+    if (auto || transpose.is_some() || !arrangement_flags.is_empty()) && command != Command::Arrange
     {
         return Err("arrangement options are only valid for arrange".into());
     }
@@ -296,6 +342,8 @@ pub fn parse(args: &[OsString]) -> Result<Args, String> {
         return Err("--auto and --transpose cannot be combined".into());
     }
     Ok(Args {
+        audio,
+        progress,
         arrangement,
         command,
         file: Some(PathBuf::from(positional[1])),

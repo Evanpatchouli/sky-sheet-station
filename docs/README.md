@@ -18,7 +18,8 @@ Repository-wide instructions live in [AGENTS.md](../AGENTS.md). Product goals an
 - [Independent numeric verification](./numeric-verification.md): N1-N4 decisions, locked tooling, acceptance corpus, current Rust precision differences and minimal reproductions.
 - [Conversion and arrangement](./conversion-and-arrangement.md): proposed audio/MIDI analysis and 15-key adaptation pipeline.
 - [CLI Alpha](./cli-alpha.md): implemented inspect/validate commands, Windows build, JSON results and exit codes.
-- [Desktop player](./desktop-player.md): Phase 6 Tauri client, real Score loading, Canvas visualization and local audition; audio conversion is not connected.
+- [Desktop player](./desktop-player.md): Tauri client, Score loading, Canvas visualization, local audition and audio-to-MIDI integration.
+- [Audio Transcription](./audio-transcription.md): AT-1/2/3 decoding, real local polyphonic inference, MIDI, desktop flow, dependencies and limitations.
 - [CLI specification](./cli.md): current Alpha boundary and future command proposals.
 - [MIDI usage](./midi.md): import/export commands, diagnostics, D6 arithmetic,
   protocol limits and desktop integration.
@@ -46,8 +47,10 @@ See the [Phase 2 preparation record](phase-2-midi.md). The owner subsequently
 authorized Phase 3, now locally implemented and verified through the required CLI
 commands and existing desktop analysis view; see the delivery record.
 Phase 4-A is now implemented with the owner-approved D6 projection boundary.
-Phase 4-B/C remain deferred, and remaining Phase 1 checks are not
-declared complete. Earlier scope statements below describe historical milestones.
+Phase 4-B/C are implemented and integrated into main via PR #2. Audio Transcription
+adds MP3/WAV/FLAC conversion on that baseline; human AT acceptance remains pending.
+Remaining Phase 1 checks are not declared complete. Earlier scope statements below
+describe historical milestones.
 
 Phase 1.5 delivers the first runnable CLI Alpha for existing Score files, including
 a locally verified Windows Release executable. See the

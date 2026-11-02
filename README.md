@@ -7,8 +7,12 @@ A Rust-first, CLI-first music analysis and arrangement tool for adapting audio a
 Early development. The score contract is not fully frozen: D1-D8 are approved,
 including D6-A through D6-F for PPQ-based SMF Format 0/1. Phase 2 implements MIDI
 import/export and opens MIDI through the existing desktop player. Unsupported
-sky-15 pitches fail with diagnostics; automatic arrangement and audio transcription
-remain future work. See [MIDI usage and limits](docs/midi.md) and the
+sky-15 pitches fail with diagnostics on direct import; Phase 4-B/C provides
+explicit arrangement. Audio Transcription now adds offline MP3/WAV/FLAC → MIDI
+through `skysheet transcribe`, with desktop progress, reports, cancellation and
+the existing arrangement/preview/audition/save flow. See
+[audio transcription and limits](docs/audio-transcription.md),
+[MIDI usage and limits](docs/midi.md) and the
 [development plan](PLANS.md).
 
 Phase 3 adds unrestricted MIDI inspection with `inspect-music <FILE> [--json]`
@@ -52,7 +56,7 @@ the [Windows verification record](harness/build/phase-015-cli-alpha.md).
 
 The workspace contains the reusable `skysheet-score` crate and the
 `skysheet-midi` interoperability crate, the instrument-independent
-`skysheet-music` source/analysis crate, plus the `skysheet-cli` package,
+`skysheet-music` source/analysis crate, `skysheet-arrange`, `skysheet-audio`, and the `skysheet-cli` package,
 whose executable is named `skysheet`.
 
 Use a Rust toolchain supporting edition 2024 with the `rustfmt` and `clippy`

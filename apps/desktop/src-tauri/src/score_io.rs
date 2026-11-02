@@ -38,10 +38,14 @@ pub struct Snapshot {
 
 impl Snapshot {
     pub fn midi(bytes: &[u8], name: &std::ffi::OsStr) -> Result<Self, String> {
+        Self::named(bytes, name)
+    }
+
+    pub fn named(bytes: &[u8], name: &std::ffi::OsStr) -> Result<Self, String> {
         let mut snapshot = Self::new(bytes)?;
         let path = snapshot.path.parent().unwrap().join(name);
         if path.parent() != snapshot.path.parent() || path.file_name() != Some(name) {
-            return Err("MIDI 快照文件名无效".into());
+            return Err("快照文件名无效".into());
         }
         fs::rename(&snapshot.path, &path).map_err(|e| e.to_string())?;
         snapshot.path = path;
@@ -73,6 +77,10 @@ impl Snapshot {
 
 impl Drop for Snapshot {
     fn drop(&mut self) {
+        if let Some(dir) = self.path.parent() {
+            let _ = fs::remove_file(dir.join("transcription.mid.transcription.json"));
+            let _ = fs::remove_file(dir.join("transcription.mid"));
+        }
         let mut report = self.converted_path().into_os_string();
         report.push(".arrangement.json");
         let _ = fs::remove_file(std::path::PathBuf::from(report));

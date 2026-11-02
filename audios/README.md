@@ -8,15 +8,16 @@ The descriptions below are the owner's classifications, not measured analysis re
 | [Scarlxrd-Ace - 小星星(钢琴版).mp3](<Scarlxrd-Ace - 小星星(钢琴版).mp3>) | Relatively simple piano example | 4209680 |
 | [Donk小曲.mp3](Donk小曲.mp3) | More complex modern-song example | 7201184 |
 
-The original files are retained unchanged. No transcription, note/timing ground
-truth, quality evaluation or automated audio test has been produced for them yet.
-They are candidate material for later authorized audio work, not evidence that
-audio conversion is implemented or accurate. They are ordinary source-audio samples;
+The original files are retained unchanged. AT-1/2/3 now decodes the piano MP3 in
+automated Rust tests and has transcribed both full files through real inference,
+MIDI generation, arrangement and Score validation. See the
+[audio evaluation record](../docs/audio-transcription.md#evidence-and-limitations).
+No note-level ground truth or measured accuracy is available. They are ordinary source-audio samples;
 game-instrument recording and acoustic calibration are not required under the
 [logical-pitch design decision](../docs/phase-1-decisions.md#logical-sky-pitches-and-actual-game-sound).
 
-Adding these samples does not start Phase 2 or the later audio-research phase.
-Current score-contract tests and CI do not process these audio files.
+Their original addition did not authorize implementation; the subsequent explicit
+AT request does. Existing Score contract tests remain independent of audio tests.
 
 ## Owner-supplied MIDI development input
 

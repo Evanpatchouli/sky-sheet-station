@@ -10,6 +10,7 @@ name = "skysheet"
 path = "src/main.rs"
 
 [dependencies]
+skysheet-audio = { path = "../skysheet-audio" }
 skysheet-arrange = { path = "../skysheet-arrange" }
 skysheet-music = { path = "../skysheet-music" }
 skysheet-score = { path = "../skysheet-score" }
